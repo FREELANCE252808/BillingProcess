@@ -1,0 +1,24 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WebAPI.Models;
+
+namespace WebAPI.Interfaces
+{
+    public interface IRolesRepository
+    {
+        public void AddRole(Role role);
+
+        public void UpdateRole(Role role);
+
+        public void DeleteRole(int roleId);
+
+        public Task<IQueryable<Role>> FindRole(int roleId);
+
+        public Task<List<Role>> GetRolesAsync(int companyID);
+
+        public bool IsRoleExists(string roleName, int companyID, int roleID = 0);
+
+        public bool IsRoleDeleteAllow(int roleID);
+    }
+}

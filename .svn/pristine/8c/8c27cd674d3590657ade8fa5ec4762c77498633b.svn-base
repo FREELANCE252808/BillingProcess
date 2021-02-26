@@ -1,0 +1,26 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, forkJoin, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { HttpUtilsService } from '../utils/http-utils.service';
+import { ClientModel } from '../models/Client.model';
+import { QueryParamsModel } from '../models/query-models/query-params.model';
+import { QueryResultsModel } from '../models/query-models/query-results.model';
+
+
+@Injectable()
+export class CommonService {
+	constructor(private http: HttpClient,
+		private httpUtils: HttpUtilsService) { }
+
+	// READ
+	CheckIsSelectedDataInUse(SelectedRowID: number, TableName: string): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/Common/GetDataToDeleteMastersData?SelectedRowID=" + SelectedRowID + "&TableName=" + TableName);
+	}
+
+
+
+}
+
+

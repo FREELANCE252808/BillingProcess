@@ -1,0 +1,102 @@
+<!--begin:: Widgets/Authors Profit-->
+	<div style="height:0px">
+		<span *ngIf="(loaderShow)">
+			<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		</span>
+	</div>
+	<m-portlet>
+		<!-- use ng-container[mPortletHeadTitle] for the title -->
+		<ng-container mPortletHeadTitle>
+			<div class="m-widget4__info">
+				<span>
+					<b>Time Card Summary </b>
+				</span>
+				<br />
+				<span>
+					View your time card's status for the month of&nbsp; {{ monthName }} - {{ selectedYear }}.
+				</span>
+				<!--<div class="col-lg-6">
+				<span class="fa fa-angle-double-right" (click)="OnNextClick()"></span>
+			</div>-->
+			</div>
+		</ng-container>
+		<span *ngIf="(loaderShow)">
+			<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		</span>
+		<ng-container mPortletBody>
+
+			<!--<div class="row">
+			<div class="col-lg-6"><label>Users</label></div>
+			<div class="col-lg-6"><label>Tasks</label></div>
+		</div>
+		<hr>-->
+			<div class="row">
+				<div class="col-lg-3"><label>Week No</label></div>
+				<div class="col-lg-2"><label>Submitted</label></div>
+				<div class="col-lg-1"><label>NT</label></div>
+				<div class="col-lg-1"><label>OT</label></div>
+				<div class="col-lg-2"><label>Week End</label></div>
+				<!--<div class="col-lg-1"><label>Approved</label></div>-->
+				<div class="col-lg-3" >
+					
+					<div class="row">
+						<div class="col-sm-6">
+							<label>Status</label>
+						</div>
+						<div class="col-sm-6">
+							<span class="fa fa-angle-double-left" (click)="OnPreClick()" style="color:#5867dd;cursor:pointer"></span>
+							<span class="fa fa-angle-double-right" (click)="OnNextClick()" style="color:#5867dd;margin-left: 10px;cursor:pointer"></span>
+						</div>
+					</div>
+					
+				</div>
+				<!--<div class="col-lg-2"><label>Comment</label></div>-->
+			</div>
+			<hr>
+			<div class="row"  *ngFor="let item of gridData$ | async">
+				<div class="col-lg-3">
+					<div>
+						<a href="javascript:void(0)" routerLink="/admin/AgTimesheet" [queryParams]="{ TSWid: item.TimeSheetWeeklyID}" style="color:#5867dd;font-weight:500">{{item.WeekNo}}</a>
+					</div>&nbsp;
+				</div>
+				<div class="col-lg-2">
+					<div  [ngClass]="{'MakeTextRed': item.Submitted > item.WeekEnding || item.Status=='Rejected','MakeTextGreen':item.Status=='Approved'}">
+						<span>{{(item.Submitted=="0001-01-01T00:00:00") ? "--/--/----": (item.Submitted | date :'MM/dd/yyyy')}}</span>
+					</div>
+				</div>
+				<div class="col-lg-1">
+					<div  [ngClass]="{'MakeTextRed': item.Submitted > item.WeekEnding || item.Status=='Rejected','MakeTextGreen':item.Status=='Approved'}">
+						<span>{{item.NThrs}}</span>
+					</div>
+				</div>
+				<div class="col-lg-1">
+					<div  [ngClass]="{'MakeTextRed': item.Submitted > item.WeekEnding || item.Status=='Rejected','MakeTextGreen':item.Status=='Approved'}">
+						<span>{{item.OThrs}}</span>
+					</div>
+				</div>
+				<div class="col-lg-2">
+					<div  [ngClass]="{'MakeTextRed': item.Submitted > item.WeekEnding || item.Status=='Rejected','MakeTextGreen':item.Status=='Approved'}">
+						<span>{{(item.WeekEnding =="0001-01-01T00:00:00") ? "--/--/----":(item.WeekEnding  | date:'MM/dd/yyyy')}}</span>
+					</div>
+				</div>
+				<!--<div class="col-lg-1">
+				<div style="padding-top: 10px;">
+					<span>{{item.Approved}}</span>
+				</div>
+			</div>-->
+				<div class="col-lg-3">
+					<div  [ngClass]="{'MakeTextRed': item.Submitted > item.WeekEnding || item.Status=='Rejected','MakeTextGreen':item.Status=='Approved'}">
+						<span>{{item.Status}}</span>
+					</div>
+				</div>
+				<!--<div class="col-lg-2">
+				<div style="padding-top: 10px;">
+					<span>{{item.Comment}}</span>
+				</div>
+			</div>-->
+			</div>
+			<hr>
+
+		</ng-container>
+	</m-portlet>
+<!--end:: Widgets/Authors Profit-->

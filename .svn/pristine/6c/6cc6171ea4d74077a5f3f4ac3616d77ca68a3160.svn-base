@@ -1,0 +1,59 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Data.Repo
+{
+    public class RolesRepository : IRolesRepository
+    {
+        private readonly DataContext dc;
+
+        public RolesRepository(DataContext dc)
+        {
+            this.dc = dc;
+        }
+
+        public void AddRole(Role role)
+        {
+            dc.Roles.Add(role);
+        }
+
+        public void UpdateRole(Role role)
+        {
+            dc.Roles.Update(role);
+        }
+
+        public void DeleteRole(int roleId)
+        {
+            var role = dc.Roles.Find(roleId);
+            dc.Roles.Remove(role);
+        }
+
+        public async Task<Role> FindRole(int roleId)
+        {
+            return await dc.Roles.FindAsync(roleId);
+        }
+
+        public async Task<List<Role>> GetRolesAsync(int companyID)
+        {
+            return await dc.Roles.Where(r => r.CompanyID == companyID).ToListAsync();
+        }
+
+        public bool IsRoleExists(string roleName, int roleID = 0)
+        {
+            if (roleID == 0)
+                return dc.Roles.Where(r => r.RoleName == roleName).Count() > 0 ? true : false;
+            else
+                return dc.Roles.Where(r => r.RoleName == roleName && r.id != roleID).Count() > 0 ? true : false;
+        }
+
+        public bool IsRoleDeleteAllow(int roleID)
+        {
+            return CommonFuntions.DeleteCheckOnMaster(dc, roleID, "Roles")[0].CanDelete == "Y" ? true : false;
+        }
+    }
+}

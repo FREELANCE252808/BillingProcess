@@ -1,0 +1,53 @@
+:host {
+	/deep/.mat-tab-label,
+	/deep/.mat-tab-label-active {
+		min-width: 0 !important;
+		padding: 0 10px !important;
+		margin: 0 10px !important;
+	}
+}
+
+:host {
+	/deep/.mat-tab-label-active {
+		min-width: 0 !important;
+		padding: 0 10px !important;
+		margin: 0 10px !important;
+		background-color: #f1f1f1;
+	}
+}
+
+
+:host {
+
+	/deep/.mat-tab-label-active {
+		min-width: 0 !important;
+		padding: 0 10px !important;
+		margin: 0 10px !important;
+		background-color: #f1f1f1;
+
+		/*/deep/.mat-ink-bar {
+			background-color: #716aca;
+		}*/
+	}
+
+}
+
+::ng-deep .mat-badge-medium .mat-badge-content {
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+
+::ng-deep .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+	right: -5px;
+}
+
+::ng-deep .mat-badge-medium.mat-badge-above .mat-badge-content {
+	top: -8px;
+}
+
+::ng-deep .mat-badge-content {
+	font-weight: 500;
+	font-size: 7px;
+	font-family:  sans-serif;
+}

@@ -1,0 +1,72 @@
+<div class="padding">
+	<div style="height:5px;">
+		<span *ngIf="(loaderShow)">
+			<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		</span>
+	</div>
+
+
+
+	<div class="elevation border-radius overflow-hidden route-animations-elements">
+		<fury-list name="Templates" [columns]="columns" (filterChange)="onFilterChange($event)">
+
+			<div class="actions">
+				<button type="button" (click)="addtemplate()"   matTooltip="Add new template" style="border-radius:25px;" class="btn btn-outline-brand btn-sm">
+					Add
+				</button>
+			</div>
+			<mat-table #table [dataSource]="dataSource" matSort>
+
+				<ng-container *ngFor="let column of columns">
+					<ng-container *ngIf="column.isModelProperty" [matColumnDef]="column.property">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.name }}</mat-header-cell>
+						<mat-cell *matCellDef="let row">
+
+							<ng-container *ngIf="column.name!='Status'; then emaildata; else Status">
+							</ng-container>
+
+							<ng-template #emaildata>
+								<span class="fury-mobile-label">{{ column.name }}</span>{{ row[column.property] }}
+							</ng-template>
+
+							<ng-template #Status>
+								<div *ngIf="row[column.property]!=undefined && row[column.property].length>0; else notDefined">
+									<span class="m-badge m-badge--{{ getItemCssClassByStatus(row[column.property]) }} m-badge--wide">{{  getItemStatusString(row[column.property]) }}</span>
+								</div>
+								<ng-template #notDefined>
+									<span class="fury-mobile-label">Not Defined</span>
+								</ng-template>
+							</ng-template>
+
+						</mat-cell>
+					</ng-container>
+				</ng-container>
+
+				<ng-container matColumnDef="actions">
+					<mat-header-cell *matHeaderCellDef mat-sort-header>Action</mat-header-cell>
+					<mat-cell *matCellDef="let row">
+						<span class="fury-mobile-label"></span>
+						<button type="button" mat-icon-button [matMenuTriggerFor]="actionsMenu" (click)="$event.stopPropagation()">
+							<mat-icon>more_vert</mat-icon>
+						</button>
+
+						<mat-menu #actionsMenu="matMenu" yPosition="below" xPosition="before">
+							<button (click)="editEmail(row)" mat-menu-item><span>Modify</span>	</button>
+							<!--<button (click)="checkBeforeDeleteData(row)" mat-menu-item><span>Delete</span></button>-->
+						</mat-menu>
+					</mat-cell>
+				</ng-container>
+
+				<mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>
+				<mat-row *matRowDef="let row; columns: visibleColumns;" (click)="editEmail(row)" class="clickable route-animations-elements"></mat-row>
+			</mat-table>
+
+			<mat-paginator class="paginator" [pageSize]="pageSize"></mat-paginator>
+
+		</fury-list>
+
+	</div>
+
+</div>
+
+

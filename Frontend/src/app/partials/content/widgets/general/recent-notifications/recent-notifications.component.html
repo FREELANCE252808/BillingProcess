@@ -1,0 +1,64 @@
+<div style="height:0px">
+	<span *ngIf="(loaderShow)">
+		<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+	</span>
+</div>
+
+<m-portlet>
+	<!-- use ng-container[mPortletHeadTitle] for the title -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				Recent Notifications
+			</h3>
+		</div>
+	</ng-container>
+	<!-- use ng-container[mPortletBody] for the body content -->
+	<ng-container mPortletBody>
+
+		<perfect-scrollbar class="m-scrollable m-scroller" style="height: 60vh;">
+			<div class="m-widget3">
+				<div class="m-widget3__item" *ngFor="let notification of NotificationsData">
+					<div class="m-widget3__header">
+						<div class="m-widget3__user-img">
+							<img class="m-widget3__img" src={{notification.SenderProfilePic}} alt="" id={{notification.id}} (error)="OnInvalidImage(notification.id)" >
+						</div>
+						<div class="m-widget3__info">
+							<span class="m-widget3__username">
+								{{notification.SenderName}}
+							</span>
+							<br>
+							<span class="m-widget3__time">
+								{{notification.Date | timeAgo }}
+							</span>
+						</div>
+						<!--<span class="m-widget3__status m--font-info">
+							Pending
+						</span>-->
+					</div>
+					<div class="m-widget3__body">
+
+						<p class="m-widget3__text" (click)="markAsRead (notification.id,notification.RedirectURL)" style="cursor:pointer; margin-left: 55px;"
+						   routerLink="{{notification.RedirectURL}}" [queryParams]="{ id: notification.QueryString  }" [ngStyle]="{'color':notification.Active === 'Y' ? 'black' :' #575962','font-weight':notification.Active === 'Y'?'600':'400' }">
+							{{notification.NotificationMessage}}
+						</p>
+
+					</div>
+				</div>
+
+			</div>
+		</perfect-scrollbar>
+	</ng-container>
+</m-portlet>
+
+
+
+
+
+
+
+
+
+
+
+

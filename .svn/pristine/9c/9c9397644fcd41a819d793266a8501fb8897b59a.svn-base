@@ -1,0 +1,38 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Data.Repo
+{
+    public class UserRoleRepository : IUserRoleRepository
+    {
+        private readonly DataContext dc;
+
+        public UserRoleRepository(DataContext dc)
+        {
+            this.dc = dc;
+        }
+        public void AddUserRole(UserRole userrole)
+        {
+            dc.UserRole.Add(userrole);             
+        }
+
+        public void DeleteUserRole(int UserRoleID)
+        {
+            var userrole = dc.UserRole.Find(UserRoleID);
+            dc.UserRole.Remove(userrole);
+        }
+
+        public async Task<UserRole> FindUserRole(int id)
+        {
+            return await dc.UserRole.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<UserRole>> GetUserRolesAsync()
+        {
+            return await dc.UserRole.ToListAsync();
+        }
+    }
+}

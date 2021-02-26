@@ -1,0 +1,89 @@
+<!--begin::Signin-->
+
+<div style="border:1px solid #d2cfcf;border-radius:10px;background-color:white;opacity:1;box-shadow: 0px 0px 7px 1px;">
+	<div style="height:5px;width:100%;">
+		<mat-progress-bar style="border-radius: 42px;" class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+	</div>
+	<div class="m-login__signin" style="padding:34px 37px 3px 43px;">
+		<div class="m-login__title">
+			<!--<h3 translate="AUTH.LOGIN.TITLE"></h3>-->
+			<img src="./assets/demo/default/media/img/logo/logo.svg" style="height: 64px;" alt="Logo">
+		</div>
+
+		<!--<m-auth-notice></m-auth-notice>-->
+		<!--<div class="m-login__title" style="height:30px;">
+			<h3>{{UserName}}</h3>
+		</div>-->
+		<div class="m-login__title" style="height:30px;">
+			<img src={{ImagePath}} width="35" style="border-radius:50%" />
+			<h3>{{UserName}}</h3>
+		</div>
+		<!--begin::Form (ngSubmit)="f.form.valid && submit()"-->
+		<form class="m-login__form m-form" name="form" (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
+			<div class="form-group">
+				<mat-form-field appearance="outline">
+					<mat-label>Email</mat-label>
+					<input matInput autofocus type="email" name="email" placeholder="Email address" autocomplete="off" [(ngModel)]="model.email" (blur)="ValidateEmail()" #email="ngModel" email="true" required (keyup.enter)="focusableSubmit.click()">
+				</mat-form-field>
+			</div>
+			<div class="form-group">
+				<mat-form-field appearance="outline">
+					<mat-label>Password</mat-label>
+					<input matInput minlength="4" [type]="hide ? 'password' : 'text'" name="password" placeholder="Password" autocomplete="off" [(ngModel)]="model.password" #password="ngModel" required (keyup.enter)="focusableSubmit.click()">
+					<mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+				</mat-form-field>
+				<div style="height:50px;">
+					<mat-error style="height:50px;"><span *ngIf="(PassErrorMessege)"><strong>Wrong password.</strong> Try again or click Forgot password to reset it.</span></mat-error>
+				</div>
+			</div>
+		</form>
+		<!--end::Form-->
+		<!--begin::Action-->
+		<div class="m-login__action m-login__action--fit">
+			<a href="javascript:;" (click)="forgotPasswordPage($event)" class="m-link">
+				<b><span translate="AUTH.GENERAL.FORGOT_BUTTON">Forgot Password?</span></b>
+			</a>
+			<!--<m-spinner-button [options]="spinner" (click)="submit()" style="border-radius:25px;margin-top:5px;">{{'AUTH.LOGIN.BUTTON' | translate}}</m-spinner-button>-->
+
+			<button type="button" #focusableSubmit color="primary" (click)="submit()" [disabled]="loading" style="border-radius:25px;margin-top:5px;" class="btn btn-outline-brand btn-sm">
+				<span>{{'AUTH.LOGIN.BUTTON' | translate}}</span>
+				<i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+			</button>
+		</div>
+		<!--end::Action-->
+		<!--begin::Divider-->
+		<!--<div class="m-login__form-divider">
+		<div class="m-divider">
+			<span></span>
+			<span translate="AUTH.GENERAL.OR">OR</span>
+			<span></span>
+		</div>
+	</div>-->
+		<!--end::Divider-->
+		<!--begin::Options-->
+		<!--<div class="m-login__options">
+		<a href="javascript:;" mat-raised-button color="primary">
+			<span>
+				<i class="fab fa-facebook-f"></i>&nbsp;
+				<span>Facebook</span>
+			</span>
+		</a>
+
+		<a href="javascript:;" mat-raised-button color="accent">
+			<span>
+				<i class="fab fa-twitter"></i>&nbsp;
+				<span>Twitter</span>
+			</span>
+		</a>
+
+		<a href="javascript:;" mat-raised-button color="warn">
+			<span>
+				<i class="fab fa-google"></i>&nbsp;
+				<span>Google</span>
+			</span>
+		</a>
+	</div>-->
+		<!--end::Options-->
+	</div>
+	<!--end::Signin-->
+</div>

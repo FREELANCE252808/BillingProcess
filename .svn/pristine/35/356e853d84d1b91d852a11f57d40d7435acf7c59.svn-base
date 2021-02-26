@@ -1,0 +1,52 @@
+<!--begin:: Widgets/Authors Profit-->
+	<div style="height:0px">
+		<span *ngIf="(loaderShow)">
+			<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		</span>
+	</div>
+<m-portlet>
+	<!-- use ng-container[mPortletHeadTitle] for the title -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-widget4__info">
+			<span>
+				<b>Overdue Work Items</b>
+			</span>
+			<br>
+			<span>
+				View the work items that are past their due date .
+			</span>
+		</div>
+	</ng-container>
+
+	<!-- use ng-container[mPortletBody] for the body content -->
+	<ng-container mPortletBody>
+		<!--<perfect-scrollbar class="m-scrollable m-scroller" style="height: 60vh;">-->
+		<div style="height:60vh;overflow-y:scroll" (scroll)="scrollHandler($event)">
+			
+			<div class="m-widget4" *ngFor="let data of overduedata | async  | slice:startscrollNO:endscrollNO;">
+				<div class="m-widget4__item">
+					<div class="col-lg-9">
+						<div class="m-widget4__img m-widget4__img--logo">
+							<img src={{data.ImagePath}} alt="">
+						</div>
+						<div class="m-widget4__info">
+							<span class="m-widget3__text">
+								{{data.TaskName}}
+							</span>
+						</div><hr>
+					</div>
+					<div class="col-lg-3">
+						<span class="m-widget4__ext">
+							<span class="m-widget3__text m--font-danger">{{data.OverDays}}</span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div *ngIf="OverdueWorkItemsData.length ==0">
+			<h3 style="text-align:center;vertical-align:central" matTooltip="Show Data"><small>No Items to Show </small></h3>
+		</div>
+		<!--</perfect-scrollbar>-->
+	</ng-container>
+</m-portlet>
+<!--end:: Widgets/Authors Profit-->

@@ -1,0 +1,102 @@
+<!--<div style="height:0px">
+	<span *ngIf="(loaderShow)">
+		<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+	</span>
+</div>-->
+<div class="row">
+	<div class="col-md-6">
+		<m-portlet>
+			<!-- use ng-container[mPortletHeadTitle] for the title -->
+			<ng-container mPortletHeadTitle>
+				<div class="m-portlet__head-title">
+					<h3 class="m-portlet__head-text">
+						All Notification
+					</h3>
+				</div>
+			</ng-container>
+			<!-- use ng-container[mPortletBody] for the body content -->
+			<ng-container mPortletBody>
+
+				<perfect-scrollbar class="m-scrollable m-scroller" style="height: 60vh;">
+					<div class="m-timeline-3">
+						<div class="m-timeline-3__items">
+							<div class="m-timeline-3__item m-timeline-3__item--info" *ngFor="let notification of lstNotification | async">
+								<span class="m-timeline-3__item-time" style="font-size:11px;">{{notification?.Date  }}</span>
+
+			<!-- <span class="m-timeline-3__item-time" style="font-size:11px;">{{notification?.Date | timeAgo }}</span>
+								 -->
+
+								<div class="m-timeline-3__item-desc">
+									<span class="m-timeline-3__item-text" [style.font-weight]="notification.Active == 'Y'?'bold':'auto'">
+										<span (click)="Route(notification)" routerLink="{{notification?.RedirectURL}}" [queryParams]="{ id: notification.QueryString  }" class="m-link m-timeline-3__item-link" [style.color]="notification.Active == 'Y'?'black':'gray'">
+											{{notification?.NotificationMessage}}
+										</span>
+									</span>
+									<br>
+									<span class="m-timeline-3__item-user-name">
+										<a href="#" class="m-link m-link--metal m-timeline-3__item-link">
+											By &nbsp;&nbsp;{{notification?.SenderName}}
+										</a>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</perfect-scrollbar>
+			</ng-container>
+		</m-portlet>
+	</div>
+
+
+	<div class="col-md-6">
+		<m-portlet>
+			<!-- use ng-container[mPortletHeadTitle] for the title -->
+			<ng-container mPortletHeadTitle>
+				<div class="m-portlet__head-title">
+					<h3 class="m-portlet__head-text">
+						All Alert
+					</h3>
+				</div>
+			</ng-container>
+			<!-- use ng-container[mPortletBody] for the body content -->
+			<ng-container mPortletBody>
+
+				<perfect-scrollbar class="m-scrollable m-scroller" style="height: 60vh;">
+					<div class="m-timeline-3">
+						<div class="m-timeline-3__items">
+							<div class="m-timeline-3__item m-timeline-3__item--info" *ngFor="let notification of lstAlert | async">
+
+								<span class="m-timeline-3__item-time" style="font-size:11px;">{{notification?.Date  }}</span>
+
+								<!--	<span class="m-timeline-3__item-time" style="font-size:11px;">{{notification?.Date | timeAgo }}</span>	-->
+								<div class="m-timeline-3__item-desc">
+									<span class="m-timeline-3__item-text" [style.font-weight]="notification.Active == 'Y'?'bold':'auto'">
+										<span (click)="Route(notification)" routerLink="{{notification?.RedirectURL}}" [queryParams]="{ id: notification.QueryString  }" class="m-link m-timeline-3__item-link" [style.color]="notification.Active == 'Y'?'black':'gray'">
+											{{notification?.NotificationMessage}}
+										</span>
+									</span>
+									<br>
+									<span class="m-timeline-3__item-user-name">
+										<a href="#" class="m-link m-link--metal m-timeline-3__item-link">
+											By &nbsp;&nbsp;{{notification?.SenderName}}
+										</a>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</perfect-scrollbar>
+			</ng-container>
+		</m-portlet>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+

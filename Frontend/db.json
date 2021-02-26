@@ -1,0 +1,43 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+ "roleRights": [
+	{ "id": "1", "text": "Dashboard", "parentid": "0", "ModuleType": "P", "icon": "flaticon-home-1", "page": "/", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "2", "text": "Manage Projects", "parentid": "0", "ModuleType": "P", "icon": "flaticon-folder-1", "page": "", "ViewRight": "1", "AddRight": "0", "EditRight": "0", "DeleteRight": "0" },
+	{ "id": "3", "text": "Running Projects", "parentid": "2", "ModuleType": "S", "icon": "la-send", "page": "/project/projectlist", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "4", "text": "New project", "parentid": "2", "ModuleType": "S", "icon": "flaticon-add", "page": "/project/projectdetail", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "10", "text": "Manage Tasks", "parentid": "0", "ModuleType": "P", "icon": "flaticon-list-3", "page": "/admin/commingsoon", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "11", "text": "Create Handover", "parentid": "10", "ModuleType": "S", "icon": "flaticon-business", "page": "/task/tasklist", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "12", "text": "Handover Request", "parentid": "10", "ModuleType": "S", "icon": "flaticon-business", "page": "/task/tasklistdetail", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "23", "text": "Application", "parentid": "0", "ModuleType": "P", "icon": "flaticon-email", "page": "/admin/commingsoon", "ViewRight": "1", "AddRight": "0", "EditRight": "0", "DeleteRight": "0" },
+	{ "id": "28", "text": "Timesheet", "parentid": "23", "ModuleType": "S", "icon": "flaticon-email", "page": "/application/timesheetentry", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "26", "text": "Overtime", "parentid": "23", "ModuleType": "S", "icon": "flaticon-email", "page": "/application/overtimeentry", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "29", "text": "Supervision", "parentid": "0", "ModuleType": "P", "icon": "flaticon-business", "page": "/application/commingsoon", "ViewRight": "1", "AddRight": "0", "EditRight": "0", "DeleteRight": "0" },
+	{ "id": "30", "text": "Timesheet", "parentid": "29", "ModuleType": "S", "icon": "flaticon-email", "page": "/supervision/timesheet", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "31", "text": "Overtime", "parentid": "29", "ModuleType": "S", "icon": "flaticon-email", "page": "/supervision/overtime", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "39", "text": "Reports", "parentid": "0", "ModuleType": "P", "icon": "flaticon-graph", "page": "/admin/commingsoon", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "103", "text": "Timesheet Approval", "parentid": "39", "ModuleType": "S", "icon": "flaticon-email", "page": "/report/timesheet", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "104", "text": "Timesheet Approval Detail", "parentid": "39", "ModuleType": "S", "icon": "flaticon-email", "page": "/report/timesheetdetail", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "104", "text": "Timesheet Approval Detail", "parentid": "39", "ModuleType": "S", "icon": "flaticon-email", "page": "/report/timesheetdetail", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "62", "text": "Admin", "parentid": "0", "ModuleType": "P", "icon": "flaticon-settings-1", "page": "/admin/commingsoon", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "75", "text": "Company Detail", "parentid": "62", "ModuleType": "S", "icon": "flaticon-business", "page": "/admin/companydetail", "ViewRight": "1", "AddRight": "1", "EditRight": "1", "DeleteRight": "1" },
+	{ "id": "76", "text": "Users", "parentid": "62", "ModuleType": "S", "icon": "flaticon-business", "page": "/admin/user", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "80", "text": "Role", "parentid": "62", "ModuleType": "S", "icon": "flaticon-business", "page": "/admin/role", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" },
+	{ "id": "83", "text": "Email Template", "parentid": "62", "ModuleType": "S", "icon": "flaticon-business", "page": "/admin/emailtemplate", "ViewRight": "NULL", "AddRight": "NULL", "EditRight": "NULL", "DeleteRight": "NULL" }
+]
+}

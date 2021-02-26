@@ -1,0 +1,24 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { timesheetlistComponent } from '../partials/content/widgets/general/timesheet-list/timesheetList.component';
+import { TimesheetComponent } from './timesheet/timesheet.component';
+import { TimesheetlistComponent } from './timesheetlist/timesheetlist.component';
+
+const routes: Routes = [
+	{
+		path: '', component : TimesheetComponent
+	},
+	{
+		path: 'timesheetentry', component : TimesheetComponent
+	}
+	,
+	{
+		path: 'overtimeentry', component : TimesheetlistComponent
+	}
+
+];
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class ApplicationsRoutingModule { }

@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'm-timesheetapprovelist',
+  templateUrl: './timesheetapprovelist.component.html',
+  styleUrls: ['./timesheetapprovelist.component.scss']
+})
+export class TimesheetapprovelistComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'm-timesheetapprovedetail',
+  templateUrl: './timesheetapprovedetail.component.html',
+  styleUrls: ['./timesheetapprovedetail.component.scss']
+})
+export class TimesheetapprovedetailComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

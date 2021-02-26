@@ -1,0 +1,26 @@
+::ng-deep .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text {
+	color: black;
+}
+
+//aside left menu
+::ng-deep .m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text {
+	font-weight: 400;
+	font-size: 15px;
+	text-transform: initial;
+}
+
+//aside left sub menu
+::ng-deep .m-aside-menu .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item > .m-menu__link .m-menu__link-text {
+	font-weight: 400;
+	font-size: 13px;
+	text-transform: initial;
+}
+
+::ng-deep .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item > .m-menu__heading .m-menu__link-text, .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item > .m-menu__link .m-menu__link-text {
+	color: #010416;
+}
+
+::ng-deep .m-aside-menu .m-menu__nav {
+	//list-style: none;
+	padding: 12px 0 90px 0;
+}

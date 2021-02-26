@@ -1,0 +1,105 @@
+import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+
+@Component({
+  selector: 'm-timesheet-list',
+	templateUrl: './timesheetList.component.html',
+	styleUrls: ['./timesheetList.component.scss']
+})
+export class timesheetlistComponent implements OnInit {
+    queryMonth: number;
+    queryYear: number;
+    selectedMonth: number;
+    MonthArray: { name: string; value: number; }[];
+	gridData$: Observable<any[]> = new Observable<any>();
+	YearArray: number[] = [];
+	monthNo: any;
+	selectedYear: any;
+    loaderShow = false;
+
+	constructor(
+		public loaders: LoadingBarService,) { }
+
+	ngOnInit() {
+		debugger;
+
+		this.queryMonth = new Date().getMonth()+1;
+		this.queryYear = new Date().getFullYear();
+		var year = 2000;
+		for (var i = 0; i < 100; i++) {
+			year = year + 1;
+			this.YearArray.push(year);
+		}
+		debugger;
+		this.MonthArray = [{ name: "Jan", value: 1 }, { name: "Feb", value: 2 }, { name: "Mar", value: 3 },
+		{ name: "Apr", value: 4 }, { name: "May", value: 5 }, { name: "Jun", value: 6 },
+		{ name: "Jul", value: 7 }, { name: "Aug", value: 8 }, { name: "Sep", value: 9 },
+		{ name: "Oct", value: 10 }, { name: "Nov", value: 11 }, { name: "Dec", value: 12 }];
+
+		[
+			{ text: "Small", value: 1 },
+			{ text: "Medium", value: 2 },
+			{ text: "Large", value: 3 }
+		];
+		debugger;
+		if (this.queryYear > 0 && this.queryMonth > 0) {
+			debugger;
+			this.selectedMonth = this.queryMonth;
+			var Data = this.MonthArray.filter(f => f.value == this.selectedMonth);
+			this.monthName = Data[0]["name"];
+			this.monthNo = Data[0];
+			this.selectedYear = this.queryYear;
+		}
+		else {
+			this.monthNo = this.MonthArray[new Date().getMonth()];
+			this.selectedMonth = this.monthNo.value;
+			this.monthName = this.monthNo.name;
+			this.selectedYear = new Date().getFullYear();
+		}
+
+		this.getData();
+		//this.loaders.stop();
+	}
+	OnNextClick() {
+		debugger;
+		if (this.selectedMonth == 12) {
+			this.selectedMonth = 1;
+			this.selectedYear += 1;
+		} else {
+
+			this.selectedMonth += 1;
+		}
+		var Data = this.MonthArray.filter(f => f.value == this.selectedMonth);
+		this.monthName = Data[0]["name"];
+			this.getData();
+	}
+	monthName: string = '';
+	OnPreClick() {
+		debugger;
+		if (this.selectedMonth == 1) {
+			this.selectedMonth = 12;
+			this.selectedYear -= 1;
+		} else {
+			this.selectedMonth -= 1;
+
+		}
+		var Data = this.MonthArray.filter(f => f.value == this.selectedMonth);
+		this.monthName = Data[0]["name"];
+		this.getData();
+	}
+	getData() {
+        debugger;
+        this.loaderShow = true;
+		this.loaders.start();
+		/*this._timeSheetService.getWeekWiseTimesheetList(this.selectedMonth, this.selectedYear).subscribe(res => {
+			debugger;
+            this.gridData$ = of(res["data"]);
+            this.loaderShow = false;
+			this.loaders.stop();
+		});*/
+		this.loaderShow = false;
+		this.loaders.stop();
+	}
+
+}

@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Data.Repo
+{
+    public class EmailSMSTemplateRepository: IEmailSMSTemplateRepository
+    {
+        private readonly DataContext dc;
+        public EmailSMSTemplateRepository(DataContext dc)
+        {
+            this.dc = dc;
+        }
+
+        public void DeleteEmailTemplate(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<EmailSMSTemplate> GetEmailTempData(int CompanyID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<object> GetRecipientList(int CompanyID, int UserID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string InsertEmailTemplate(EmailSMSTemplate entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EmailSMSTemplate LoadEmailTemplate(EmailSMSTemplateRepository.enu_EmailSMSTemplate etDesc, int CompanyID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UpdatEmailTemplate(EmailSMSTemplate entityToUpdate)
+        {
+            throw new NotImplementedException();
+        }
+        public static string GetEmailTemplateDesc(enu_EmailSMSTemplate etDesc)
+        {
+            switch (etDesc)
+            {
+                case enu_EmailSMSTemplate.NewUserCreated:
+                    return "New User Created";
+                case enu_EmailSMSTemplate.ForgotPassword:
+                    return "Forgot Password";
+                case enu_EmailSMSTemplate.ChangePassword:
+                    return "Change Password";
+                case enu_EmailSMSTemplate.PasswordReset:
+                    return "Password Reset";             
+
+
+                default: return "";
+            }
+        }
+
+        public enum enu_EmailSMSTemplate
+        {
+            NewUserCreated = 1,
+            ForgotPassword = 2,
+            ChangePassword = 3,
+            PasswordReset = 4,          
+        }
+    }
+}

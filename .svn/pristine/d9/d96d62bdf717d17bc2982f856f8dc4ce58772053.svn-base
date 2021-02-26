@@ -1,0 +1,238 @@
+import { Component, ViewChild, OnInit, Inject, AfterViewInit } from '@angular/core';
+import { jqxTreeComponent } from 'jqwidgets-scripts/jqwidgets-ts/angular_jqxtree';
+import { RoleService } from '../../../core/services/role.service';
+import {LayoutUtilsService, MessageType} from '../../../core/utils/layout-utils.service';
+import { RoleModel } from '../../../core/models/role.model';
+import { MAT_DIALOG_DATA } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrManager } from 'ng6-toastr-notifications';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+@Component({
+	selector: 'm-role-Permission',
+	templateUrl: './role-Permission.component.html',
+	styleUrls: ['./role-Permission.component.scss'],
+})
+
+export class RolePermissonComponent implements AfterViewInit {
+
+	loaderShow: boolean = false;
+	loading: boolean = false;
+	@ViewChild('myTree') myTree: jqxTreeComponent;
+	constructor(private roleService: RoleService,
+		private layoutUtilsService: LayoutUtilsService,
+		private translate: TranslateService,
+		public toastr: ToastrManager,
+		public loaders: LoadingBarService
+	) { }
+	source: any;
+	treeData: any = [];
+	// create data adapter & perform Data Binding.
+	dataAdapter: any;
+	role: RoleModel;
+	records: any;
+	ngOnInit(): void {
+		this.loaderShow = true;
+		this.loaders.start();
+		this.role =this.role //this.data.role;
+		this.roleService.getRoleAccessPermission(this.role.id).subscribe(a => {
+
+			// prepare the data
+			let length = a.responseResult.list[0].length
+			let treeData = [];
+			let idIncrement = 10000;
+			for (let i = 0; i < length; i++) {
+				//	debugger;
+				//get all children
+				idIncrement++
+				if (a.responseResult.list[0].filter(function (obj) { return obj.parentid == a.responseResult.list[0][i].id }).length <= 0) {
+
+					treeData.push(
+						{
+							id: idIncrement,
+							parentid: a.responseResult.list[0][i].id,
+							text: "Add",
+							checked: a.responseResult.list[0][i].AddRight != null && a.responseResult.list[0][i].AddRight > 0 ? true : false
+
+						})
+					idIncrement++
+					treeData.push(
+						{
+							id: idIncrement,
+							parentid: a.responseResult.list[0][i].id,
+							text: "Edit",
+							checked: a.responseResult.list[0][i].EditRight != null && a.responseResult.list[0][i].EditRight > 0 ? true : false
+						},
+					)
+					idIncrement++
+					treeData.push(
+						{
+							id: idIncrement,
+							parentid: a.responseResult.list[0][i].id,
+							text: "Delete",
+							checked: a.responseResult.list[0][i].DeleteRight != null && a.responseResult.list[0][i].DeleteRight > 0 ? true : false
+
+
+						}
+					)
+					idIncrement++
+					treeData.push(
+						{
+							id: idIncrement,
+							page: null,
+							parentid: a.responseResult.list[0][i].id,
+							text: "View",
+							checked: a.responseResult.list[0][i].ViewRight != null && a.responseResult.list[0][i].ViewRight > 0 ? true : false
+						}
+
+					)
+				}
+				//get all parent hierarchi
+				this.loaders.complete();
+				this.loaderShow = false;
+			}
+
+			this.treeData = a.responseResult.list[0].concat(treeData);
+			this.source = {
+				datatype: 'json',
+				datafields: [
+					{ name: 'id' },
+					{ name: 'parentid' },
+					{ name: 'text' },
+					{ name: 'value' },
+					{ name: 'checked' }
+				],
+				id: 'id',
+				localdata: this.treeData
+			};
+			this.dataAdapter = new jqx.dataAdapter(this.source, { autoBind: true });
+			// get the tree items. The first parameter is the item's id. The second parameter is the parent item's id. The 'items' parameter represents
+			// the sub items collection name. Each jqxTree item has a 'label' property, but in the JSON data, we have a 'text' field. The last parameter
+			// specifies the mapping between the 'text' and 'label' fields.
+			this.records = this.dataAdapter.getRecordsHierarchy('id', 'parentid', 'items', [{ name: 'text', map: 'label' }]);
+		}
+		);
+	}
+
+
+
+
+	myCheckBoxOnChange(event: any): void {
+		let checked = event.args.checked;
+		this.myTree.hasThreeStates(checked);
+	};
+
+
+	myTreeOnInitialized(): void {
+
+		this.myTree.expandAll();
+		this.myTree.selectItem(document.getElementById('home'));
+		let solutionsItem = document.getElementById('solutions');
+		this.myTree.expandItem(solutionsItem);
+		this.myTree.checkItem(solutionsItem, true);
+		this.myTree.uncheckItem(document.getElementById('manufacturing'));
+	}
+
+	ngAfterViewInit(): void {
+
+		this.myTree.expandAll();
+	}
+	onSubmit() {
+		this.loading = true;
+		let items = this.myTree.getCheckedItems();
+		var selectedModules = items.filter(function (obj) { return obj["id"] >= 1000 });
+		var x = selectedModules.map(a => a["parentId"])
+		var flags = [], listSelectedParentIDs = [], l = x.length, i;
+		for (i = 0; i < l; i++) {
+			if (flags[x[i]]) continue;
+			flags[x[i]] = true;
+			listSelectedParentIDs.push(x[i]);
+		}
+
+		var returnData = [];
+		for (let i = 0; i < listSelectedParentIDs.length; i++) {
+
+		//	let leafNodes = this.treeData.filter(function (obj) { return obj.parentid == listSelectedParentIDs[i] })
+			let ogleafNodes = items.filter(function (obj) { return obj["parentId"] == listSelectedParentIDs[i] })
+
+			let parentNode = this.treeData.filter(function (obj) { return obj.id == listSelectedParentIDs[i] })
+			if (parentNode != undefined) {
+
+				if (ogleafNodes.filter(function (obj) { return obj.label == "Add" }).length > 0) {
+					parentNode[0].AddRight = 1;
+					parentNode[0].ViewRight = 1;
+				}
+				else {
+					parentNode[0].AddRight = 0;
+				}
+
+
+				if (ogleafNodes.filter(function (obj) { return obj.label == "Edit" }).length > 0) {
+					parentNode[0].EditRight = 1;
+					parentNode[0].ViewRight = 1;
+				}
+				else {
+					parentNode[0].EditRight = 0;
+				}
+
+				if (ogleafNodes.filter(function (obj) { return obj.label == "Delete" }).length > 0) {
+					parentNode[0].DeleteRight = 1;
+					parentNode[0].ViewRight = 1;
+				}
+				else {
+					parentNode[0].DeleteRight = 0;
+				}
+
+				if (ogleafNodes.filter(function (obj) { return obj.label == "View" }).length > 0) {
+					parentNode[0].ViewRight = 1;
+				}
+				else {
+					if (parentNode[0].DeleteRight > 0 || parentNode[0].EditRight > 0 || parentNode[0].AddRightk > 0)
+						parentNode[0].ViewRight = 1;
+					else
+						parentNode[0].ViewRight = 0;
+				}
+				returnData.push(parentNode[0]);
+				let treeNode = this.treeData.filter(function (obj) { return obj.id == parentNode[0].parentid });
+				while (treeNode) {
+					if (treeNode.length > 0) {
+						if (returnData.filter(function (obj) { return obj.id == treeNode[0].id }).length <= 0) {
+							treeNode[0].ViewRight = 1;
+							returnData.push(treeNode[0]);
+						}
+						treeNode = this.treeData.filter(function (obj) { return obj.id == treeNode[0].parentid });
+						if (treeNode.length <= 0) {
+							break;
+						}
+					}
+					else
+						break;
+
+				}
+			}
+
+
+
+
+		}
+
+		this.roleService.updateRoleRights(returnData, this.role.id).subscribe(a => {
+			this.loading = false;
+			this.handleResponse(a, 'AssignPermission');
+
+		})
+	}
+	handleResponse(res, action) {
+		if (res != undefined) {
+			if (res["MessageType"] == "S") {
+				if (action == "AssignPermission") {
+					this.toastr.successToastr(this.translate.instant("COMMON_MGS.UPDATED.UPDATE_MGS"));
+					//this.layoutUtilsService.showActionNotification(this.translate.instant("COMMON_MGS.UPDATED.UPDATE_MGS"), MessageType.Update, 10000, true, false);
+				}
+			}
+			else if (res["MessageType"] == "E") {
+				this.toastr.errorToastr(this.translate.instant("COMMON_MGS.ERROR.ERROR_MGS"));
+			}
+
+		}
+	}
+}

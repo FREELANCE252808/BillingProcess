@@ -1,0 +1,42 @@
+import { BaseModel } from './_base.model';
+
+export class EmailsModel extends BaseModel {
+	id: number;
+	EmailDesc: string;
+	EmailSubject: string;
+	EmailMessageBody: string;
+	SMSMessage: string;
+	CreatedOn: string;
+	CreatedBy: string;
+	ModifiedOn: string;
+	ModifiedBy: string;
+	CompanyID: string;
+	Status: string;
+	
+
+	clear() {
+		this.EmailDesc = '';
+		this.EmailSubject = '';
+		this.EmailMessageBody = '';
+		this.SMSMessage = '';
+		this.CreatedOn = '';
+		this.CreatedBy = '';
+		this.ModifiedOn = '';
+		this.ModifiedBy = '';
+		this.CompanyID = '';
+		this.Status = '';
+		
+	}
+}
+
+export class PostReviewerModel {
+	users: any;
+	ProjectID: number;
+	subject: string;
+	message: string;
+	workflowCode: string;
+	fileIDs: any;
+	projectID: number;
+	taskID: number;
+	projectWorkflowID: number;	
+}

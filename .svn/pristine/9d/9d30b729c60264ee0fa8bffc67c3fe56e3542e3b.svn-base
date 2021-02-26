@@ -1,0 +1,241 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net.Mail;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using WebAPI.Data.Repo;
+using WebAPI.Dtos;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace WebAPI.Controllers
+{
+    public class AccountController : BaseController
+    {
+        private readonly IUnitOfWork uow;
+        private readonly AppSettings _appSettings;
+        private readonly IMapper mapper;
+
+        public AccountController(IUnitOfWork uow, IOptions<AppSettings> appSettings, IMapper mapper)
+        {
+            this.uow = uow;
+            _appSettings = appSettings.Value;
+            this.mapper = mapper;            
+        }
+        // GET api/city
+        [HttpPost]
+        [Route("GetUserDetailByUserID")]
+        public async Task<IActionResult> GetUserDetailByUserID([FromBody] TokenRequest model)
+        {
+            var user = await uow.AccountRepository.GetUserDetailByUserID(model.UserName);
+            if (user != null)
+            {
+                var getUserDetail = GetUserDetail(user);
+                return Ok(getUserDetail);
+            }
+            else
+            {
+                return Ok(new LoginResDto()
+                {
+                    UserName = "",
+                    ImagePath = ""
+                }
+                );
+                   
+            }
+        }
+
+
+
+      
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register(LoginReqDto model)
+        {
+
+            //string pass = CommonFuntions.Decrypt("UOUx6b5VPb2e5G+X0bEVxw==");
+
+            if (await uow.AccountRepository.UserAlreadyExists(model.UserName))
+                return BadRequest("User Already Exists,Please try something else");
+            uow.AccountRepository.Register(model.UserName, model.Password);
+            await uow.SaveAsync();
+            return StatusCode(201);
+        }
+
+        private LoginResDto GetUserDetail(User user)
+        {
+            return new LoginResDto()
+            {
+                UserName = user.FirstName + " " + user.LastName,
+                ImagePath = user.ImagePath
+            };
+        }
+
+        [HttpGet]
+        [Route("RequestPassword")]
+        public async Task<IActionResult> ForgotPassword(string userID)
+        {
+            ResponseResultDto res = new ResponseResultDto();
+            if (userID != null)
+            {
+                // check if there's an user with the given username
+                var user = await uow.AccountRepository.GetUserByUserID(userID);
+                // Validate user
+                if (user != null)
+                {
+                    bool isMailsent=await uow.AccountRepository.SendEmailToUserForgotPwd(user);
+                    if (isMailsent)
+                    {
+                        res.MessageType =MessageConstant.Success;
+                        res.Message = MessageConstant.PasswordSentToEmailID;
+                    }
+                    else
+                    {
+                        res.MessageType = MessageConstant.Error;
+                        res.Message = MessageConstant.EnterUserID;
+                    }
+                }
+                else
+                {
+                    res.Message = MessageConstant.Error;
+                    res.Message = MessageConstant.EnterUserID;
+
+                }
+            }
+            return Ok(new { ResponseResult = res });
+        }
+
+        [HttpPost]
+        [Route("ChangeUserPassword")]
+        public async Task<IActionResult> ChangeUserPassword(ChangePassword changePassword)
+        {
+
+            ResponseResultDto res = new ResponseResultDto();
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+                    int userID = Convert.ToInt32(UserId);
+                    User userObj = await uow.AccountRepository.FindUser(userID);
+                    if (userObj==null)
+                    {
+                        res.MessageType = "S";
+                        res.Message = MessageConstant.BadRequest;
+                        return Ok(new { ResponseResultDto = res });
+                    }
+                    string newPwd = CommonFuntions.Encrypt(changePassword.NewPassword.Trim());
+                    userObj.Password = newPwd;
+                    userObj.ModifiedBy = userID;
+                    userObj.ModifiedOn = DateTime.Now;
+                    userObj.UserID = Convert.ToInt32(UserId);
+                    userObj.CompanyID = companyID;
+                    userObj.ModifiedBy = userID;
+                    userObj.ModifiedOn = DateTime.Now;
+                    await uow.SaveAsync();
+                    res.MessageType = "S";
+                    res.Message = MessageConstant.Password_changed_successfully;
+                    if (await uow.AccountRepository.SendEmailForChangePwd((userObj)))
+                    {                        
+                            res.MessageType = "S";
+                            res.Message = MessageConstant.Password_changed_successfully;
+                            return Ok(new { ResponseResultDto = res });
+                    }
+                    else
+                    {
+
+                        res.MessageType = "E";
+                        res.Message = MessageConstant.Password_changed_successfully_But_EmailFailed;
+                        return Ok(new { ResponseResultDto = res });
+
+                    }
+
+                }
+                else
+                {
+
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.BadRequest;
+                    return Ok(new { ResponseResultDto = res });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.Something_went_wrong;
+                return Ok(new { ResponseResultDto = res });
+
+            }
+            
+        }
+
+        [HttpGet]
+        [Route("IsValidPassword")]
+        public async Task<IActionResult> IsValidPassword(string OldPassword)
+        {
+
+            ResponseResultDto res = new ResponseResultDto();   
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+                    int userID = Convert.ToInt32(UserId);
+                    User userObj = await uow.AccountRepository.FindUser(userID);
+                    if ((0 != string.Compare(Convert.ToString(userObj.Password).Trim().ToLower(), CommonFuntions.Encrypt(OldPassword.Trim()).ToLower(), false)))
+                    {
+                        res.MessageType = "oldpasswordNotMatch";                     
+                        res.Message = MessageConstant.InValidOldPwd;
+                        return Ok(new { ResponseResultDto = res });
+                    }
+                    if (Convert.ToString(OldPassword) == Convert.ToString(CommonFuntions.Encrypt(OldPassword.Trim())))
+                    {
+                        res.MessageType = "oldNewSame";                       
+                        res.Message = MessageConstant.OldPwdNewPwdSame;
+                        return Ok(new { ResponseResultDto = res });
+                    }
+                    res.MessageType = "S";
+                    res.Message = MessageConstant.Password_changed_successfully;
+                    return Ok(new { ResponseResultDto = res });
+                }    
+                else
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.Something_went_wrong;
+                    return Ok(new { ResponseResultDto = res });
+                }
+            }
+            catch (Exception ex)
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.Something_went_wrong;
+                return Ok(new { ResponseResultDto = res });
+            }
+            
+        }
+
+
+    }
+
+
+}

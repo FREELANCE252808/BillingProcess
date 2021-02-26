@@ -1,0 +1,132 @@
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { RoleModel } from '../../../core/models/role.model';
+import { RoleService } from '../../../core/services/role.service';
+import { TypesUtilsService } from '../../../core/utils/types-utils.service';
+
+@Component({
+	selector: 'm-role-edit-dialog',
+	templateUrl: './role-edit.dialog.component.html',
+	styleUrls: ['./role.component.scss']
+})
+export class RoleEditDialogComponent implements OnInit {
+
+	loading: boolean = false;
+	role: RoleModel;
+	RoleForm: FormGroup;
+	hasFormErrors: boolean = false;
+	viewLoading: boolean = false;
+	loadingAfterSubmit: boolean = false;
+
+	constructor(public dialogRef: MatDialogRef<RoleEditDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder,
+		private roleService: RoleService,
+		private typesUtilsService: TypesUtilsService,
+		public loaders: LoadingBarService) { }
+
+	/** LOAD DATA */
+	ngOnInit() {
+		this.loaders.start();
+		this.role = this.data.role;
+		this.createForm();
+		this.loaders.complete();
+
+		/* Server loading imitation. Remove this on real code */
+		//this.viewLoading = true;
+		//setTimeout(() => {
+		//	this.viewLoading = false;
+		//}, 1000);
+	}
+
+	createForm() {
+		this.RoleForm = this.fb.group({
+			RoleName: [this.role.roleName, Validators.required]
+		});
+	}
+
+	/** UI */
+	getTitle(): string {
+		if (this.role.id > 0) {
+			return `Edit role '${this.role.roleName}'`;
+		}
+		return 'New Role';
+	}
+
+	isControlInvalid(controlName: string): boolean {
+		const control = this.RoleForm.controls[controlName];
+		const result = control.invalid && control.touched;
+		return result;
+	}
+
+	/** ACTIONS */
+	preparerole(): RoleModel {
+		const controls = this.RoleForm.controls;
+		const _role = new RoleModel();
+		_role.id = this.role.id;
+		_role.roleName = controls['RoleName'].value;
+		return _role;
+	}
+
+	btnDisabled: boolean = false;
+	onSubmit() {
+		debugger;
+		this.loading = true;
+		this.hasFormErrors = false;
+		this.loadingAfterSubmit = false;
+		const controls = this.RoleForm.controls;
+		/** check form */
+		if (this.RoleForm.invalid) {
+			Object.keys(controls).forEach(controlName =>
+				controls[controlName].markAsTouched()
+			);
+
+			this.hasFormErrors = true;
+			return;
+		}
+
+		this.btnDisabled = true;
+		const editedRole = this.preparerole();
+		if (editedRole.id > 0) {
+			this.updateRole(editedRole);
+		} else {
+			this.createRole(editedRole);
+		}
+	}
+
+	updateRole(_role: RoleModel) {
+		debugger;
+		this.loadingAfterSubmit = true;
+		this.viewLoading = true;
+		this.roleService.updateRole(_role).subscribe(res => {
+			/* Server loading imitation. Remove this on real code */
+			this.viewLoading = false;
+			this.loading = false;
+			this.dialogRef.close({
+				res,
+				isEdit: true
+			});
+		});
+	}
+
+	createRole(_role: RoleModel) {
+		this.loadingAfterSubmit = true;
+		this.viewLoading = true;
+		this.roleService.CreateRole(_role).subscribe(res => {
+			this.viewLoading = false;
+			this.loading = false;
+			this.dialogRef.close({
+				res,
+				isEdit: false
+			});
+		});
+	}
+
+	onAlertClose($event) {
+		this.hasFormErrors = false;
+	}
+
+
+
+
+}

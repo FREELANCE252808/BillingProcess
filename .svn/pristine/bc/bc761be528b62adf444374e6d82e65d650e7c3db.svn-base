@@ -1,0 +1,258 @@
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy  } from '@angular/core';
+// Material
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatDialog, MatPaginator, MatSort, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs/internal/Observable';
+import { filter } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs/internal/ReplaySubject';
+// Models
+// Components
+import { RoleEditDialogComponent } from '../role-edit/role-edit.dialog.component';
+import { RolePermissonComponent } from '../role-Permission/role-Permission.component';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { ToastrManager } from 'ng6-toastr-notifications';
+import { RoleModel } from '../../../core/models/role.model';
+import { ListColumn } from '../../../core/_shared/list/list-column.model';
+import { RoleService } from '../../../core/services/role.service';
+import { CommonService } from '../../../core/services/common.service';
+import { LayoutUtilsService } from '../../../core/utils/layout-utils.service';
+import { Router } from '@angular/router';
+
+@Component({
+	selector: 'm-role-list',
+	templateUrl: './role-list.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class RoleListComponent implements OnInit, AfterViewInit {
+	[x: string]: any;
+
+	loaderShow = false;
+	subject$: ReplaySubject<RoleModel[]> = new ReplaySubject<RoleModel[]>(1);
+	data$: Observable<RoleModel[]> = this.subject$.asObservable();
+	rolesResult: RoleModel[];
+
+	@Input()
+	columns: ListColumn[] = [
+		{ name: 'Role Name', property: 'roleName', visible: true, isModelProperty: true },
+			{ name: 'Actions', property: 'actions', visible: true },
+	] as ListColumn[];
+	pageSize = 10;
+	dataSource: MatTableDataSource<RoleModel> | null;
+	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(MatSort) sort: MatSort;
+
+	constructor(private roleService: RoleService,
+		public commonservice: CommonService,
+		public dialog: MatDialog,
+		public snackBar: MatSnackBar,
+		private router: Router,
+		private layoutUtilsService: LayoutUtilsService,
+		private translate: TranslateService,
+		public loaders: LoadingBarService,
+		public toastr: ToastrManager
+	) {
+
+}
+
+
+	get visibleColumns() { return this.columns.filter(column => column.visible).map(column => column.property); }
+
+	ngOnInit() {
+
+		this.loaderShow = true;
+		this.loaders.start();
+		this.roleService.getAllRole().subscribe(roledata => {
+			debugger;
+			if (roledata != undefined) {
+				if (roledata["messageType"] == "S") {
+
+					this.rolesResult = roledata["data"];
+					this.subject$.next(this.rolesResult);
+				}
+			}
+			this.loaders.complete();
+			this.loaderShow = false;
+		})
+		this.dataSource = new MatTableDataSource();
+
+		this.data$.pipe(
+			filter(Boolean)
+		).subscribe((role:RoleModel[]) => {
+			this.rolesResult = role;
+			this.dataSource.data = role;
+		});
+	}
+
+	ngAfterViewInit() {
+		this.dataSource.paginator = this.paginator;
+		this.dataSource.sort = this.sort;
+	}
+
+
+	checkBeforeDeleteData(_item: RoleModel) {
+		debugger;
+		var TableName = "Role";
+		this.commonservice.CheckIsSelectedDataInUse(_item.id, TableName).subscribe(res => {
+			debugger;
+			if (res["data"][0].CanDelete == "Y") {
+				this.deleteRole(_item);
+			}
+			else {
+				this.toastr.errorToastr("Selected role is already in use .", "Can not delete");
+			}
+		})
+	}
+
+	/** ACTIONS */
+	/** single Delete */
+	deleteRole(_item: RoleModel) {
+		const _title: string = this.translate.instant('ADMIN.ROLE.DELETE_ROLE_SIMPLE.TITLE');
+		const _description: string = this.translate.instant('ADMIN.ROLE.DELETE_ROLE_SIMPLE.DESCRIPTION');
+		const _waitDesciption: string = this.translate.instant('ADMIN.ROLE.DELETE_ROLE_SIMPLE.WAIT_DESCRIPTION');
+		const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+		dialogRef.afterClosed().subscribe(res => {
+			if (!res) {
+				return;
+			}
+
+			this.roleService.deleteRole(_item.id).subscribe(a => {
+				this.handleResponse(a, 'Delete');
+			});
+		});
+	}
+    /** Multiple Delete */
+	//deleteRoles() {
+	//	const _title: string = this.translate.instant('ADMIN.ROLE.DELETE_ROLE_MULTY.TITLE');
+	//	const _description: string = this.translate.instant('ADMIN.ROLE.DELETE_ROLE_MULTY.DESCRIPTION');
+	//	const _waitDesciption: string = this.translate.instant('ADMIN.ROLE.DELETE_ROLE_MULTY.WAIT_DESCRIPTION');
+	//	const dialogRef = this.layoutUtilsService.deleteElement(_title, _description, _waitDesciption);
+	//	dialogRef.afterClosed().subscribe(res => {
+	//		if (!res) {
+	//			return;
+	//		}
+	//		let idsForDeletion = "";
+	//		for (let i = 0; i < this.selection.selected.length; i++) {
+
+	//			idsForDeletion = idsForDeletion == "" ? this.selection.selected[i].id.toString() : idsForDeletion + "," + this.selection.selected[i].id.toString();
+	//		}
+	//		this.roleService
+	//			.deleteRole(idsForDeletion)
+	//			.subscribe(a => {
+	//				this.handleResponse(a, 'Delete');
+	//				this.selection.clear();
+	//			});
+	//	});
+	//}
+	 /** add Role */
+	addRole() {
+		const newRole = new RoleModel();
+		newRole.clear(); // Set all defaults fields
+		this.editRole(newRole);
+	}
+
+	/** Edit */
+	editRole(role: RoleModel) {
+		debugger;
+			this.router.navigate(['admin/addupdate/' + role.id]);
+	}
+	handleResponse(res, action) {
+
+		if (res != undefined) {
+			if (res["MessageType"] == "S") {
+				this.rolesResult = res["data"];
+				this.subject$.next(this.rolesResult);
+
+				this.dataSource = new MatTableDataSource(this.rolesResult);
+				this.dataSource.sort = this.sort;
+				this.dataSource.paginator = this.paginator;
+				if (action == "Delete") {
+					var undelIds = res["stringData"].split(',');
+					var msg = "";
+					if (undelIds != "") {
+						for (let i = 0; i < undelIds.length; i++) {
+							var rows = null;
+							rows = this.rolesResult.filter(function (obj) {
+								return obj.id == undelIds[i]
+							});
+							if (rows != undefined) {
+								msg = msg == "" ? rows[0].RoleName : msg + " , " + rows[0].RoleName
+							}
+						}
+						if (undelIds.length > 1) {
+							this.toastr.successToastr(this.translate.instant("ADMIN.ROLE.DELETE_ROLE_MULTY.MESSAGE"));
+							//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.ROLE.DELETE_ROLE_MULTY.ERRMSGMULTY", { msg: msg }), MessageType.Delete);
+						}
+						else
+							this.toastr.successToastr(this.translate.instant("ADMIN.ROLE.DELETE_ROLE_MULTY.MESSAGE"));
+							//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.ROLE.DELETE_ROLE_MULTY.ERRMSGSINGLE", { msg: msg }), MessageType.Delete);
+
+
+					}
+					else {
+						this.toastr.successToastr(this.translate.instant("ADMIN.ROLE.DELETE_ROLE_MULTY.MESSAGE"));
+						//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.ROLE.DELETE_ROLE_MULTY.MESSAGE"), MessageType.Delete);
+					}
+
+				}
+				else if (action == "Edit") {
+					this.toastr.successToastr(this.translate.instant("ADMIN.ROLE.EDIT.UPDATE_MESSAGE"));
+					//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.ROLE.EDIT.UPDATE_MESSAGE"), MessageType.Update, 10000, true, false);
+				}
+				else if (action == "Add") {
+					this.toastr.successToastr(this.translate.instant("ADMIN.ROLE.EDIT.ADD_MESSAGE"));
+					//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.ROLE.EDIT.ADD_MESSAGE"), MessageType.Create, 10000, true, false);
+				}
+
+			}
+			else if (res["MessageType"] == "D") {
+				this.toastr.errorToastr(this.translate.instant("ADMIN.ROLE.EDIT.DUPLICATE_MESSAGE"));
+				//this.layoutUtilsService.showActionNotification("ADMIN.ROLE.EDIT.DUPLICATE_MESSAGE", MessageType.Create, 10000, true, false);
+			}
+			else if (res["MessageType"] == "E") {
+				this.toastr.errorToastr(this.translate.instant("COMMON_MGS.ERROR.ERROR_MGS"));
+			}
+		}
+	}
+
+	onFilterChange(value) {
+		if (!this.dataSource) {
+			return;
+		}
+		value = value.trim();
+		value = value.toLowerCase();
+		this.dataSource.filter = value;
+	}
+
+
+
+
+
+	permission(role: RoleModel) {
+		const dialogRef = this.dialog.open(RolePermissonComponent, { data: { role} });
+		dialogRef.afterClosed().subscribe(res => {
+			if (!res) {
+				return;
+			}
+			//this.handleResponse(res.res, role.id > 0 ? 'Edit' : "Add");
+		});
+	}
+
+
+	/** SELECTION */
+	//isAllSelected() {
+	//	const numSelected = this.selection.selected.length;
+	//	const numRows = this.dataSource.data.length;
+	//	return numSelected === numRows;
+	//}
+	//masterToggle() {
+
+	//	if (this.selection.selected.length === this.dataSource.data.length) {
+	//		this.selection.clear();
+	//	} else {
+	//		this.dataSource.data.forEach(row => this.selection.select(row));
+	//	}
+	//}
+
+
+}

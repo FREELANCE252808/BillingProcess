@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using WebAPI.Data;
+using WebAPI.Dtos;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace WebAPI.Controllers
+{
+    public class RoleRightsController : BaseController
+    {
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
+       
+        public RoleRightsController(IUnitOfWork uow, IMapper mapper)
+        {
+            this.uow = uow;
+            this.mapper = mapper;
+            
+        }
+ 
+
+
+        [HttpGet]
+        [Route("GetMenuList")]
+        public async Task<List<MenuList>> GetMenuList()
+        {
+            List<MenuList> lstMenuList = null;
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    // ClaimIdentityInfo.GetIdentity(identity.Claims.ToList<ClaimsIdentity>());
+                    int companyID = Convert.ToInt32(CompanyId);
+                    int userID = Convert.ToInt32(UserId);
+                    lstMenuList = await uow.RoleRightsRepository.GetMenuList(userID, companyID);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex.Message);
+            }
+            return lstMenuList;
+            
+        }
+
+
+        private LoginResDto GetUserDetail(User user)
+        {
+            return new LoginResDto()
+            {
+                UserName = user.FirstName + " " + user.LastName,
+                ImagePath = user.ImagePath
+            };
+        }
+    }
+
+
+}

@@ -1,0 +1,44 @@
+	<span *ngIf="(loaderShow)">
+			<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		</span>
+
+
+		<mat-card class="matContent matHeight">
+			<h5>{{getTitle()}}</h5>
+		</mat-card>
+		<ng-template #accessDeniedBlock>
+			<div style="height:98%;">
+				<m-accessDenied-page></m-accessDenied-page>
+			</div>
+		</ng-template>
+		<div *ngIf="canView ; else accessDeniedBlock">
+		<form class="m-form"  [formGroup]="RoleForm" >
+			<mat-card class="matContent">
+				<div class="m-portlet__body">
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6 m--margin-bottom-20-mobile">
+							<mat-form-field class="mat-form-field-fluid">
+								<input matInput placeholder="Role Name" formControlName="RoleName" />
+								<mat-error>	Role Name is <strong>required</strong></mat-error>
+							</mat-form-field>
+						</div>
+					</div>
+				</div>
+			</mat-card>
+			<mat-card class="matContent matHeight">
+				<div class="row text-right" style="margin-top:-20px;">
+					<div class="col-lg-12">
+						<div class="actions" *ngIf="id>0?canEdit:canAdd">
+						<button type="button" (click)="onSubmit()" [disabled]="loaderShow || RoleForm.invalid" matTooltip="Save changes" style="border-radius:25px;" class="btn btn-outline-brand btn-sm">
+							Save
+							<i class="fa fa-spinner fa-spin" *ngIf="loaderShow"></i>
+						</button>
+					   </div>
+						<button type="button" (click)="onBack()"   matTooltip="Back to role list" style="border-radius:25px;" class="btn btn-outline-brand btn-sm">
+							Back
+						</button>
+					</div>
+				</div>
+			</mat-card>
+		</form>
+	</div>

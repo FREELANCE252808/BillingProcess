@@ -1,0 +1,25 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { TimesheetapprovedetailComponent } from './timesheetapprovedetail.component';
+
+describe('TimesheetapprovedetailComponent', () => {
+  let component: TimesheetapprovedetailComponent;
+  let fixture: ComponentFixture<TimesheetapprovedetailComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ TimesheetapprovedetailComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TimesheetapprovedetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

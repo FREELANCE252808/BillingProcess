@@ -1,0 +1,61 @@
+@import '~@angular/material/theming';
+$spacing: 24px;
+
+$theme-primary-hue: 700;
+$theme-accent-hue: 500;
+$theme-warn-hue: 500;
+
+$theme-primary: mat-palette($mat-blue-grey, $theme-primary-hue, 500, 900);
+$theme-accent: mat-palette($mat-blue, $theme-accent-hue);
+$theme-warn: mat-palette($mat-red, $theme-warn-hue);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$theme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
+
+$color-primary: map-get($theme, primary);
+$color-accent: map-get($theme, accent);
+$color-warn: map-get($theme, warn);
+
+$theme-foreground-map: map-get($theme, foreground);
+$theme-background-map: map-get($theme, background);
+$theme-secondary-text: mat-color($theme-foreground-map, secondary-text);
+
+$theme-background-hover: mat-color($theme-background-map, hover);
+
+$theme-color-primary: mat-color($color-primary);
+
+.scroll{
+	height:510px;
+}
+
+
+.navigation {
+  margin-top: $spacing;
+
+  .mat-list-item {
+    cursor: pointer;
+    color: $theme-secondary-text;
+    margin-top: $spacing/3;
+    margin-bottom: $spacing/3;
+    position: relative;
+    outline: none;
+
+    .mat-line {
+      font-weight: 500;
+    }
+
+    &.active {
+      color: $theme-color-primary;
+      background: $theme-background-hover;
+    }
+
+    &:hover {
+      background: $theme-background-hover;
+    }
+  }
+
+  .mat-divider {
+    margin-top: $spacing/3;
+    margin-bottom: $spacing/3;
+  }
+}

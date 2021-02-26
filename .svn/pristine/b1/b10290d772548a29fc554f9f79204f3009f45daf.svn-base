@@ -1,0 +1,44 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Data.Repo
+{
+    public class RolesRepository : IRolesRepository
+    {
+        private readonly DataContext dc;
+
+        public RolesRepository(DataContext dc)
+        {
+            this.dc = dc;
+        }
+
+        public void AddRole(Role role)
+        {
+            dc.Roles.Add(role);
+        }
+
+        public void UpdateRole(Role role)
+        {
+            dc.Roles.Update(role);
+        }
+
+        public void DeleteRole(int roleId)
+        {
+            var role = dc.Roles.Find(roleId);
+            dc.Roles.Remove(role);
+        }
+
+        public async Task<Role> FindRole(int roleId)
+        {
+            return await dc.Roles.FindAsync(roleId);
+        }
+
+        public async Task<List<Role>> GetRolesAsync()
+        {
+            return await dc.Roles.ToListAsync();
+        }
+    }
+}

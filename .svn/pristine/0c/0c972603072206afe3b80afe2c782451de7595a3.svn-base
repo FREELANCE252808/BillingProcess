@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace WebAPI.Models
+{
+    public class RoleRights
+    {
+		[Key]
+		public int RoleRightsID { get; set; }
+
+		[Required(ErrorMessage = "ModuleName is mandatory field")]
+		public int RoleID { get; set; }
+		[Required(ErrorMessage = "ModuleName is mandatory field")]
+		public int ModuleID { get; set; }
+		[Required(ErrorMessage = "ModuleName is mandatory field")]
+
+		public DateTime CreatedOn { get; set; }
+
+		[StringLength(20)]
+		public string CreatedBy { get; set; }
+
+		public DateTime ModifiedOn { get; set; }
+		[StringLength(20)]
+		public string ModifiedBy { get; set; }
+
+
+		public int View { get; set; }
+
+		public int Edit { get; set; }
+
+		public int Add { get; set; }
+
+		public int Delete { get; set; }
+
+		public int CompanyID { get; set; }
+	
+		
+
+    }
+}

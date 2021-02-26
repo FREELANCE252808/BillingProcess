@@ -1,0 +1,227 @@
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EmailsModel } from '../../../core/models/emails.model';
+import { TypesUtilsService } from '../../../core/utils/types-utils.service';
+import { EmailsService } from '../../../core/services/emails.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { ToastrManager } from 'ng6-toastr-notifications';
+import { RolerightModule } from '../../roleright/roleright.module';
+import { AccesspermissionsModel } from '../../../core/models/accesspermissions.model';
+@Component({
+  selector: 'email-edit',
+  templateUrl: './email-edit.component.html',
+  styleUrls: ['./email-edit.component.scss']
+})
+export class EmailEditComponent implements OnInit {
+	loading: boolean = false;
+	loaderShow = false;
+	isDisabled: boolean = false;
+	email: EmailsModel;
+	EmailForm: FormGroup;
+	hasFormErrors: boolean = false;
+	id: number = 0;
+
+	constructor(private fb: FormBuilder, private emailService: EmailsService,private route: ActivatedRoute,
+		private typesUtilsService: TypesUtilsService,private router: Router	,public toastr: ToastrManager,
+		public loaders: LoadingBarService) {
+
+			const newEmailTemplate = new EmailsModel();
+			newEmailTemplate.clear();
+			this.email = newEmailTemplate;
+			this.createForm();
+			this.id = +this.route.snapshot.paramMap.get('id');
+			this.checked = (this.email.status == "A") ? "Active" : "InActive";
+		 }
+
+	/** LOAD DATA */
+	ngOnInit() {
+
+		this.loaderShow = true;
+		this.loaders.start();
+
+
+		if (this.id > 0) {
+			this.loaderShow = true;
+			this.loaders.start();
+			debugger;
+				this.emailService.GetTemplatesByID(this.id).subscribe(EmailResDto => {
+				this.email =EmailResDto;
+				this.createForm();
+				//this.EmailForm.markAsTouched();
+				this.loaders.complete();
+				this.loaderShow = false;
+			});
+		}
+	}
+
+	createForm() {
+		this.EmailForm = this.fb.group({
+			EmailDesc: [this.email.emailDesc, Validators.required],
+			EmailSubject: [this.email.emailSubject, Validators.required],
+			EmailMessageBody: [this.email.emailMessageBody],
+			SMSMessage: [this.email.smsMessage],
+			Status: [this.email.status == "A" ? true : false]
+
+		});
+	}
+
+
+
+	/** UI */
+	getTitle(): string {
+		if (this.id > 0) {
+			this.isDisabled = true;
+			return `Edit Email Template '${this.email.emailDesc}'`;
+
+		}
+		return 'New Template';
+	}
+
+	isControlInvalid(controlName: string): boolean {
+		const control = this.EmailForm.controls[controlName];
+		const result = control.invalid && control.touched;
+		return result;
+	}
+
+	/** ACTIONS */
+	prepareemail(): EmailsModel {
+		const controls = this.EmailForm.controls;
+		const _email = new EmailsModel();
+		_email.emailSMSTemplateID = this.id;
+		_email.emailDesc = controls['EmailDesc'].value;
+		_email.emailSubject = controls['EmailSubject'].value;
+		_email.emailMessageBody = controls['EmailMessageBody'].value;
+		_email.smsMessage = controls['SMSMessage'].value;
+		_email.status = controls['Status'].value==true?"A":"I";
+		return _email;
+	}
+	onBack()
+	{
+		debugger;
+		this.router.navigate(['/template']);
+	}
+	btnDisabled: boolean = false;
+	onSubmit() {
+		debugger;
+		this.loading = true;
+		this.hasFormErrors = false;
+		const controls = this.EmailForm.controls;
+		/** check form */
+		if (this.EmailForm.invalid) {
+			Object.keys(controls).forEach(controlName =>
+				controls[controlName].markAsTouched()
+			);
+
+			this.hasFormErrors = true;
+			return;
+		}
+
+		this.btnDisabled = true;
+		const editedEmail = this.prepareemail();
+		this.AddEditEmail(editedEmail);
+
+
+	}
+
+
+
+	AddEditEmail(_email: EmailsModel) {
+		this.emailService.createEmail(_email).subscribe(res => {
+			debugger;
+			if (res.responseResultDto.messageType == "S")
+				{
+				this.toastr.successToastr(res.responseResultDto.message, 'Success!');
+				this.loaders.complete();
+				this.loaderShow = false;
+				this.loading = false;
+
+			}
+			if (res.responseResultDto.messageType == "E") {
+				this.toastr.errorToastr(res.responseResultDto.message, 'Error!');
+				this.loaders.complete();
+				this.loaderShow = false;
+				this.loading = false;
+
+			}
+
+		});
+	}
+
+	onAlertClose($event) {
+		this.hasFormErrors = false;
+	}
+
+	checkValue(event: any) {
+
+	}
+
+	checked: string = 'Inactive';
+	disabled = false;
+	onChange(value) {
+		if (value.checked === true) {
+			this.checked = "Active";
+
+		} else {
+			this.checked = "Inactive";
+
+		}
+	}
+	/*
+	handleResponse(res, action) {
+		if (res != undefined) {
+			if (res["MessageType"] == "S") {
+				this.emailsResult = res["data"];
+				this.dataSource = new MatTableDataSource(this.emailsResult);
+				this.dataSource.sort = this.sort;
+				this.dataSource.paginator = this.paginator;
+				if (action == "Delete") {
+					var undelIds = res["stringData"].split(',');
+					var msg = "";
+					if (undelIds != "") {
+						for (let i = 0; i < undelIds.length; i++) {
+							var rows = null;
+							rows = this.emailsResult.filter(function (obj) {
+								return obj.id == undelIds[i]
+							});
+							if (rows != undefined) {
+								msg = msg == "" ? rows[0].EmailDesc : msg + " , " + rows[0].EmailDesc
+							}
+						}
+						if (undelIds.length > 1) {
+							this.toastr.successToastr(this.translate.instant("ADMIN.EMAIL.DELETE_EMAIL_MULTY.MESSAGE"));
+							//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.EMAIL.DELETE_EMAIL_MULTY.ERRMSGMULTY", { msg: msg }), MessageType.Delete);
+						}
+						else
+							this.toastr.successToastr(this.translate.instant("ADMIN.EMAIL.DELETE_EMAIL_MULTY.MESSAGE"));
+							//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.EMAIL.DELETE_EMAIL_MULTY.ERRMSGSINGLE", { msg: msg }), MessageType.Delete);
+
+
+					}
+					else {
+						this.toastr.successToastr(this.translate.instant("ADMIN.EMAIL.DELETE_EMAIL_MULTY.MESSAGE"));
+						//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.EMAIL.DELETE_EMAIL_MULTY.MESSAGE"), MessageType.Delete);
+					}
+
+				}
+				else if (action == "Edit") {
+					this.toastr.successToastr(this.translate.instant("ADMIN.EMAIL.EDIT.UPDATE_MESSAGE"));
+					//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.EMAIL.EDIT.UPDATE_MESSAGE"), MessageType.Update, 10000, true, false);
+				}
+				else if (action == "Add") {
+					this.toastr.successToastr(this.translate.instant("ADMIN.EMAIL.EDIT.ADD_MESSAGE"));
+					//this.layoutUtilsService.showActionNotification(this.translate.instant("ADMIN.EMAIL.EDIT.ADD_MESSAGE"), MessageType.Create, 10000, true, false);
+				}
+			}
+			else if (res["MessageType"] == "D") {
+				this.toastr.errorToastr(this.translate.instant("ADMIN.EMAIL.EDIT.DUPLICATE_MESSAGE"));
+				//this.layoutUtilsService.showActionNotification("ADMIN.EMAIL.EDIT.DUPLICATE_MESSAGE", MessageType.Create, 10000, true, false);
+			}
+			else if (res["MessageType"] == "E") {
+				this.toastr.errorToastr(this.translate.instant("COMMON_MGS.ERROR.ERROR_MGS"));
+			}
+		}
+	}
+*/
+
+}

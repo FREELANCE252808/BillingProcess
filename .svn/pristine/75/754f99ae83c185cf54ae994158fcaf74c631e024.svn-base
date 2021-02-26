@@ -1,0 +1,39 @@
+<div class="m-grid__item m-grid__item--fluid m-grid m-grid--desktop m-grid--ver-desktop m-grid--hor-tablet-and-mobile m-login m-login--6" id="m_login" style="background-image: url(assets/images/image.png);background-repeat: no-repeat;background-size: cover;">
+
+
+	<!--<div class="m-grid__item   m-grid__item--order-tablet-and-mobile-2 m-grid m-grid--hor m-login__aside" >-->
+		<!--<div class="m-grid__item">
+			<div class="m-login__logo">
+				<a href="#">
+				</a>
+			</div>
+		</div>-->
+
+		<!--<div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver">
+		</div>-->
+
+		<!--<div class="m-grid__item">
+			<div class="m-login__info">
+				<div class="m-login__section">
+					<a href="javascript:;" class="m-link" style="color:black;font-weight:500;"> &copy; {{today | date:'yyyy'}} Smart Work</a>
+				</div>
+				<div class="m-login__section">
+					<a href="javascript:;" class="m-link" style="color:black;font-weight:500;">Privacy</a>
+					<a href="javascript:;" class="m-link " style="color:black;font-weight:500;">Legal</a>
+					<a href="javascript:;" class="m-link " style="color:black;font-weight:500;">Contact</a>
+				</div>
+			</div>
+		</div>-->
+	<!--</div>-->
+
+
+	<div class="m-grid__item m-grid__item--fluid  m-grid__item--order-tablet-and-mobile-1 m-login__wrapper">
+		<div class="m-login__body">
+			<m-login *ngIf="action === 'login'" [(action)]="action"></m-login>
+
+			<m-register *ngIf="action === 'register'" [(action)]="action"></m-register>
+
+			<m-forgot-password *ngIf="action === 'forgot-password'" [(action)]="action"></m-forgot-password>
+		</div>
+	</div>
+</div>

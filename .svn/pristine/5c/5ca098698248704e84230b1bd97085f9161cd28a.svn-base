@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'm-timehseetreport',
+  templateUrl: './timehseetreport.component.html',
+  styleUrls: ['./timehseetreport.component.scss']
+})
+export class TimehseetreportComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

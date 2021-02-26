@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'm-companydetail',
+  templateUrl: './companydetail.component.html',
+  styleUrls: ['./companydetail.component.scss']
+})
+export class CompanydetailComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

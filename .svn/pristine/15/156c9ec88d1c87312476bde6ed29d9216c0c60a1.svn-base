@@ -1,0 +1,67 @@
+<mat-card style="background-color:#E9EDEF;">
+	<mat-card class="matHeight">
+		<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		<!--<div class="m-portlet" [ngClass]="{ 'm-portlet--body-progress' : viewLoading, 'm-portlet--body-progress-overlay' : loadingAfterSubmit }">-->
+		<div class="m-portlet__head">
+			<div class="m-portlet__head-caption">
+				<div class="m-portlet__head-title">
+					<div class="d-flex bd-highlight">
+						<div class="p-2 flex-grow-1 bd-highlight">
+							<h3 class="m-portlet__head-text" style="margin-top:-14px;">{{getTitle()}}</h3>
+						</div>
+						<div class="p-2 bd-highlight" style="margin-top:-31px">
+							<button mat-icon-button [mat-dialog-close]="data.animal">
+								<mat-icon style="margin-top:3px;">clear</mat-icon>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</mat-card>
+	<form class="m-form" [formGroup]="RoleForm">
+		<mat-card class="matContent">
+			<div class="m-portlet__body">
+				<!--<div class="m-portlet__body-progress">
+					<mat-spinner [diameter]="20"></mat-spinner>
+				</div>-->
+				<!--<m-alert *ngIf="hasFormErrors" type="warn" [duration]="30000" [showCloseButton]="true" (close)="onAlertClose($event)">
+					Oh snap! Change a few things up and try submitting again.
+				</m-alert>-->
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6 m--margin-bottom-20-mobile">
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput placeholder="Role Name" formControlName="RoleName" />
+							<mat-error>
+								Role Name is
+								<strong>required</strong>
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+
+				<!--<img class="images" [src]="url"><br>
+				<input type='file' (change)="onSelectFile($event)">-->
+
+			</div>
+		</mat-card>
+		<mat-card class="matContent matHeight">
+			<!--<div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+				<div class="m-form__actions m-form__actions--solid">-->
+			<div class="row text-right" style="margin-top:-15px;">
+				<div class="col-lg-12">				
+					<button type="button" (click)="onSubmit()" [disabled]="loading || RoleForm.invalid" matTooltip="Save changes" style="border-radius:25px;" class="btn btn-outline-brand btn-sm">
+						Save
+						<i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+					</button>
+				</div>
+			</div>
+			<!--</div>
+			</div>-->
+		</mat-card>
+	</form>
+	<!--</div>-->
+	<!--<div class="m-separator m-separator--dashed"></div>-->
+</mat-card>

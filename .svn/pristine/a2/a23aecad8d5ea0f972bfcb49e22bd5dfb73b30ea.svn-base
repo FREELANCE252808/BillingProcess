@@ -1,0 +1,4 @@
+<h4>{{ title }}</h4>
+<!-- <mat-card width="100%" height="100%" > -->
+		<iframe width="1100" height="500" frameBorder="0" [src]="urlSafe"></iframe>
+<!-- </mat-card> -->

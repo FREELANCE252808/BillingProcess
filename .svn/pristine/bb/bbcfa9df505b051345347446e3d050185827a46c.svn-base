@@ -1,0 +1,14 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TimesheetapprovelistComponent } from './timesheetapprovelist/timesheetapprovelist.component';
+import { TimesheetapprovedetailComponent } from './timesheetapprovedetail/timesheetapprovedetail.component';
+import { SupervisionRoutingModule } from './supervision-routing.module';
+
+@NgModule({
+  declarations: [TimesheetapprovelistComponent, TimesheetapprovedetailComponent],
+  imports: [
+    CommonModule,
+    SupervisionRoutingModule
+  ]
+})
+export class SupervisionModule { }

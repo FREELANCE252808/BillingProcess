@@ -1,0 +1,17 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebAPI.Data.Repo;
+using WebAPI.Models;
+
+namespace WebAPI.Interfaces
+{
+    public interface IEmailSMSTemplateRepository
+    {
+        List<EmailSMSTemplate> GetEmailTempData(int CompanyID);
+        EmailSMSTemplate LoadEmailTemplate(EmailSMSTemplateRepository.enu_EmailSMSTemplate etDesc, int CompanyID);
+        string UpdatEmailTemplate(EmailSMSTemplate entityToUpdate);
+        string InsertEmailTemplate(EmailSMSTemplate entity);
+        void DeleteEmailTemplate(int id);
+        List<object> GetRecipientList(int CompanyID, int UserID);
+    }
+}

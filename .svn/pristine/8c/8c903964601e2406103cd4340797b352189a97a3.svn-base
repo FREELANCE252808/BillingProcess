@@ -1,0 +1,48 @@
+<div class="scroll" furyScrollbar>
+<mat-list fxFlex="grow"  class="navigation">
+  <div matSubheader>Inbox</div>
+  <mat-list-item matRipple [routerLink]="['/inbox/primary']" routerLinkActive="active">
+    <mat-icon matListIcon>inbox</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Primary</div>
+  </mat-list-item>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/social']" routerLinkActive="active">
+    <mat-icon matListIcon>group</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Social</div>
+  </mat-list-item>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/promotions']" routerLinkActive="active">
+    <mat-icon matListIcon>local_offer</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Promotions</div>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/starred']" routerLinkActive="active">
+    <mat-icon matListIcon>star</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Starred</div>
+  </mat-list-item>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/sent']" routerLinkActive="active">
+    <mat-icon matListIcon>send</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Sent Mails</div>
+  </mat-list-item>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/drafts']" routerLinkActive="active">
+    <mat-icon matListIcon>drafts</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Drafts</div>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/spam']" routerLinkActive="active">
+    <mat-icon matListIcon>backspace</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Spam</div>
+  </mat-list-item>
+
+  <mat-list-item matRipple [routerLink]="['/inbox/trash']" routerLinkActive="active">
+    <mat-icon matListIcon>delete</mat-icon>
+    <div matLine [fxHide]="responsive" [fxShow.gt-sm]="responsive">Trash</div>
+  </mat-list-item>
+</mat-list>
+</div>

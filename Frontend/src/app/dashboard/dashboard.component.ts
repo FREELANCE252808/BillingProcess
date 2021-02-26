@@ -1,0 +1,31 @@
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AccountService } from '../core/auth/account.service';
+import { LayoutConfigService } from '../core/services/layout-config.service';
+import { SubheaderService } from '../core/services/layout/subheader.service';
+
+@Component({
+	selector: 'm-dashboard',
+	templateUrl: './dashboard.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class DashboardComponent implements OnInit {
+	public config: any;
+	constructor(
+		private router: Router,
+		private accountservice:AccountService,
+		private configService: LayoutConfigService,
+		private subheaderService: SubheaderService
+	) {
+		debugger;
+		if (!accountservice.checkLoginStatus())
+		{
+			accountservice.logout();
+		}
+
+		 //this.subheaderService.setTitle('Dashboard');
+	}
+
+	ngOnInit(): void { }
+	mouseover(e: any) {}
+}

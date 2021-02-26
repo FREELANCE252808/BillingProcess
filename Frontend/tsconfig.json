@@ -1,0 +1,42 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"outDir": "./dist/out-tsc",
+		"sourceMap": true,
+		"declaration": false,
+		//"module": "esnext", // add this line
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"target": "es5",
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"es2017",
+			"dom"
+		],
+		"types": [
+
+		]
+	},
+
+	"include": [
+		"src/**/*",
+	],
+	"exclude": [
+		"**/appsettings.json",
+		"**/appsettings.Development.json"
+	],
+	"files": [
+		"src/app/app.module.ts",
+		"node_modules/jqwidgets-scripts/jqwidgets-ts/angular_jqxcheckbox.ts",
+		"node_modules/jqwidgets-scripts/jqwidgets-ts/angular_jqxtree.ts"
+	],
+
+	"paths": {
+
+	}
+
+}

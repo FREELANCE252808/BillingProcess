@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using WebAPI.Dtos;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EmailSMSTemplateController : BaseController
+    {
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
+
+        public EmailSMSTemplateController(IUnitOfWork uow, IMapper mapper)
+        {
+            this.uow = uow;
+            this.mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("GetEmailSMSTemplate")]
+        public async Task<ResponseResultDto> GetEmailTemplates()
+        {
+            ResponseResultDto res = new ResponseResultDto();
+            List<EmailSMSTemplate> lstEmailSMSTemplate = new List<EmailSMSTemplate>();
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+
+                    lstEmailSMSTemplate = await uow.EmailSMSTemplateRepository.GetEmailTemplatesAsync(companyID);
+                    res.data = lstEmailSMSTemplate;
+                    res.MessageType = "S";
+                }
+                else
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.Something_went_wrong;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.Something_went_wrong;
+            }
+
+            return res;
+        }
+
+        [HttpPost]
+        [Route("AddEmailSMSTemplate")]
+        public async Task<IActionResult> AddEmailSMSTemplate([FromBody] EmailSMSTemplateDto emailSMSTemplateData)
+        {
+            ResponseResultDto res = new ResponseResultDto();
+
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    int userID = Convert.ToInt32(UserId);
+
+                    var emailTemplate = mapper.Map<EmailSMSTemplate>(emailSMSTemplateData);
+                    emailTemplate.CompanyID = companyID;
+                    emailTemplate.CreatedOn = DateTime.Now;
+                    emailTemplate.CreatedBy = userID;
+                    emailTemplate.ModifiedOn = DateTime.Now;
+                    emailTemplate.ModifiedBy = userID;
+
+                    uow.EmailSMSTemplateRepository.AddEmailSMSTemplate(emailTemplate);
+                    await uow.SaveAsync();
+
+                    res.MessageType = "S";
+                    res.Message = MessageConstant.RecordAdded;
+                }
+                else
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.Something_went_wrong;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.FailedToAddRecord;
+            }
+
+            return Ok(new { ResponseResultDto = res });
+        }
+
+        [HttpPost]
+        [Route("UpdateEmailSMSTemplate")]
+        public async Task<IActionResult> UpdateEmailSMSTemplate(int emailSMSTemplateID, string status)
+        {
+            ResponseResultDto res = new ResponseResultDto();
+
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    int userID = Convert.ToInt32(UserId);
+
+                    EmailSMSTemplate emailTemplate = uow.EmailSMSTemplateRepository.GetEmailTemplateById(emailSMSTemplateID);
+                    emailTemplate.Status = status;
+                    emailTemplate.ModifiedOn = DateTime.Now;
+                    emailTemplate.ModifiedBy = userID;
+
+                    uow.EmailSMSTemplateRepository.UpdateEmailSMSTemplate(emailTemplate);
+                    await uow.SaveAsync();
+
+                    res.MessageType = "S";
+                    res.Message = MessageConstant.RecordUpdated;
+                }
+                else
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.Something_went_wrong;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.FailedToUpdateRecord;
+            }
+
+            return Ok(new { ResponseResultDto = res });
+        }
+    }
+}

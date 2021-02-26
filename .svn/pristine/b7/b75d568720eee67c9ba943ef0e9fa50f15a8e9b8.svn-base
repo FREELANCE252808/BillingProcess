@@ -1,0 +1,192 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Transactions;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using WebAPI.Dtos;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : BaseController
+    {
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
+
+        public UserController(IUnitOfWork uow, IMapper mapper)
+        {
+            this.uow = uow;
+            this.mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("GetUsers")]
+        public async Task<ResponseResultDto> GetUsers()
+        {
+            ResponseResultDto result = new ResponseResultDto();
+            List<User> lstUsers = new List<User>();
+            try
+            {
+                lstUsers = await uow.UserRepository.GetUsersAsync();
+                result.data = lstUsers;
+                result.MessageType = "S";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
+        // GET: api/User/5
+        [HttpGet("{id}", Name = "GetUserByUserID")]
+        [Route("GetUserByUserID")]
+        public async Task<User> GetUserByUserID(int userID)
+        {
+            try
+            {
+                User user = await uow.UserRepository.FindUser(userID);
+                List<UserRole> ur = await uow.UserRoleRepository.GetUserRoleByUserId(userID);
+
+                User userDetails = new User
+                {
+                    UserID = userID,
+                    CompanyID = user.CompanyID,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = user.Password,
+                    EmailId = user.EmailId,
+                    ImagePath = user.ImagePath,
+                    Status = user.Status,
+                    UserRoles = ur
+                };
+
+                return userDetails;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpPost]
+        [Route("AddEditUser")]
+        public async Task<IActionResult> AddEditUser([FromBody] UserDto userData)
+        {
+            ResponseResultDto res = new ResponseResultDto();
+
+            try
+            {
+                if (uow.UserRepository.IsUserExists(userData.EmailId, userData.UserID))
+                {
+                    res.MessageType = "E";
+                    res.Message = String.Format(MessageConstant.RecordAlreadyExists, "EmailId " + userData.EmailId);
+                    return Ok(new { ResponseResultDto = res });
+                }
+
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    int userID = Convert.ToInt32(UserId);
+
+                    var user = mapper.Map<User>(userData);
+                    user.CompanyID = companyID;
+                    user.ModifiedOn = DateTime.Now;
+                    user.ModifiedBy = userID;
+
+                    foreach (UserRole ur in user.UserRoles)
+                    {
+                        ur.CompanyID = companyID;
+                        ur.CreatedBy = userID;
+                        ur.CreatedOn = DateTime.Now;
+                    }
+
+                    if (user.UserID == 0)
+                    {
+                        user.CreatedOn = DateTime.Now;
+                        user.CreatedBy = userID;
+
+                        uow.UserRepository.AddUser(user);
+                    }
+                    else
+                    { 
+                        uow.UserRepository.UpdateUser(user);
+                        uow.UserRoleRepository.DeleteUserRoleByUserId(user.UserID);
+                    }
+
+                    uow.UserRoleRepository.AddUserRole(userData.UserRoles);
+                    await uow.SaveAsync();
+
+                    res.MessageType = "S";
+                    if (userData.UserID == 0)
+                        res.Message = MessageConstant.RecordAdded;
+                    else
+                        res.Message = MessageConstant.RecordUpdated;
+                }
+                else
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.Something_went_wrong;
+                }
+            }
+            catch(Exception ex)
+            {
+                res.MessageType = "E";
+                if (userData.UserID == 0)
+                    res.Message = MessageConstant.FailedToAddRecord;
+                else
+                    res.Message = MessageConstant.FailedToUpdateRecord;
+            }
+
+            return Ok(new { ResponseResultDto = res });
+        }
+
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        [Route("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(int userID)
+        {
+            ResponseResultDto res = new ResponseResultDto();
+
+            try
+            {
+                if (uow.UserRepository.IsUserDeleteAllow(userID))
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.RecordIsInUse;
+                    return Ok(new { ResponseResultDto = res });
+                }
+
+                uow.UserRoleRepository.DeleteUserRoleByUserId(userID);
+                uow.UserRepository.DeleteUser(userID);
+
+                await uow.SaveAsync();
+
+                res.MessageType = "S";
+                res.Message = MessageConstant.RecordDeleted;
+                return Ok(new { ResponseResultDto = res });
+            }
+            catch
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.FailedToDeleteRecord;
+                return Ok(new { ResponseResultDto = res });
+            }
+        }
+    }
+}

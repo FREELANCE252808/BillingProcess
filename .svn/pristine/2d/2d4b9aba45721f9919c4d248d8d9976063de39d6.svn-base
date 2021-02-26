@@ -1,0 +1,107 @@
+
+		<span *ngIf="(loaderShow)">
+			<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+		</span>
+		<mat-card class="matContent matHeight">
+			<h5>{{getTitle()}}</h5>
+		</mat-card>
+
+	<form class="m-form" [formGroup]="usersForm">
+		<mat-card class="matContent">
+			<div class="m-portlet__body container">
+
+				<!--<div class="form-group m-form__group row">
+					<div class="col-lg-6 m--margin-bottom-20-mobile">
+						<div class="col-lg-6 m--margin-bottom-20-mobile center">
+							<div style="height:123px;width:123px;border:1px solid gray;border-radius:50%;">
+								<img class="images" [src]="url" style="height:120px;width:120px;border:5px solid #fff;overflow: hidden;border-radius:50%;background-image:url('./assets/images/userProfile/profile-user.jpg');background-position: center;background-repeat: no-repeat;background-size:cover;">
+							</div>
+							<div class="fileUpload btn btn-primary" style="border-radius:50%;margin-left:80px;margin-top:-50px;">
+								<mat-icon style="margin-top: -3px;margin-left: -9px;">add</mat-icon>
+								<input type="file" class="upload" (change)="onSelectFile($event)" formControlName="ImagePath"/>
+							</div>
+						</div>
+					</div>
+				</div>-->
+
+				<div class="row">
+					<div class="col-lg-6">
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput placeholder="First Name" formControlName="FirstName" />
+							<mat-error *ngIf="usersForm.get('FirstName').hasError('required')">
+								First Name is <strong> required. </strong>
+							</mat-error>
+							<mat-error *ngIf="usersForm.get('FirstName').hasError('pattern')">
+								<strong> Special characters are not allowed. </strong>
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-lg-6">
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput placeholder="Last Name" formControlName="LastName" />
+							<mat-error *ngIf="usersForm.get('LastName').hasError('required')">
+								Last Name is <strong> required. </strong>
+							</mat-error>
+							<mat-error *ngIf="usersForm.get('LastName').hasError('pattern')">
+								<strong> Special characters are not allowed. </strong>
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<mat-form-field class="mat-form-field-fluid">
+							<input type="email" matInput placeholder="Email" [(ngModel)]="model.email" formControlName="EmailId" (blur)="ValidateEmail()" />
+							<mat-error *ngIf="usersForm.get('EmailId').hasError('required')">
+								Email is required...
+							</mat-error>
+							<mat-error *ngIf="usersForm.get('EmailId').hasError('email')">
+								Please insert valid email....
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-lg-2 m--margin-bottom-20-mobile" style="margin-top:12px;">
+						<mat-slide-toggle (change)="onChange($event)" formControlName="Status">
+							&nbsp; {{checked}}
+						</mat-slide-toggle>
+					</div>
+
+				</div>
+
+
+				<div class="row">
+					<div class="col-lg-12 m--margin-bottom-20-mobile">
+						<mat-form-field class="mat-form-field-fluid">
+							<mat-select placeholder="Select Role" formControlName="RoleId" multiple>
+								<mat-option *ngFor="let item of rolesModel" [value]="item.id">
+									{{item.roleName}}
+								</mat-option>
+							</mat-select>
+							<mat-error>
+								Role is
+								<strong>required</strong>
+							</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
+
+			</div>
+			<div *ngIf="ErroMsg!=undefined && ErroMsg !=null && ErroMsg.trim().length >0 "><mat-error><strong>{{ErroMsg}}</strong></mat-error></div>
+			<div *ngIf="IsEmailExist"><mat-error><strong>Email Id is already exist....</strong></mat-error></div>
+		</mat-card>
+		<mat-card class="matContent matHeight">
+			<div class="row text-right" style="margin-top:-15px;">
+				<div class="col-lg-12">
+					<button type="button" (click)="onBack()"  cdkFocusInitial matTooltip="Cancel changes" style="border-radius:25px;" class="btn btn-outline-metal btn-sm">
+						<span>Cancel</span>
+					</button>&nbsp;
+
+					<button type="button" (click)="onSubmit()" [disabled]=" loading || usersForm.invalid || ErroMsg.length > 0" style="border-radius:25px;" class="btn btn-outline-brand btn-sm">
+						<span>Save</span>
+						<i class="fa fa-spinner fa-spin" *ngIf="loading"></i>
+					</button>
+				</div>
+			</div>
+		</mat-card>
+	</form>
+

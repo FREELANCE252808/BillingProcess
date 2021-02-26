@@ -1,0 +1,166 @@
+@import '~@angular/material/theming';
+
+$inbox-navigation-width-collapsed: 116px;
+$inbox-navigation-width: 250px;
+
+$theme-background: #f0f0f0;
+$spacing: 24px;
+$elevation: 2;
+$card-elevation: $elevation;
+$border-radius: 3px;
+$inbox-header-height: 64px;
+$inbox-searchbar-height: 54px;
+
+$theme-primary-hue: 700;
+$theme-accent-hue: 500;
+$theme-warn-hue: 500;
+
+
+$light-primary-text: white;
+$dark-primary-text: rgba(black, 0.87);
+
+$mat-red: ( 50: #ffebee, 100: #ffcdd2, 200: #ef9a9a, 300: #e57373, 400: #ef5350, 500: #f44336, 600: #e53935, 700: #d32f2f, 800: #c62828, 900: #b71c1c, A100: #ff8a80, A200: #ff5252, A400: #ff1744, A700: #d50000, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ) );
+$mat-blue: ( 50: #e3f2fd, 100: #bbdefb, 200: #90caf9, 300: #64b5f6, 400: #42a5f5, 500: #2196f3, 600: #1e88e5, 700: #1976d2, 800: #1565c0, 900: #0d47a1, A100: #82b1ff, A200: #448aff, A400: #2979ff, A700: #2962ff, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ) );
+$mat-blue-grey: ( 50: #eceff1, 100: #cfd8dc, 200: #b0bec5, 300: #90a4ae, 400: #78909c, 500: #607d8b, 600: #546e7a, 700: #455a64, 800: #37474f, 900: #263238, A100: #cfd8dc, A200: #b0bec5, A400: #78909c, A700: #455a64, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $light-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $dark-primary-text, A400: $light-primary-text, A700: $light-primary-text, ) );
+
+$theme-primary: mat-palette($mat-blue-grey, $theme-primary-hue, 500, 900);
+$theme-accent: mat-palette($mat-blue, $theme-accent-hue);
+$theme-warn: mat-palette($mat-red, $theme-warn-hue);
+
+$theme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
+$color-accent: map-get($theme, accent);
+$theme-color-accent: mat-color($color-accent);
+
+$media-xs: 'screen and (max-width: 599px)';
+@mixin media-xs {
+	@media #{$media-xs} {
+		@content;
+	}
+}
+
+$media-sm: 'screen and (min-width: 599px) and (max-width: 959px)';
+@mixin media-sm {
+	@media #{$media-sm} {
+		@content;
+	}
+}
+
+$theme-background-map: map-get($theme, background);
+$theme-card: mat-color($theme-background-map, card);
+
+$config: mat-typography-config( $font-family: 'Roboto, "Helvetica Neue", sans-serif', $display-4: mat-typography-level(112px, 112px, 300), $display-3: mat-typography-level(56px, 56px, 400), $display-2: mat-typography-level(45px, 48px, 400), $display-1: mat-typography-level(28px, 34px, 400), $headline: mat-typography-level(24px, 32px, 400), $title: mat-typography-level(20px, 32px, 500), $subheading-2: mat-typography-level(18px, 28px, 400), $subheading-1: mat-typography-level(16px, 24px, 400), $body-2: mat-typography-level(14px, 24px, 500), $body-1: mat-typography-level(14px, 22px, 400), $caption: mat-typography-level(13px, 22px, 400), $button: mat-typography-level(14px, 14px, 500),
+// Line-height must be unit-less fraction of the font-size.
+$input: mat-typography-level(16px, 1.125, 400) );
+
+
+
+.inbox {
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+
+  .drawer-navigation {
+    padding: 0 $spacing;
+    overflow: hidden;
+  }
+
+  .header {
+    padding: $spacing*2 $spacing ($spacing*2)+$inbox-header-height 0;
+    background: $theme-color-accent url('/assets/img/backgrounds/inbox.png');
+    background-size: cover;
+    z-index: 10;
+	
+
+    @include mat-elevation($card-elevation);
+
+    @include media-xs {
+      padding: $spacing/3 $spacing/3 $spacing/3+$inbox-header-height;
+    }
+
+    .logo {
+      color: white;
+      padding-left: $spacing;
+      @include mat-typography-level-to-styles($config, display-1);
+
+      .mat-icon {
+        padding-right: $spacing/2;
+      }
+
+      @include media-sm {
+        padding-left: 0;
+
+        .mat-icon {
+          padding-right: 0;
+        }
+      }
+
+      @include media-xs {
+        padding-left: 0;
+        margin-bottom: $spacing/3;
+      }
+    }
+
+    .search-bar {
+      background: white;
+      border-radius: $border-radius;
+      overflow: hidden;
+
+      @include mat-elevation($card-elevation);
+
+      .mat-icon {
+        vertical-align: middle;
+        margin-right: 14px;
+        margin-left: 16px;
+      }
+
+      .search {
+        border: 0;
+        height: $inbox-searchbar-height;
+        outline: none;
+      }
+    }
+  }
+
+  .page-container {
+    margin-top: -$inbox-header-height;
+    background: $theme-background;
+  }
+
+  .navigation-container {
+    padding: 0 $spacing $spacing;
+    z-index: 20;
+
+    .compose {
+      height: $inbox-header-height;
+
+      .icon {
+        margin-left: -$spacing;
+        padding-right: $spacing/3;
+      }
+    }
+  }
+
+  .content {
+    background: $theme-card;
+    @include mat-elevation($card-elevation);
+    margin-right: $spacing;
+    margin-bottom: $spacing;
+    border-radius: $border-radius;
+    max-width: calc(100% - #{$inbox-navigation-width + $spacing});
+    z-index: 20;
+
+    @include media-xs {
+      margin: 0 $spacing/3 $spacing/3;
+      max-width: calc(100% - #{$spacing/3 * 2});
+    }
+
+    @include media-sm {
+      max-width: calc(100% - #{$inbox-navigation-width-collapsed + $spacing});
+    }
+  }
+}
+

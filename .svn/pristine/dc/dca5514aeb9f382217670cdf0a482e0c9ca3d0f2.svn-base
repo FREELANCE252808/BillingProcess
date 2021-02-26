@@ -1,0 +1,36 @@
+<div class="m-portlet">
+	<div class="m-portlet__head">
+		<div class="m-portlet__head-progress">
+			<!-- here can place a progress bar-->
+			<mat-progress-bar mode="indeterminate" *ngIf="viewLoading"></mat-progress-bar>
+		</div>
+		<div class="m-portlet__head-caption">
+			<div class="m-portlet__head-title">
+				<span class="m-portlet__head-icon m--hide">
+					<i class="la la-gear"></i>
+				</span>
+				<h3 class="m-portlet__head-text">
+					{{data.title}}
+				</h3>
+			</div>
+		</div>
+	</div>
+	<div class="m-form">
+		<div class="m-portlet__body">
+			<div class="form-group m-form__group row">
+				<div class="col-lg-12">
+					{{ viewLoading ? data.waitDesciption : data.description}}
+				</div>
+			</div>
+		</div>
+		<div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit text-right">
+			<div class="m-form__actions m-form__actions--sm">
+				<button (click)="onNoClick()" style="border-radius:25px;" class="btn btn-outline-metal btn-sm">Cancel</button>&nbsp;
+				<button (click)="onYesClick()" cdkFocusInitial [disabled]="viewLoading" style="border-radius:25px;" class="btn btn-outline-danger btn-sm">
+					Delete
+					<i class="fa fa-spinner fa-spin" *ngIf="viewLoading"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

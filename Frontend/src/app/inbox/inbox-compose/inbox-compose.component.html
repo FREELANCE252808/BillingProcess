@@ -1,0 +1,40 @@
+<m-portlet>
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text m--font-light">
+				Equation Builder
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<button mat-icon-button mat-dialog-close>
+			<mat-icon style="margin-top:3px;">clear</mat-icon>
+		</button>
+	</ng-container>
+	<ng-container mPortletBody>
+		<mat-dialog-content fxLayout="column">
+			<mat-form-field>
+				<mat-label>From</mat-label>
+				<input value="davidsmith@example.com" matInput disabled>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label>To</mat-label>
+				<input matInput required>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label>Subject</mat-label>
+				<input matInput>
+			</mat-form-field>
+			<quill-editor [style]="{ height: '100px' }"
+						  placeholder="Write your message"></quill-editor>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="24px">
+			<button type="button" mat-icon-button>
+				<mat-icon>attach_file</mat-icon>
+			</button>
+			<button type="button" mat-raised-button color="primary" (click)="dialogRef.close()">
+				SEND
+			</button>
+		</mat-dialog-actions>
+		</ng-container>
+</m-portlet>

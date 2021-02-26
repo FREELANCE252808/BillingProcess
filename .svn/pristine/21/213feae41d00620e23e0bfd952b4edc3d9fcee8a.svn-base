@@ -1,0 +1,34 @@
+import { BaseModel } from './_base.model';
+
+export class CompanysModel extends BaseModel {
+	Companyid: number;
+	companyNameDetail: string;
+	companyLogo: string;
+	CompanyAddress: string;
+	StatusList: string;
+	StatusLogo: string;
+	Billingplan: string;
+	ActiveUser: string;
+	AvailableStorage: string;
+	AllocatedStorage: string;
+	UtilizedStorage: string;
+	SubscriptionValidTill: string;
+	weekStartDay: string
+	
+
+	clear() {
+		this.companyNameDetail = "";
+		this.companyLogo ="/assets/images/userProfile/profile-user.jpg";
+		this.CompanyAddress = "";
+		this.StatusList = "";
+		this.StatusLogo = "";
+		this.Billingplan = "";
+		this.ActiveUser = "";
+		this.AvailableStorage ="";
+		this.AllocatedStorage = "";
+		this.UtilizedStorage = "";
+		this.SubscriptionValidTill = "";
+		this.weekStartDay = '';
+		
+	}
+}

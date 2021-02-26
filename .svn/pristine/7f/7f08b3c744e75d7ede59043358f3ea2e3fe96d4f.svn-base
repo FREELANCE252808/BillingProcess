@@ -1,0 +1,44 @@
+<mat-card style="background-color:lightgray;">
+	<mat-card>
+		<form [formGroup]="myForm">
+			<div class="form-group m-form__group">
+				<div class="m--margin-bottom-20-mobile">
+					<mat-form-field class="mat-form-field-fluid">
+						<input matInput placeholder="SMPT Host" formControlName="SMPTHost" required>
+						<mat-error>
+							Please enter your SMPTHost
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="m--margin-bottom-20-mobile">
+					<mat-form-field class="mat-form-field-fluid">
+						<input matInput placeholder="Email password" type="password" formControlName="password" required>
+						<mat-error *ngIf="myForm.controls['password'].hasError('required')">
+							Please enter your email password
+						</mat-error>
+					</mat-form-field>
+				</div>
+				<div class="m--margin-bottom-20-mobile">
+					<mat-form-field class="mat-form-field-fluid">
+						<input matInput placeholder="Confirm password" type="password" formControlName="confirmPassword" [errorStateMatcher]="matcher">
+						<mat-error *ngIf="myForm.hasError('notSame')">
+							Passwords do not match
+						</mat-error>
+					</mat-form-field>
+				</div>
+			</div>
+			<mat-dialog-actions align="end" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="24px">
+				<button type="button" mat-dialog-close cdkFocusInitial matTooltip="Cancel changes" style="border-radius:25px;" class="btn btn-outline-metal btn-sm">
+					Cancel
+				</button>&nbsp; &nbsp;
+				<button type="button" cdkFocusInitial (click)="verify()" matTooltip="Verify email detail" style="border-radius:25px;" class="btn btn-outline-success btn-sm">
+					Verify
+				</button>&nbsp; &nbsp;
+				<button type="button" matTooltip="Save changes" (click)="Save()" style="border-radius:25px;" class="btn btn-outline-brand btn-sm">
+					Save
+				</button>
+			</mat-dialog-actions>
+		</form>
+	</mat-card>
+	
+</mat-card>

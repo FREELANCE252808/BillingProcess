@@ -1,0 +1,70 @@
+	<span *ngIf="(loaderShow)">
+		<mat-progress-bar class="m-loading-bar" mode="indeterminate" *ngIf="(loaders.progress$|async) > 0"></mat-progress-bar>
+	</span>
+	<mat-card class="matContent matHeight">
+		<h5>Change Password</h5>
+	</mat-card>
+
+	<mat-card>
+		<form [formGroup]="myForm">
+			<div class="m-portlet__body">
+				<div class="form-group m-form__group">
+					<div class="m--margin-bottom-20-mobile">
+					<mat-form-field class="mat-form-field-fluid">
+						<input matInput placeholder="Old Password" type="password" formControlName="OldPassword"  (blur)="ValidateOldPassword()" required />
+						<mat-error>
+							OldPassword  is
+							<strong>required.</strong>
+						</mat-error>
+					</mat-form-field>
+					<span *ngIf="ErroMsg.trim().length >0"><mat-error> Old password incorrect.</mat-error></span>
+				</div>
+					<div class="m--margin-bottom-20-mobile">
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput placeholder="New password" type="password" formControlName="password" (blur)="checkPasswords(f.confirmPassword,f.password)" required>
+							<mat-error *ngIf="myForm.controls['password'].errors.required">
+								Please enter your new password.
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="m--margin-bottom-20-mobile">
+						<mat-form-field class="mat-form-field-fluid">
+							<input matInput placeholder="Confirm password" type="password" formControlName="confirmPassword" required>
+							<mat-error *ngIf="f.confirmPassword.errors.required">
+								Confirm Password is required.
+							</mat-error>
+							<!--<mat-error *ngIf="myForm.hasError('notSame')">-->
+
+					<span *ngIf="ErroNotSameMsg.trim().length >0">
+						<mat-error> Passwords must match</mat-error>
+					</span>
+
+
+					<!--<mat-error *ngIf="f.confirmPassword.errors.checkPasswords">
+							</mat-error>
+
+								<div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                            <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
+							-->
+
+						</mat-form-field>
+					</div>
+				</div>
+			</div>
+		</form>
+	</mat-card>
+	<mat-card class="matContent matHeight">
+		<div class="row text-right" style="margin-top:-20px;">
+			<div class="col-lg-12">
+				<button type="button" routerLink="/"  mat-dialog-close cdkFocusInitial matTooltip="Cancel changes" style="border-radius:25px;margin-top:5px;" class="btn btn-outline-metal btn-sm">
+					Cancel
+				</button>&nbsp;
+				<button type="button" color="primary" (click)="onSubmit()" [disabled]="SubmitBtn" matTooltip="Save changes" style="border-radius:25px;margin-top:5px;" class="btn btn-outline-brand btn-sm">
+					Save
+				</button>
+			</div>
+		</div>
+	</mat-card>
+
+
+

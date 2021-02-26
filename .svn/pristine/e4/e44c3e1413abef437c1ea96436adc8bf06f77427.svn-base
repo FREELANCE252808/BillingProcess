@@ -1,0 +1,31 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, forkJoin, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { HttpUtilsService } from '../utils/http-utils.service';
+import { DepertmentsModel } from '../models/departments.model';
+import { QueryParamsModel } from '../models/query-models/query-params.model';
+import { QueryResultsModel } from '../models/query-models/query-results.model';
+
+
+@Injectable()
+export class DashboardService {
+	constructor(private http: HttpClient,
+		private httpUtils: HttpUtilsService) { }
+
+	// READ
+	GetDashboardToDoList(): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/Dashboard/GetDashboardToDoList");
+	}
+
+// READ
+	GetOverdueWorkItems(): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/Dashboard/GetOverdueWorkItems");
+	}
+	
+
+}
+
+

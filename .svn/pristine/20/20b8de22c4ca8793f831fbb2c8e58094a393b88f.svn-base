@@ -1,0 +1,168 @@
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { ToastrManager } from 'ng6-toastr-notifications';
+import { Observable, ReplaySubject } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+import { RoleModel } from '../../../core/models/role.model';
+import { CommonService } from '../../../core/services/common.service';
+import { RoleService } from '../../../core/services/role.service';
+import { TypesUtilsService } from '../../../core/utils/types-utils.service';
+
+@Component({
+	selector: 'm-role-edit-dialog',
+	templateUrl: './role-edit.dialog.component.html',
+	styleUrls: ['./role.component.scss']
+})
+export class RoleEditDialogComponent implements OnInit {
+	loaderShow = false;
+	canView:boolean = false;
+	canAdd:boolean = false;
+    canDelete:boolean = false;
+	canEdit: boolean = false;
+	subject$: ReplaySubject<RoleModel> = new ReplaySubject<RoleModel>(1);
+	roledata$: Observable<RoleModel> = this.subject$.asObservable();
+	rolesResult: RoleModel;
+	role: RoleModel;
+	RoleForm: FormGroup;
+	hasFormErrors: boolean = false;
+	loadingAfterSubmit: boolean = false;
+	sub: any;
+	CurrURl: string = "";
+	id: any;
+	constructor(
+		private fb: FormBuilder,
+		private roleService: RoleService,
+		private commonservice:CommonService,
+		private typesUtilsService: TypesUtilsService,
+		public loaders: LoadingBarService, private route: ActivatedRoute,
+		private router: Router
+		, public toastr: ToastrManager) {
+
+		}
+	/** AccessPermission */
+	AccessPermission() {
+		this.CurrURl = this.router.url;
+		this.loaderShow = true;
+		this.loaders.start();
+		this.commonservice.getAccessPermission(this.CurrURl).subscribe(res => {
+			debugger;
+				this.canView = null?false:res.canView;
+				this.canDelete = null?false:res.canDelete;
+				this.canAdd = null?false:res.canAdd;
+			this.canEdit = null ? false : res.canEdit;
+			this.loaders.complete();
+			this.loaderShow = false;
+			if (!this.canView)
+			    this.router.navigate(['/AccessDenied']);
+
+			});
+	}
+	/** LOAD DATA */
+	ngOnInit() {
+		debugger;
+		this.id = this.route.snapshot.paramMap.get('id');
+		this.loaders.start();
+		this.loaderShow = true;
+		this.createForm();
+		if (this.id > 0) {
+
+			this.roleService.GetRoleByRoleID(this.id).subscribe(roledata => {
+				debugger;
+				this.role = roledata;
+				this.roleEdit(this.role);
+
+			})
+		}
+
+		this.loaders.complete();
+				this.loaderShow = false;
+	}
+
+
+	createForm() {
+				this.RoleForm = this.fb.group({
+				RoleName: ['', Validators.required]
+			});
+	}
+	roleEdit(role :RoleModel) {
+		this.RoleForm.setValue({
+			RoleName: role.roleName,
+		})
+	}
+	/** UI */
+	getTitle(): string {
+		if (this.role!=undefined && this.role.id > 0) {
+			return `Edit role '${this.role.roleName}'`;
+		}
+		return 'Add Role';
+	}
+/*	ngOnDestroy() {
+		this.sub.unsubscribe();
+	  }*/
+	isControlInvalid(controlName: string): boolean {
+		debugger;
+		const control = this.RoleForm.controls[controlName];
+		const result = control.invalid && control.touched;
+		return result;
+	}
+
+	/** ACTIONS */
+	preparerole(): RoleModel {
+		const controls = this.RoleForm.controls;
+		const _role = new RoleModel();
+		_role.id = this.id;
+		_role.roleName = controls['RoleName'].value;
+		return _role;
+	}
+
+	btnDisabled: boolean = false;
+	onSubmit() {
+
+		this.hasFormErrors = false;
+		this.loadingAfterSubmit = false;
+		const controls = this.RoleForm.controls;
+		/** check form */
+		if (this.RoleForm.invalid) {
+			Object.keys(controls).forEach(controlName =>
+				controls[controlName].markAsTouched()
+			);
+			this.hasFormErrors = true;
+			return;
+		}
+		this.btnDisabled = true;
+		const editedRole :RoleModel= this.preparerole();
+		this.AddEditRole(editedRole);
+
+	}
+	onBack()
+	{
+		debugger;
+		this.router.navigate(['/roles/rolelist']);
+	}
+
+	AddEditRole(_role: RoleModel) {
+		debugger;
+		this.loadingAfterSubmit = true;
+		this.loaders.start();
+		this.loaderShow = true;
+		this.roleService.AddEditRole(_role).subscribe(res => {
+			if (res.responseResultDto.messageType == "S")
+				{
+				this.toastr.successToastr(res.responseResultDto.message, 'Success!');
+				this.loaders.complete();
+				this.loaderShow = false;
+
+			}
+			if (res.responseResultDto.messageType == "E") {
+				this.toastr.errorToastr(res.responseResultDto.message, 'Error!');
+				this.loaders.complete();
+				this.loaderShow = false;
+
+			}
+
+		});
+	}
+
+}

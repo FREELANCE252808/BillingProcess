@@ -1,0 +1,247 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net.Mail;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using InventoryManagementSystem.Data.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using WebAPI.Dtos;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+
+namespace WebAPI.Controllers
+{
+
+    public class TokenController : BaseController
+    {
+        private readonly AppSettings _appSettings;
+        //private readonly Token _token;
+        //private readonly ApplicationDBContext _db;
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
+
+        public TokenController(IUnitOfWork uow, IMapper mapper, IOptions<AppSettings> appSettings)
+        {
+            _appSettings = appSettings.Value;
+            //  _token = token;
+            this.uow = uow;
+            this.mapper = mapper;
+        }
+
+        // GET api/values
+        [HttpGet]
+        [Route("test")]
+        public ActionResult<IEnumerable<string>> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+
+        // api/account/login
+        //[HttpPost("login")]
+
+        [HttpPost]
+        [Route("auth")]
+        public async Task<IActionResult> Auth([FromBody] TokenRequest model) // granttype = "refresh_token"
+        {
+            // We will return Generic 500 HTTP Server Status Error
+            // If we receive an invalid payload
+            if (model == null)
+            {
+                return new StatusCodeResult(500);
+            }
+
+            switch (model.GrantType)
+            {
+                case "password":
+                    return await GenerateNewToken(model);
+                case "refresh_token":
+                    return await RefreshToken(model);
+                default:
+                    // not supported - return a HTTP 401 (Unauthorized)
+                    return new UnauthorizedResult();
+            }
+        }
+
+        // Method to Create New JWT and Refresh Token
+        private async Task<IActionResult> GenerateNewToken(TokenRequest model)
+        {
+            // check if there's an user with the given username
+            var user = await uow.AccountRepository.Authenticate(model.UserName, model.Password);
+            // Validate credentials
+            if (user != null)
+            {
+
+                var newRtoken = CreateRefreshToken(_appSettings.ClientId, user.UserID.ToString());
+                // first we delete any existing old refreshtokens            
+                var oldrTokens = uow.TokenRepository.GetTokenAsync().Result.Where(rt => rt.UserId == user.UserID.ToString());
+                if (oldrTokens != null)
+                {
+                    foreach (var oldrt in oldrTokens)
+                    {
+                        uow.TokenRepository.DeleteTokenByTokenID(oldrt.Id);
+                        await uow.SaveAsync();
+                    }
+                }
+                // Add new refresh token to Database
+                uow.TokenRepository.AddToken(newRtoken);
+                await uow.SaveAsync();
+                // Create & Return the access token which contains JWT and Refresh Token
+                var accessToken = await CreateAccessToken(user, newRtoken.Value);
+                return Ok(new { authToken = accessToken });
+
+            }
+            else
+            {
+                var accessToken = await NotCreateAccessToken();
+                return Ok(new { authToken = accessToken });
+
+            }
+        }
+
+
+        // Create access Tokenm
+        private async Task<TokenResponse> CreateAccessToken(User user, string refreshToken)
+        {
+            double tokenExpiryTime = Convert.ToDouble(_appSettings.ExpireTime);
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appSettings.Secret));
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(
+                    new Claim[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.FirstName+" "+user.LastName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                        new Claim("LoggedOn", DateTime.Now.ToString()),
+                        new Claim("userId", user.UserID.ToString()),
+                        new Claim("EmailId", user.EmailId),
+                        new Claim("UserName",Convert.ToString(user.FirstName)+" "+Convert.ToString(user.LastName)),
+                        new Claim("companyId", Convert.ToString(user.CompanyID))
+                     }
+                    ),
+
+                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _appSettings.Site,
+                Audience = _appSettings.Audience,
+                Expires = DateTime.UtcNow.AddMinutes(tokenExpiryTime)
+            };
+
+            // Generate token
+            var newtoken = tokenHandler.CreateToken(tokenDescriptor);
+            var encodedToken = tokenHandler.WriteToken(newtoken);
+
+            return new TokenResponse()
+            {
+                Token = encodedToken,
+                Expiration = newtoken.ValidTo,
+                Refresh_Token = refreshToken,
+                UserName = user.FirstName + " " + user.LastName,
+                UserID = user.UserID.ToString(),
+                companyId = user.CompanyID.ToString(),
+                userRoles = "Admin",
+                ImagePath = user.ImagePath,
+                MessageType = user.Status
+            };
+        }
+
+        private async Task<TokenResponse> NotCreateAccessToken()
+        {
+
+
+            return new TokenResponse()
+            {
+                MessageType = "I"
+            };
+        }
+
+        private Token CreateRefreshToken(string clientId, string userId)
+        {
+            return new Token()
+            {
+                ClientId = clientId,
+                UserId = userId,
+                Value = Guid.NewGuid().ToString("N"),
+                CreatedDate = DateTime.UtcNow,
+                ExpiryTime = DateTime.UtcNow.AddMinutes(90)
+            };
+        }
+
+        // Method to Refresh JWT and Refresh Token
+        private async Task<IActionResult> RefreshToken(TokenRequest model)
+        {
+            try
+            {
+
+                if (model.UserID != null && model.Password != null)
+                {
+                    // check if the received refreshToken exists for the given clientId
+                    var rt = uow.TokenRepository.GetTokenAsync().Result.FirstOrDefault(t => t.ClientId == _appSettings.ClientId && t.Value == model.RefreshToken.ToString());
+                    if (rt == null)
+                    {
+                        // refresh token not found or invalid (or invalid clientId)
+                        return new UnauthorizedResult();
+                    }
+
+                    // check if refresh token is expired
+                    if (rt.ExpiryTime < DateTime.UtcNow)
+                    {
+                        return new UnauthorizedResult();
+                    }
+
+                    // check if there's an user with the refresh token's userId
+                    var user = await uow.AccountRepository.FindUser(Convert.ToInt32(rt.UserId));
+                    if (user == null)
+                    {
+                        // UserId not found or invalid
+                        return new UnauthorizedResult();
+                    }
+
+                    // generate a new refresh token
+                    var rtNew = CreateRefreshToken(rt.ClientId, rt.UserId);
+
+                    // invalidate the old refresh token (by deleting it)
+                    uow.TokenRepository.RomeveToken(rt);
+
+                    // add the new refresh token
+                    uow.TokenRepository.AddToken(rtNew);
+
+
+                    var response = await CreateAccessToken(user, rtNew.Value);
+                    return Ok(new { authToken = response });
+                }
+                else
+                {
+                    return Ok(new TokenResponse()
+                    {
+                        UserName = "",
+                        ImagePath = ""
+                    });
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new UnauthorizedResult();
+            }
+        }
+
+
+       
+
+       
+
+    }
+}

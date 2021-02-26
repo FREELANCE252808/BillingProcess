@@ -1,0 +1,94 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, forkJoin, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { HttpUtilsService } from '../utils/http-utils.service';
+import { CompanysModel } from '../models/companys.model';
+import { QueryParamsModel } from '../models/query-models/query-params.model';
+import { QueryResultsModel } from '../models/query-models/query-results.model';
+import { CompanyCalendarModel } from '../models/CompanyCalendar.model';
+
+const API_USERS_URL = 'api/companys';
+
+@Injectable()
+export class CompanysService {
+	constructor(private http: HttpClient,
+		private httpUtils: HttpUtilsService) { }
+
+	// CREATE =>  POST: add a new customer to the server
+	createCompanys(company: CompanysModel): Observable<CompanysModel> {
+		return this.http.post<CompanysModel>(API_USERS_URL, company, this.httpUtils.getHTTPHeader());
+	}
+
+	// READ
+	getCompanyDetail(): Observable<CompanysModel[]> {
+		debugger;
+		return this.http.get<CompanysModel[]>("api/Company/GetCompany");
+	}
+
+	getCompanysById(companyId: number): Observable<CompanysModel> {
+		return this.http.get<CompanysModel>(API_USERS_URL + `/${companyId}`);
+	}
+
+	UploadCompanyLogo(formData: any): Observable<any> {
+		return this.http.post<any>("api/Company/UploadCompanyLogo", formData);
+	}
+
+	// Method from server should return QueryResultsModel(any[], totalsCount: number)
+	findCompanys(queryParams: QueryParamsModel): Observable<QueryResultsModel> {
+		const params = this.httpUtils.getFindHTTPParams(queryParams);
+
+		// Comment this when you start work with real server
+		// This code imitates server calls
+		// START
+		const url = API_USERS_URL;
+		return this.http.get<CompanysModel[]>(API_USERS_URL).pipe(
+			mergeMap(res => of(new QueryResultsModel(res)))
+		);
+	}
+
+	// UPDATE => PUT: update the customer on the server
+	updateCompany(company: CompanysModel): Observable<any> {
+		return this.http.put("api/Company/Update", company, this.httpUtils.getHTTPHeader());
+	}
+
+	// DELETE => delete the customer from the server
+	deleteCompany(companyId: number): Observable<CompanysModel> {
+		const url = `${API_USERS_URL}/${companyId}`;
+		return this.http.delete<CompanysModel>(url);
+	}
+	
+	deleteCompanys(ids: number[] = []) {
+		const tasks$ = [];
+		const length = ids.length;
+		for (let i = 0; i < length; i++) {
+			tasks$.push(this.deleteCompany(ids[i]));
+		}
+		return forkJoin(tasks$);
+		
+	}
+	getDailyWorkingHour(projectID: number): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/CompanyCalendarWeek/GetCompanyCalendarWeek?projectID=" + projectID);
+	}
+	UpdateCompanyWorkingHrs(workingHrsDetails: CompanyCalendarModel): Observable<any> {
+		return this.http.post<CompanyCalendarModel[]>("api/CompanyCalendar/UpdateCompanyWorkingHrs", workingHrsDetails, this.httpUtils.getHTTPHeader());
+	}
+
+	ValidateEmail(email:string): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/Company/IsCompanyRegister?email=" + email);
+	}
+
+	NewCompanyRegistration(companyDetail: any): Observable<any> {
+		debugger;
+		return this.http.post<any>("api/Company/NewCompanyRegistration", companyDetail, this.httpUtils.getHTTPHeader());
+	}
+
+	GetAllCompanyListWithUser(): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/Company/GetAllCompanyListWithUser");
+	}
+}
+//CompanyCalendarWeekModel
+

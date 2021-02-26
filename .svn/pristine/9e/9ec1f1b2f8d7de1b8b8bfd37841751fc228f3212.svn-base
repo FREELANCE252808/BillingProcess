@@ -1,0 +1,98 @@
+
+import { NgModule } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { MatInputModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule, MatTableModule, MatSelectModule, MatMenuModule, MatProgressBarModule, MatButtonModule, MatCheckboxModule, MatDialogModule, MatTabsModule, MatNativeDateModule, MatCardModule, MatRadioModule, MatIconModule, MatDatepickerModule, MatSnackBarModule, MatTooltipModule, MatSliderModule, MatSlideToggleModule, MatExpansionModule, MatTreeModule } from '@angular/material';
+import { ngfModule } from 'angular-file';
+import { ToastrModule } from 'ng6-toastr-notifications';
+import { MasterpageComponent } from './masterpage.component';
+import { JwtIntercepterService } from '../core/auth/jwt.intercepter.service';
+import { CoreModule } from '../core/core.module';
+import { HttpUtilsService } from '../core/utils/http-utils.service';
+import { RoleService } from '../core/services/role.service';
+import { CompanysService } from '../core/services/companys.service';
+import { TypesUtilsService } from '../core/utils/types-utils.service';
+import { LayoutUtilsService } from '../core/utils/layout-utils.service';
+import { MasterPageRoutingModule } from './masterpage-routing.module';
+import { ErrorPageComponent } from '../snippets/error-page/error-page.component';
+import { ActionComponent } from '../header/action/action.component';
+import { ProfileComponent } from '../header/profile/profile.component';
+import { LayoutModule } from '../layout/layout.module';
+import { PartialsModule } from '../partials/partials.module';
+import { ProjectsModule } from '../projects/projects.module';
+import { TimeAgoPipe } from 'time-ago-pipe';
+import { DeleteEntityDialogComponent } from '../core/_shared/delete-entity-dialog/delete-entity-dialog.component';
+@NgModule({
+	declarations: [
+		ErrorPageComponent,
+		ActionComponent,
+		ProfileComponent,
+		ErrorPageComponent,DeleteEntityDialogComponent,
+		MasterpageComponent,
+
+	],
+	imports: [
+
+		CommonModule,
+		HttpClientModule,
+		FormsModule,
+		MasterPageRoutingModule,
+		CoreModule,
+		LayoutModule,
+		PartialsModule,
+		ProjectsModule,
+		AngularEditorModule,
+		PerfectScrollbarModule,
+		MatInputModule,
+		MatPaginatorModule,
+		MatProgressSpinnerModule,
+		MatSortModule,
+		MatTableModule,
+		MatSelectModule,
+		MatMenuModule,
+		MatProgressBarModule,
+		MatButtonModule,
+		MatCheckboxModule,
+		MatDialogModule,
+		MatTabsModule,
+		MatNativeDateModule,
+		MatCardModule,
+		MatRadioModule,
+		MatIconModule,
+		MatDatepickerModule,
+		MatSnackBarModule,
+		MatTooltipModule,
+		MatSliderModule,
+		MatSlideToggleModule,
+		MatExpansionModule,
+		MatTreeModule,
+		MatInputModule,
+		ngfModule,
+		ToastrModule
+	],
+
+	entryComponents: [DeleteEntityDialogComponent
+
+	],
+	providers: [
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: JwtIntercepterService,
+			multi: true
+		},
+		HttpUtilsService,
+		RoleService,
+
+		CompanysService,
+		TypesUtilsService,
+		LayoutUtilsService,
+
+		DatePipe
+
+	],
+	exports: []
+})
+export class MasterPageModule {}

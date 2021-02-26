@@ -1,0 +1,27 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HttpUtilsService } from '../utils/http-utils.service';
+import { IroleRights } from '../models/interfaces/RoleRights';
+
+
+@Injectable()
+export class CommonService {
+	constructor(private http: HttpClient,
+		private httpUtils: HttpUtilsService) { }
+
+	// READ
+	CheckBeforeDeletePKID(SelectedRowID: number, TableName: string): Observable<any[]> {
+		debugger;
+		return this.http.get<any[]>("api/Common/GetDataToDeleteMastersData?SelectedRowID=" + SelectedRowID + "&TableName=" + TableName);
+	}
+	GetRoleRights(urL: string): Observable<IroleRights> {
+		debugger;
+		return this.http.get<IroleRights>("api/RoleRights/GetRoleRightsByRoute?uRl="+urL);
+	}
+
+
+
+}
+
+

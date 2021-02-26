@@ -1,0 +1,16 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { AdminRoutingModule } from './admin-routing.module';
+import { UserComponent } from './user/user.component';
+import { CompanydetailComponent } from './companydetail/companydetail.component';
+import { EmailtemplateComponent } from './emailtemplate/emailtemplate.component';
+
+@NgModule({
+  declarations: [UserComponent,  CompanydetailComponent, EmailtemplateComponent],
+  imports: [
+    CommonModule,
+    AdminRoutingModule
+  ]
+})
+export class AdminModule { }

@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20210131102222_Modules.cs" />
+    <Compile Remove="Migrations\20210131102222_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210131102325_Modules.cs" />
+    <Compile Remove="Migrations\20210131102325_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210212123548_Users.cs" />
+    <Compile Remove="Migrations\20210212123548_Users.Designer.cs" />
+    <Compile Remove="Migrations\20210212123740_Users.cs" />
+    <Compile Remove="Migrations\20210212123740_Users.Designer.cs" />
+    <Compile Remove="Migrations\20210215064634_Users.cs" />
+    <Compile Remove="Migrations\20210215064634_Users.Designer.cs" />
+    <Compile Remove="Migrations\20210215065235_Users.cs" />
+    <Compile Remove="Migrations\20210215065235_Users.Designer.cs" />
+    <Compile Remove="Migrations\20210217094920_RoleRights.cs" />
+    <Compile Remove="Migrations\20210217094920_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210217095020_Modules.cs" />
+    <Compile Remove="Migrations\20210217095020_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210217095322_Modules.cs" />
+    <Compile Remove="Migrations\20210217095322_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210217095645_Modules.cs" />
+    <Compile Remove="Migrations\20210217095645_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210217095842_Modules.cs" />
+    <Compile Remove="Migrations\20210217095842_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210217100205_RoleRights.cs" />
+    <Compile Remove="Migrations\20210217100205_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210217100425_Modules.cs" />
+    <Compile Remove="Migrations\20210217100425_Modules.Designer.cs" />
+    <Compile Remove="Migrations\20210217100941_RoleRights.cs" />
+    <Compile Remove="Migrations\20210217100941_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210217101013_RoleRights.cs" />
+    <Compile Remove="Migrations\20210217101013_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210218065832_RoleRights.cs" />
+    <Compile Remove="Migrations\20210218065832_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210218065950_RoleRights.cs" />
+    <Compile Remove="Migrations\20210218065950_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210218110211_RoleRights.cs" />
+    <Compile Remove="Migrations\20210218110211_RoleRights.Designer.cs" />
+    <Compile Remove="Migrations\20210219122814_RoleRights.cs" />
+    <Compile Remove="Migrations\20210219122814_RoleRights.Designer.cs" />
+    <Compile Remove="Models\EmailSMSTemplate - Copy.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+   <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.9.4" />
+
+
+  </ItemGroup>
+</Project>

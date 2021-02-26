@@ -1,0 +1,22 @@
+:host {
+	.mat-form-field {
+		width: 100%;
+	}
+}
+
+
+
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+	color: #7f55dd !important;
+	//opacity: 1!important;
+}
+
+::ng-deep .mat-raised-button.mat-primary {
+	background-color: #7f55dd !important;
+}
+
+a {
+	color: black;
+	font-weight: 500;
+}

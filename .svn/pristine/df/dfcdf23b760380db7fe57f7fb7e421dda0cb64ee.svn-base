@@ -1,0 +1,100 @@
+<!-- <li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center 	m-dropdown--mobile-full-width" m-dropdown-toggle="click" m-dropdown-persistent="true"> -->
+<a href="javascript:;" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon" (click)="showNotifications()">
+	<span class="m-nav__link-icon" [ngClass]="animateShake">
+		<span style="font-size:25px;color:#5867dd;" class="flaticon-music-2"></span><i [matBadge]="NotificationCount | async" matBadgeOverlap="true" MatBadgeSize='small' matBadgeColor="warn" *ngIf="NotiCount  >0"></i>
+		<span class="m-nav__link-icon-wrapper">
+		</span>
+	</span>
+</a>
+
+
+<div class="m-dropdown__wrapper">
+	<span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
+	<div class="m-dropdown__inner">
+		<div class="m-dropdown__header m--align-center" style="background: url(./assets/app/media/img/misc/notification_bg.jpg); background-size: cover;">
+			<span class="m-dropdown__header-title">
+
+			</span>
+			<!--<span class="m-dropdown__header-subtitle">
+				User Notifications
+			</span>-->
+		</div>
+		<div class="m-dropdown__body">
+			<div class="m-dropdown__content">
+				<mat-tab-group>
+
+					<mat-tab label="Notifications">
+						<span *ngIf="(loaderShow)">
+							<mat-progress-bar style="margin-top:-20px;margin-bottom: 11px;" mode="indeterminate" *ngIf="(lodder.progress$|async) > 0"></mat-progress-bar>
+						</span>
+						<perfect-scrollbar style="height: 250px;">
+							<ng-container mPortletBody>
+								<!--Begin::Timeline 3 -->
+								<div class="m-timeline-3">
+									<div class="m-timeline-3__items">
+										<div class="m-timeline-3__item m-timeline-3__item--info" *ngFor="let notification of lstNotification | async">
+											<span class="m-timeline-3__item-time" style="font-size:11px;">{{notification.Date  }}</span>
+
+			<!-- <span class="m-timeline-3__item-time" style="font-size:11px;">{{notification?.Date | timeAgo }}</span>-->
+
+											<div class="m-timeline-3__item-desc">
+												<span class="m-timeline-3__item-text" [style.font-weight]="notification.Active == 'Y'?'bold':'auto'">
+													<span (click)="Route(notification)" routerLink="{{notification.RedirectURL}}" [queryParams]="{ id: notification.QueryString  }" class="m-link m-timeline-3__item-link" [style.color]="notification.Active == 'Y'?'black':'gray'">
+														{{notification.NotificationMessage}}
+													</span>
+												</span>
+												<br>
+												<span class="m-timeline-3__item-user-name">
+													<a href="#" class="m-link m-link--metal m-timeline-3__item-link">
+														By &nbsp;&nbsp;{{notification.SenderName}}
+													</a>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!--End::Timeline 3 -->
+							</ng-container>
+							<!--</m-portlet>-->
+						</perfect-scrollbar>
+						<div style="align-items:center;margin-left:147px;margin-top:10px;"><a href="javascript:void();" target="_blank" routerLink="/seeallnotification" ><p>See All</p></a> </div>
+					</mat-tab>
+
+					<mat-tab label="Alerts">
+						<perfect-scrollbar style="height: 250px;">
+							<!--<m-list-timeline [type]="'notification'"></m-list-timeline>-->
+							<ng-container mPortletBody>
+								<!--Begin::Timeline 3 -->
+								<div class="m-timeline-3">
+									<div class="m-timeline-3__items">
+										<div class="m-timeline-3__item m-timeline-3__item--info" *ngFor="let notification of lstAlert">
+											<span class="m-timeline-3__item-time" style="font-size:11px;">{{notification.Date |date :'short' }}</span>
+											<div class="m-timeline-3__item-desc">
+												<span class="m-timeline-3__item-text" [style.font-weight]="notification.Active == 'Y'?'bold':'auto'">
+													<a (click)="Route(notification)" href="javascript:void()" class="m-link m-timeline-3__item-link" [style.color]="notification.Active == 'Y'?'black':'gray'">
+														{{notification.NotificationMessage}}
+													</a>
+												</span>
+												<br>
+												<span class="m-timeline-3__item-user-name">
+													<a href="#" class="m-link m-link--metal m-timeline-3__item-link">
+														By &nbsp;&nbsp;{{notification.SenderName}}
+													</a>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--End::Timeline 3 -->
+							</ng-container>
+						</perfect-scrollbar>
+						<div style="align-items:center;margin-left:147px;margin-top:10px;"><a href="javascript:void();" target="_blank" routerLink="/seeallnotification" ><p>See All</p></a> </div>
+					</mat-tab>
+
+				</mat-tab-group>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- </li> -->

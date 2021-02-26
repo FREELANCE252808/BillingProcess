@@ -1,0 +1,184 @@
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using WebAPI.Data;
+using WebAPI.Dtos;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace WebAPI.Controllers
+{
+    public class RoleRightsController : BaseController
+    {
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
+        private readonly ILogger<RoleRightsController> logger;
+        public RoleRightsController(IUnitOfWork uow, IMapper mapper, ILogger<RoleRightsController> logger)
+        {
+            this.uow = uow;
+            this.mapper = mapper;
+            this.logger = logger;
+        }
+
+
+
+        [HttpGet]
+        [Route("GetMenuList")]
+        public async Task<List<MenuList>> GetMenuList()
+        {
+            List<MenuList> lstMenuList = null;
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    // ClaimIdentityInfo.GetIdentity(identity.Claims.ToList<ClaimsIdentity>());
+                    int companyID = Convert.ToInt32(CompanyId);
+                    int userID = Convert.ToInt32(UserId);
+                    lstMenuList = await uow.RoleRightsRepository.GetMenuList(userID, companyID);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.Message);
+            }
+
+            return lstMenuList;
+        }
+
+        [HttpGet]
+        [Route("GetRoleRights")]
+        public async Task<IActionResult> GetRoleRights(int roleID)
+        {
+            ResponseResultDto result = new ResponseResultDto();
+            List<RoleRightsResDto> lstRoleRights = null;
+
+            try
+            {
+                lstRoleRights = await uow.RoleRightsRepository.GetRoleRightsAsync(roleID);
+
+                result.data = lstRoleRights;
+                result.MessageType = "S";
+            }
+            catch (Exception ex)
+            {
+                result.MessageType = "E";
+                result.Message = ex.Message;
+
+                logger.Log(LogLevel.Error, ex.Message);
+            }
+
+            return Ok(new { ResponseResultDto = result });
+        }
+
+        private LoginResDto GetUserDetail(User user)
+        {
+            return new LoginResDto()
+            {
+                UserName = user.FirstName + " " + user.LastName,
+                ImagePath = user.ImagePath
+            };
+        }
+
+        [HttpGet]
+        [Route("GetRoleRightsByRoute")]
+        public async Task<RoleRightsAccessResDto> GetRoleRightsByRoute(string url)
+        {
+            RoleRightsAccessResDto roleRightsAccessResDto = null;
+
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    int userID = Convert.ToInt32(UserId);
+                    int moduleID = await uow.ModulesRepository.GetModuleIDByURLAsync(url);
+                    List<int> roleID = await uow.UserRoleRepository.GetRoleIDByUserID(userID);
+                    roleRightsAccessResDto = uow.RoleRightsRepository.GetRoleRightsByRoute(moduleID, roleID);
+                }
+             
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.Message);
+            }
+            return roleRightsAccessResDto;
+        }
+
+        [HttpPost]
+        [Route("AddRoleRights")]
+        public async Task<IActionResult> AddRoleRights([FromBody] RoleRightsReqDto roleRightsData)
+        {
+            ResponseResultDto res = new ResponseResultDto();
+
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    int userID = Convert.ToInt32(UserId);
+                     
+                    List<RoleRights> lstRoleRights = new List<RoleRights>();
+
+                    foreach (RoleRightsResDto roleRights in roleRightsData.RoleRightsResDto)
+                    {
+                        RoleRights rr = new RoleRights();
+                        rr.CompanyID = companyID;
+                        rr.RoleID = roleRightsData.RoleID;
+                        rr.ModuleID = roleRights.id;
+                        rr.View = roleRights.ViewRight;
+                        rr.Add = roleRights.AddRight;
+                        rr.Edit = roleRights.EditRight;
+                        rr.Delete = roleRights.DeleteRight;
+                        rr.CreatedBy = userID;
+                        rr.CreatedOn = DateTime.Now;
+
+                        lstRoleRights.Add(rr);
+                    }
+
+                    uow.RoleRightsRepository.DeleteRoleRights(roleRightsData.RoleID);
+                    uow.RoleRightsRepository.AddRoleRights(lstRoleRights);
+                    await uow.SaveAsync();
+
+                    res.MessageType = "S";
+                    res.Message = MessageConstant.RecordAdded;
+                }
+                else
+                {
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.Something_went_wrong;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.MessageType = "E";
+                res.Message = MessageConstant.FailedToAddRecord;
+
+                logger.Log(LogLevel.Error, ex.Message);
+            }
+
+            return Ok(new { ResponseResultDto = res });
+        }
+    }
+}

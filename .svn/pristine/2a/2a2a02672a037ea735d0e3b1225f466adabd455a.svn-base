@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'm-tasklistdetail',
+  templateUrl: './tasklistdetail.component.html',
+  styleUrls: ['./tasklistdetail.component.scss']
+})
+export class TasklistdetailComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

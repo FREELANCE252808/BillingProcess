@@ -1,0 +1,39 @@
+import { BaseModel } from './_base.model';
+
+export class UsersModel extends BaseModel {
+	id: number;
+	ImagePath: string;
+	FirstName: string;
+	Employeecode: string;
+	LastName: string;
+	EmailId: string;
+	MobileNo: number;
+	DepartmentID: number;
+	ReportingTo: number;
+	DesignationID: number;
+	Gender: string;
+	Status: string;
+	DepartmentName: string;
+	DesignationName: string;
+	RoleId: any;
+	HOD: string;
+	Indicator: string;
+	
+
+	clear() {
+		this.ImagePath = '/assets/images/userProfile/profile-user.jpg';
+		this.FirstName = '';
+		this.Employeecode = '';
+		this.LastName = '';
+		this.EmailId = '';
+		this.MobileNo = null;
+		
+		this.DepartmentName = '';
+		this.DesignationName = '';
+		this.RoleId = [];
+		this.Gender = 'M';
+		this.Status = 'A';
+		this.HOD = '';
+		this.Indicator = '';
+	}
+}
