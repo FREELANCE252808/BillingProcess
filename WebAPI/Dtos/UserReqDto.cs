@@ -9,18 +9,16 @@ namespace WebAPI.Dtos
 {
     public class UserReqDto
     {
-        public int UserID { get; set; }
 
-        public string FirstName { get; set; }
+        public int userId { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public bool isAdmin { get; set; }
+        public bool isActive { get; set; }
+        public string userName { get; set; }
+        public string password { get; set; }
+        public List<UserCompanyList> userCompanyList { get; set; }
+      
 
-        public string LastName { get; set; }      
-
-        public string EmailId { get; set; }
-
-        public string ImagePath { get; set; }
-
-        public string Status { get; set; }
-
-        public List<int> RoleId { get; set; }
     }
 }

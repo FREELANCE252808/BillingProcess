@@ -90,7 +90,7 @@ namespace WebAPI.Controllers
 
                     company.ModifiedOn = DateTime.Now;
                     company.ModifiedBy = userID;
-                    company.LogoPath = "./assets/images/userProfile/100_1.jpg";
+                    //company.LogoPath = "./assets/images/userProfile/100_1.jpg";
                     if (company.CompanyID == 0)
                     {
                         company.CreatedOn = DateTime.Now;

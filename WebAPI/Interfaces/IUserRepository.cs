@@ -15,9 +15,9 @@ namespace WebAPI.Interfaces
 
         public Task<IQueryable<User>> FindUser(int userId);
 
-        public Task<List<User>> GetUsersAsync(int companyID);
+        public Task<List<User>> GetUsersAsync();
 
-        public bool IsEmailIdExists(string emailId, int companyID, int userID = 0);
+        public bool IsUserNameExists(string username, int companyID, int userID = 0);
 
         public bool IsUserDeleteAllow(int userID);
 

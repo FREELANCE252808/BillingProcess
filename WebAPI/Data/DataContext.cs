@@ -23,5 +23,6 @@ namespace WebAPI.Data
         public DbSet<DeleteCheck> DeleteCheck { get; set; }
         public DbSet<NotificationMessage> NotificationMessage { get; set; }
         public DbSet<CompanyMaster> CompanyMaster { get; set; }
+        public DbSet<UserCompany> UserCompany { get; set; }
     }
 }

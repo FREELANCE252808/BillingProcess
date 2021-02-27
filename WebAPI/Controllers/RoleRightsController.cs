@@ -89,8 +89,8 @@ namespace WebAPI.Controllers
         {
             return new LoginResDto()
             {
-                UserName = user.FirstName + " " + user.LastName,
-                ImagePath = user.ImagePath
+                UserName = user.firstName + " " + user.lastName,
+               // ImagePath = user.ImagePath
             };
         }
 
@@ -109,7 +109,7 @@ namespace WebAPI.Controllers
                     var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
                     int userID = Convert.ToInt32(UserId);
                     int moduleID = await uow.ModulesRepository.GetModuleIDByURLAsync(url);
-                    List<int> roleID = await uow.UserRoleRepository.GetRoleIDByUserID(userID);
+                    List<int> roleID = null;// await uow.UserRoleRepository.GetRoleIDByUserID(userID);
                     roleRightsAccessResDto = uow.RoleRightsRepository.GetRoleRightsByRoute(moduleID, roleID);
                 }
              

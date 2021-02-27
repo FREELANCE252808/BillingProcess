@@ -39,6 +39,10 @@ namespace WebAPI.Data
         public ICompanyMasterRepository CompanyMasterRepository =>
         new CompanyMasterRepository(dc);
 
+          public IUserCompanyRepository UserCompanyRepository =>
+          new UserCompanyRepository(dc);
+
+      
         public async Task<bool> SaveAsync()
         {
            return await dc.SaveChangesAsync() > 0;

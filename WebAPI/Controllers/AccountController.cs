@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [Route("GetUserDetailByUserID")]
         public async Task<IActionResult> GetUserDetailByUserID([FromBody] TokenRequest model)
         {
-            var user = await uow.AccountRepository.GetUserDetailByUserID(model.UserName);
+            var user = await uow.AccountRepository.GetUserDetailByUserID(model.userName);
             if (user != null)
             {
                 var getUserDetail = GetUserDetail(user);
@@ -76,8 +76,8 @@ namespace WebAPI.Controllers
         {
             return new LoginResDto()
             {
-                UserName = user.FirstName + " " + user.LastName,
-                ImagePath = user.ImagePath
+                UserName = user.firstName + " " + user.lastName,
+                //ImagePath = user.ImagePath
             };
         }
 
@@ -139,11 +139,11 @@ namespace WebAPI.Controllers
                         return Ok(new { ResponseResultDto = res });
                     }
                     string newPwd = CommonFuntions.Encrypt(changePassword.NewPassword.Trim());
-                    userObj.Password = newPwd;
+                    userObj.password = newPwd;
                     userObj.ModifiedBy = userID;
                     userObj.ModifiedOn = DateTime.Now;
-                    userObj.UserID = Convert.ToInt32(UserId);
-                    userObj.CompanyID = companyID;
+                    userObj.userId = Convert.ToInt32(UserId);
+                  //  userObj.co = companyID;
                     userObj.ModifiedBy = userID;
                     userObj.ModifiedOn = DateTime.Now;
                     await uow.SaveAsync();
@@ -201,7 +201,7 @@ namespace WebAPI.Controllers
                     int companyID = Convert.ToInt32(CompanyId);
                     int userID = Convert.ToInt32(UserId);
                     User userObj = await uow.AccountRepository.FindUser(userID);
-                    if ((0 != string.Compare(Convert.ToString(userObj.Password).Trim().ToLower(), CommonFuntions.Encrypt(OldPassword.Trim()).ToLower(), false)))
+                    if ((0 != string.Compare(Convert.ToString(userObj.password).Trim().ToLower(), CommonFuntions.Encrypt(OldPassword.Trim()).ToLower(), false)))
                     {
                         res.MessageType = "oldpasswordNotMatch";                     
                         res.Message = MessageConstant.InValidOldPwd;

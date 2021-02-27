@@ -53,8 +53,8 @@ namespace WebAPI.Controllers
         //[HttpPost("login")]
 
         [HttpPost]
-        [Route("auth")]
-        public async Task<IActionResult> Auth([FromBody] TokenRequest model) // granttype = "refresh_token"
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] TokenRequest model) // granttype = "refresh_token"
         {
             // We will return Generic 500 HTTP Server Status Error
             // If we receive an invalid payload
@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
                 return new StatusCodeResult(500);
             }
 
-            switch (model.GrantType)
+            switch (model.grantType)
             {
                 case "password":
                     return await GenerateNewToken(model);
@@ -79,14 +79,13 @@ namespace WebAPI.Controllers
         private async Task<IActionResult> GenerateNewToken(TokenRequest model)
         {
             // check if there's an user with the given username
-            var user = await uow.AccountRepository.Authenticate(model.UserName, model.Password);
+            var user = await uow.AccountRepository.Authenticate(model.userName, model.password);
             // Validate credentials
             if (user != null)
             {
-
-                var newRtoken = CreateRefreshToken(_appSettings.ClientId, user.UserID.ToString());
+                var newRtoken = CreateRefreshToken(_appSettings.ClientId, user.userId.ToString());
                 // first we delete any existing old refreshtokens            
-                var oldrTokens = uow.TokenRepository.GetTokenAsync().Result.Where(rt => rt.UserId == user.UserID.ToString());
+                var oldrTokens = uow.TokenRepository.GetTokenAsync().Result.Where(rt => rt.UserId == user.userId.ToString());
                 if (oldrTokens != null)
                 {
                     foreach (var oldrt in oldrTokens)
@@ -118,20 +117,28 @@ namespace WebAPI.Controllers
             double tokenExpiryTime = Convert.ToDouble(_appSettings.ExpireTime);
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appSettings.Secret));
             var tokenHandler = new JwtSecurityTokenHandler();
+            List<UserCompany> lstuserCompany = await uow.UserCompanyRepository.GetUserCompanyByUserId(user.userId);
+            List<UserCompanyList> userCompanyList = new List<UserCompanyList>();
+            foreach (var item in lstuserCompany)
+            {
+                UserCompanyList lst = new UserCompanyList();              
+                lst.companyCode = item.CompanyCode;
+                lst.companyName = item.CompanyName;
+                userCompanyList.Add(lst);
+            }
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(
                     new Claim[]
                     {
-                        new Claim(JwtRegisteredClaimNames.Sub, user.FirstName+" "+user.LastName),
+                        new Claim(JwtRegisteredClaimNames.Sub, user.firstName+" "+user.lastName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, user.userId.ToString()),
                         new Claim("LoggedOn", DateTime.Now.ToString()),
-                        new Claim("userId", user.UserID.ToString()),
-                        new Claim("EmailId", user.EmailId),
-                        new Claim("UserName",Convert.ToString(user.FirstName)+" "+Convert.ToString(user.LastName)),
-                        new Claim("companyId", Convert.ToString(user.CompanyID))
+                        new Claim("userId", user.userId.ToString()),
+                        new Claim("firstName",Convert.ToString(user.firstName)),
+                        new Claim("lastName",Convert.ToString(user.lastName))
                      }
                     ),
 
@@ -147,15 +154,14 @@ namespace WebAPI.Controllers
 
             return new TokenResponse()
             {
-                Token = encodedToken,
-                Expiration = newtoken.ValidTo,
-                Refresh_Token = refreshToken,
-                UserName = user.FirstName + " " + user.LastName,
-                UserID = user.UserID.ToString(),
-                companyId = user.CompanyID.ToString(),
-                userRoles = "Admin",
-                ImagePath = user.ImagePath,
-                MessageType = user.Status
+                token = encodedToken,
+                expiration = newtoken.ValidTo,
+                refresh_Token = refreshToken,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                userID = user.userId.ToString(),
+                isAdmin = user.isAdmin,
+                userCompanyList = userCompanyList
             };
         }
 
@@ -165,7 +171,8 @@ namespace WebAPI.Controllers
 
             return new TokenResponse()
             {
-                MessageType = "I"
+                messageType = "I",
+                token = "",
             };
         }
 
@@ -187,10 +194,10 @@ namespace WebAPI.Controllers
             try
             {
 
-                if (model.UserID != null && model.Password != null)
+                if (model.userName != null && model.password != null)
                 {
                     // check if the received refreshToken exists for the given clientId
-                    var rt = uow.TokenRepository.GetTokenAsync().Result.FirstOrDefault(t => t.ClientId == _appSettings.ClientId && t.Value == model.RefreshToken.ToString());
+                    var rt = uow.TokenRepository.GetTokenAsync().Result.FirstOrDefault(t => t.ClientId == _appSettings.ClientId && t.Value == model.refreshtoken.ToString());
                     if (rt == null)
                     {
                         // refresh token not found or invalid (or invalid clientId)
@@ -228,8 +235,8 @@ namespace WebAPI.Controllers
                 {
                     return Ok(new TokenResponse()
                     {
-                        UserName = "",
-                        ImagePath = ""
+                        token = "",
+                        userID = ""
                     });
                 }
 

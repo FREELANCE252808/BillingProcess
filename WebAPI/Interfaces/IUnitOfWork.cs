@@ -16,6 +16,7 @@ namespace WebAPI.Interfaces
         IEmailSMSTemplateRepository EmailSMSTemplateRepository { get; }
         INotificationMessageRepository NotificationMessageRepository { get; }
         ICompanyMasterRepository CompanyMasterRepository { get; }
+        IUserCompanyRepository UserCompanyRepository { get; }
 
         Task<bool> SaveAsync();
     }

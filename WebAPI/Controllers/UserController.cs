@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
                     var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
                     int companyID = Convert.ToInt32(CompanyId);
 
-                    lstUsers = await uow.UserRepository.GetUsersAsync(companyID);
+                    lstUsers = await uow.UserRepository.GetUsersAsync();
                     result.data = lstUsers;
                     result.MessageType = "S";
                 }
@@ -74,14 +74,14 @@ namespace WebAPI.Controllers
             {
                 IQueryable<User> user = await uow.UserRepository.FindUser(userID);
                 userResDto = mapper.Map<UserResDto>(user.FirstOrDefault());
-                List<UserRole> userRole = await uow.UserRoleRepository.GetUserRoleByUserId(userID);
+                List<UserRole> userRole = null;// await uow.UserRoleRepository.GetUserRoleByUserId(userID);
 
                 List<int> RoleIds = new List<int>();
                 foreach (var item in userRole)
                 {
                     RoleIds.Add(item.RoleID);
                 }
-                userResDto.RoleId = RoleIds;
+               // userResDto.RoleId = RoleIds;
             }
             catch (Exception ex)
             {
@@ -96,11 +96,11 @@ namespace WebAPI.Controllers
         // GET: api/User/5
         [HttpGet()]
         [Route("CheckDuplicateEmailID")]
-        public bool CheckDuplicateEmailID(string emailId, int userID)
+        public bool CheckDuplicateEmailID(string userName, int userID)
         {
             try
             {
-                return uow.UserRepository.IsEmailIdExists(emailId, userID);
+                return uow.UserRepository.IsUserNameExists(userName, userID);
             }
             catch (Exception ex)
             {
@@ -118,6 +118,8 @@ namespace WebAPI.Controllers
         {
             ResponseResultDto res = new ResponseResultDto();
 
+            UserResDto responseResult = new UserResDto();
+
             try
             {
                 var identity = User.Identity as ClaimsIdentity;
@@ -129,131 +131,102 @@ namespace WebAPI.Controllers
                     var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
                     int userID = Convert.ToInt32(UserId);
 
-                    if (uow.UserRepository.IsEmailIdExists(userData.EmailId, companyID, userData.UserID))
+                    if (uow.UserRepository.IsUserNameExists(userData.userName, companyID, userData.userId))
                     {
                         res.MessageType = "E";
-                        res.Message = String.Format(MessageConstant.RecordAlreadyExists, "EmailId '" + userData.EmailId + "'");
+                        res.Message = String.Format(MessageConstant.RecordAlreadyExists, "username '" + userData.userName + "'");
                         return Ok(new { ResponseResultDto = res });
                     }
 
                     var user = mapper.Map<User>(userData);
 
-                    List<UserRole> userRole = new List<UserRole>();
-                    foreach (var roleId in userData.RoleId)
-                    {
-                        UserRole ur = new UserRole();
-                        ur.CompanyID = companyID;
-                        ur.CreatedBy = userID;
-                        ur.CreatedOn = DateTime.Now;
-                        ur.RoleID = roleId;
-                        userRole.Add(ur);
-                    }
-                    user.UserRoles = userRole;
-
+               
                     user.ModifiedOn = DateTime.Now;
                     user.ModifiedBy = userID;
 
-                    if (user.UserID == 0)
+                    if (user.userId == 0)
                     {
-                        user.CompanyID = companyID;
-                        user.ImagePath = "./assets/images/userProfile/100_1.jpg";
                         user.CreatedOn = DateTime.Now;
                         user.CreatedBy = userID;
-                        string Randampass = CommonFuntions.GenerateRandomPassword(user.FirstName.Substring(0, 2), 8);
-                        user.Password = CommonFuntions.Encrypt(Randampass);
+                         user.password = CommonFuntions.Encrypt(user.password);
                         uow.UserRepository.AddUser(user);
                     }
                     else
                     {
-                        User objUser = (await uow.UserRepository.FindUser(userData.UserID)).FirstOrDefault();
-
-                        user.CompanyID = objUser.CompanyID;
-                        user.ImagePath = objUser.ImagePath;
-                        user.Password = objUser.Password;
+                        User objUser = (await uow.UserRepository.FindUser(userData.userId)).FirstOrDefault();
+                        user.password = objUser.password;
                         user.CreatedOn = objUser.CreatedOn;
                         user.CreatedBy = objUser.CreatedBy;
-
                         uow.UserRepository.UpdateUser(user);
-                        uow.UserRoleRepository.DeleteUserRoleByUserId(user.UserID);
+                        uow.UserCompanyRepository.DeleteUserCompanyByUserId(user.userId);
+                    }
+                    List<UserCompany> lstuserCompany = new List<UserCompany>();
+                    foreach (var item in userData.userCompanyList)
+                    {
+                        UserCompany userCompany = new UserCompany();
+                        userCompany.CompanyCode = item.companyCode;
+                        userCompany.CompanyName = item.companyName;
+                        userCompany.CreatedBy = userID;
+                        userCompany.CreatedOn = DateTime.Now;
+                        userCompany.userID = user.userId;
+                        lstuserCompany.Add(userCompany);
+                    }
+                    user.Usercompany = lstuserCompany;
+                   
+                    uow.UserCompanyRepository.AddUserCompany(lstuserCompany);
+                    await uow.SaveAsync();
+
+                    List<User> lstUsers = new List<User>();
+                    lstUsers=await uow.UserRepository.GetUsersAsync();
+                    List<UserReqDto> lstreqDto = new List<UserReqDto>();
+                    foreach (var item in lstUsers)
+                    {
+                       UserReqDto reqDto = new UserReqDto();
+                        reqDto = mapper.Map<UserReqDto>(item);
+                        List<UserCompanyList> lstUserCompany = new List<UserCompanyList>();
+                        List<UserCompany> lstcom = await uow.UserCompanyRepository.GetUserCompanyByUserId(reqDto.userId);
+                        foreach (var userCompany in lstcom)
+                        {
+                            UserCompanyList lst = new UserCompanyList();
+                            lst.companyCode = userCompany.CompanyCode;
+                            lst.companyName = userCompany.CompanyName;
+                            lstUserCompany.Add(lst);
+                        }
+                        reqDto.userCompanyList = lstUserCompany;
+                        lstreqDto.Add(reqDto);
                     }
 
-                    //user.UserRoles = userRole;
-                    uow.UserRoleRepository.AddUserRole(user.UserRoles);
 
-                    await uow.SaveAsync();
-                   
-                    res.MessageType = "S";
-                    if (userData.UserID == 0)
+
+                    responseResult.UserReqDto = lstreqDto;
+                    responseResult.messageType = "S";
+                    if (userData.userId == 0)
                     {
-                        bool isMailsent = await uow.UserRepository.SendEmailToUserNewPwd(user);
 
-                        res.Message = isMailsent ? MessageConstant.RecordAdded + " " + MessageConstant.PasswordSentToEmailID : MessageConstant.RecordAdded + " " + MessageConstant.FailedToSentEmail;
+                        responseResult.message = MessageConstant.RecordAdded;
                     }
                     else
-                        res.Message = MessageConstant.RecordUpdated;
+                        responseResult.message = MessageConstant.RecordUpdated;
                 }
                 else
                 {
-                    res.MessageType = "E";
-                    res.Message = MessageConstant.Something_went_wrong;
+                    responseResult.messageType = "E";
+                    responseResult.message = MessageConstant.Something_went_wrong;
                 }
             }
             catch (Exception ex)
             {
-                res.MessageType = "E";
-                if (userData.UserID == 0)
-                    res.Message = MessageConstant.FailedToAddRecord;
+                responseResult.messageType = "E";
+                if (userData.userId == 0)
+                    responseResult.message = MessageConstant.FailedToAddRecord;
                 else
-                    res.Message = MessageConstant.FailedToUpdateRecord;
+                    responseResult.message = MessageConstant.FailedToUpdateRecord;
 
                 logger.Log(LogLevel.Error, ex.Message);
             }
 
-            return Ok(new { ResponseResultDto = res });
+            return Ok(new { responseDto = responseResult });
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        [Route("DeleteUser")]
-        public async Task<IActionResult> DeleteUser(int userID)
-        {
-            ResponseResultDto res = new ResponseResultDto();
-
-            try
-            {
-                if (uow.UserRepository.IsUserDeleteAllow(userID))
-                {
-                    res.MessageType = "E";
-                    res.Message = MessageConstant.RecordIsInUse;
-                    return Ok(new { ResponseResultDto = res });
-                }
-
-                uow.UserRoleRepository.DeleteUserRoleByUserId(userID);
-                uow.UserRepository.DeleteUser(userID);
-                await uow.SaveAsync();
-
-                var identity = User.Identity as ClaimsIdentity;
-                if (identity != null)
-                {
-                    IEnumerable<Claim> claims = identity.Claims;
-                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
-                    int companyID = Convert.ToInt32(CompanyId);
-                    List<User> lstUsers = await uow.UserRepository.GetUsersAsync(companyID);
-                    res.data = lstUsers;
-                }
-
-                res.MessageType = "S";
-                res.Message = MessageConstant.RecordDeleted;
-                return Ok(new { ResponseResultDto = res });
-            }
-            catch(Exception ex)
-            {
-                logger.Log(LogLevel.Error, ex.Message);
-
-                res.MessageType = "E";
-                res.Message = MessageConstant.FailedToDeleteRecord;
-                return Ok(new { ResponseResultDto = res });
-            }
-        }
     }
 }

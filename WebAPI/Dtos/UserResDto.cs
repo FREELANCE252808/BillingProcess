@@ -8,19 +8,12 @@ namespace WebAPI.Dtos
 {
     public class UserResDto
     {
-        public int UserID { get; set; }
 
-        public string FirstName { get; set; }
 
-        public string LastName { get; set; }
+        public string message { get; set; }
 
-    
-        public string EmailId { get; set; }
+        public string messageType { get; set; }    
 
-        public string ImagePath { get; set; }
-
-        public string Status { get; set; }
-
-        public List<int> RoleId { get; set; }
+        public List<UserReqDto> UserReqDto { get; set; }
     }
 }

@@ -75,7 +75,7 @@ namespace WebAPI.Helpers
             bool sent = false;
             try
             {
-                string loggedInUserName = Convert.ToString(loggedInUser.FirstName) + " " + Convert.ToString(loggedInUser.LastName);
+                string loggedInUserName = Convert.ToString(loggedInUser.firstName) + " " + Convert.ToString(loggedInUser.lastName);
 
                 Guid objGuid = new Guid();
                 objGuid = Guid.NewGuid();

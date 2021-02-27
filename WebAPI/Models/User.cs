@@ -8,30 +8,29 @@ namespace WebAPI.Models
     [Table("User")]
     public class User
     {
+
         [Key]
-        public int UserID { get; set; }
-
-        [Required(ErrorMessage = "CompanyID is mandatory field")]
-        public int CompanyID { get; set; }
-
+        public int userId { get; set; }
+        
         [Required(ErrorMessage = "FirstName is mandatory field")]
         [StringLength(200, MinimumLength = 2)]
-        public string FirstName { get; set; }
+        public string firstName { get; set; }
 
         [StringLength(200, MinimumLength = 2)]
-        public string LastName { get; set; }
+        public string lastName { get; set; }
 
         [StringLength(1000, MinimumLength = 2)]
-        public string Password { get; set; }
+        public string password { get; set; }
+
 
         [StringLength(200, MinimumLength = 2)]
-        public string EmailId { get; set; }
+        public string userName { get; set; }
 
-        [StringLength(400, MinimumLength = 2)]
-        public string ImagePath { get; set; }
 
-        [StringLength(1)]
-        public string Status { get; set; }
+     
+        public bool isAdmin { get; set; }
+        public bool isActive { get; set; }
+
 
         [Required]
         public DateTime CreatedOn { get; set; }
@@ -45,6 +44,6 @@ namespace WebAPI.Models
         [Required]
         public int ModifiedBy { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserCompany> Usercompany { get; set; }
     }
 }

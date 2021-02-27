@@ -28,18 +28,18 @@ namespace WebAPI.Data.Repo
 
         public void DeleteUser(int userID)
         {
-            var user = dc.Users.AsNoTracking().Where(u => u.UserID == userID).FirstOrDefault();
+            var user = dc.Users.AsNoTracking().Where(u => u.userId == userID).FirstOrDefault();
             dc.Users.Remove(user);
         }
 
         public async Task<IQueryable<User>> FindUser(int userID)
         {
-            return await Task.Run(() => dc.Users.AsNoTracking().Where(u => u.UserID == userID));
+            return await Task.Run(() => dc.Users.AsNoTracking().Where(u => u.userId == userID));
         }
 
-        public async Task<List<User>> GetUsersAsync(int companyID)
+        public async Task<List<User>> GetUsersAsync()
         {
-            return await dc.Users.Where(u => u.CompanyID == companyID).ToListAsync();
+            return await dc.Users.ToListAsync();
         }
 
         public void UpdateUser(User user)
@@ -47,12 +47,12 @@ namespace WebAPI.Data.Repo
             dc.Users.Update(user);
         }
 
-        public bool IsEmailIdExists(string emailId, int companyID, int userID = 0)
+        public bool IsUserNameExists(string userName, int companyID, int userID = 0)
         {
             if (userID == 0)
-                return dc.Users.Where(u => u.EmailId == emailId && u.CompanyID == companyID).Count() > 0 ? true : false;
+                return dc.Users.Where(u => u.userName == userName && u.isActive == true).Count() > 0 ? true : false;
             else
-                return dc.Users.Where(u => u.EmailId == emailId && u.CompanyID == companyID && u.UserID != userID).Count() > 0 ? true : false;
+                return dc.Users.Where(u => u.userName == userName && u.isActive == true && u.userId != userID).Count() > 0 ? true : false;
         }
 
         public bool IsUserDeleteAllow(int userID)
@@ -69,21 +69,21 @@ namespace WebAPI.Data.Repo
             try
             {
                 string EmailTemplate = EmailSMSTemplateRepository.GetEmailTemplateDesc(EmailSMSTemplateRepository.enu_EmailSMSTemplate.NewUserCreated);
-                EmailSMSTemplate objBEEmailTemplate = await dc.EmailSMSTemplate.FirstOrDefaultAsync(a => a.EmailDesc == EmailTemplate && a.CompanyID == objUser.CompanyID && a.Status == "A");
+                EmailSMSTemplate objBEEmailTemplate = null;// await dc.EmailSMSTemplate.FirstOrDefaultAsync(a => a.EmailDesc == EmailTemplate && a.CompanyID == objUser.co && a.Status == "A");
                 String emailDesc = objBEEmailTemplate.EmailMessageBody;
                 String emailSubject = objBEEmailTemplate.EmailSubject;
-                String username = Convert.ToString(objUser.FirstName) + " " + Convert.ToString(objUser.LastName);
-                MailAddress mailID = new MailAddress(objUser.EmailId, username);
+                String username = Convert.ToString(objUser.firstName) + " " + Convert.ToString(objUser.lastName);
+                MailAddress mailID = new MailAddress(objUser.userName, username);
                 message.To.Add(mailID);
                 message.Subject = emailSubject;
 
                 emailDesc = emailDesc.Replace("#ToUser#", username);
-                emailDesc = emailDesc.Replace("#UserEmailID#", objUser.EmailId);
-                emailDesc = emailDesc.Replace("#Password#", CommonFuntions.Decrypt(objUser.Password));
+                //emailDesc = emailDesc.Replace("#UserEmailID#", objUser.EmailId);
+               // emailDesc = emailDesc.Replace("#Password#", CommonFuntions.Decrypt(objUser.Password));
                 emailDesc = emailDesc.Replace("#EmailBy#", EmailConfigdata.AppAdmin);
                 message.Body = emailDesc;
 
-                mailSent = CommonFuntions.SendEmailsAuthenticate(message, EmailConfigdata, objUser.EmailId);
+                mailSent = false;                 //CommonFuntions.SendEmailsAuthenticate(message, EmailConfigdata, objUser.EmailId);
             }
             catch (Exception ex)
             {
