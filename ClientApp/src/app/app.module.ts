@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     TopNavComponent,
-    MenuListItemComponent
+    MenuListItemComponent,
   ],
   imports: [
     HttpClientModule,
