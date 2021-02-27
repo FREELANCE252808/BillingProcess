@@ -1,17 +1,46 @@
 <p>user-details works!</p>
+<mat-sidenav-container class="example-container">
+
+</mat-sidenav-container>
+
 
 <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
   <div class="item item-1" fxFlex="50%">
-    <button color="primary" matButton matTooltip = "Add User"
+    <button color="primary" mat-button matTooltip = "Add User"
             name="addUser"
             (click)="addUser()"><mat-icon>add_circle</mat-icon>Add User</button>
   </div>
 </div>
 
+
 <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
-  <div class="item item-1" fxFlex="50%">
+  <div class="item item-1" fxFlex="100%">
     <div class="overflow-auto">
-      Test
+      <table mat-table [dataSource]="dataSource" matSort>
+        <<ng-container [matColumnDef]="column.name" *ngFor="let column of tableData" [sticky]="column.sticky">
+          <th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.columnDef" [ngClass]="column.class">
+            {{column.header}}
+          </th>
+          <td mat-cell *matCellDef = "let element; let i=index;">
+            <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header === 'Action'">
+
+              <div>
+                <button mat-button color="primary" matTooltip="Edit User Details" (click)="editUserDetails(element.userId)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+
+            </div>
+
+            <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header !== 'Action'" class="ellipsis" [matTooltip] = "element[column.name]">
+              {{element[column.name]}}
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef = "displayedColumns"></tr>
+        <tr mat-row *matRowDef = "let row; columns: displayedColumns;"></tr>
+      </table>
     </div>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,15,20]" showFirstLastButtons></mat-paginator>
   </div>
 </div>

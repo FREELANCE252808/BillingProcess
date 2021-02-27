@@ -2,8 +2,10 @@ export class UserDetails {
   firstname: string;
   lastname: string;
   userName: string;
+  userId: number;
   password: string;
   isAdmin: boolean;
   isActive: boolean;
-  company: string[];
+  companyList?: string[];
+  company: any[];
 }

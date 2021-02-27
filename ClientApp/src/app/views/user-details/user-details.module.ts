@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    MatSidenavModule,
     MatTableModule,
     MatSortModule,
     NgxMatSelectSearchModule,
