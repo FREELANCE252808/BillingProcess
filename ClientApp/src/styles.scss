@@ -318,8 +318,8 @@ th.xl.mat-header-cell {
 
 .application-sidenav {
   position: relative;
-  min-width: 30%;
-  max-width: 60%;
+   min-width: 500px;
+  // max-width: 60%;
 
   .container {
     padding: 15px;
@@ -346,10 +346,20 @@ th.xl.mat-header-cell {
 
   footer{
     padding: 0 15px;
-    position: sticky;
+    // position: -webkit-sticky;
+    position: fixed;
     bottom: 0;
-    left: 0;
+    width: 30%;
+    left: auto 0;
     background-color: white;
     border-top: 1px solid #ddd;
   }
+}
+
+.margin-top-20{
+  margin-top: 20px;
+}
+
+.margin-top-50 {
+  margin-top: 5%;
 }

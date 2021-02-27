@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { MenuListItemComponent } from './components/menu-list-item/menu-list-item.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { MenuListItemComponent } from './components/menu-list-item/menu-list-ite
     MenuListItemComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

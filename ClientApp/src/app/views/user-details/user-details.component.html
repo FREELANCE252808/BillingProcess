@@ -1,46 +1,162 @@
-<p>user-details works!</p>
 <mat-sidenav-container class="example-container">
+  <mat-sidenav class="example-container_sidenav" #userDetailsSideNav position = "end"
+                [disableClose]="true" mode="over" style="overflow: hidden;">
+
+                <section class="application-sidenav">
+                  <header>
+                    <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+                      <div class="item item-1" fxFlex="80%">
+                        <h3 class="margin-bottom-0">Add / Edit User Details</h3>
+                      </div>
+                      <div class="item item-1" fxFlex="20%">
+                        <button mat-button matTooltip = "Close"
+                                name="closeUserPanel"
+                                (click)="userDetailsSideNav.close()"><mat-icon>close</mat-icon></button>
+                      </div>
+                    </div>
+                  </header>
+                  <section class="main">
+                    <!-- (ngSubmit)="onSubmit()" -->
+                    <form [formGroup]="registerForm">
+                      <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+                        <div class="item item-1" fxFlex="50%">
+                          <mat-form-field appearance="outline">
+                            <mat-label>First Name</mat-label>
+                            <input matInput placeholder="First Name" formControlName ="firstName" required>
+                            <mat-error *ngIf="submitted && f.firstName.errors && f.firstName.errors.required">
+                              First Name is required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div class="item item-1" fxFlex="50%">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput placeholder="Last Name" formControlName ="lastName" required>
+                            <mat-error *ngIf="submitted && f.lastName.errors && f.lastName.errors.required">
+                              Last Name is required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
+
+                      <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+                        <div class="item item-1" fxFlex="50%">
+                          <mat-form-field appearance="outline">
+                            <mat-label>User Name</mat-label>
+                            <input matInput placeholder="user Name" formControlName ="userName" required>
+                            <mat-error *ngIf="submitted && f.userName.errors && f.userName.errors.required">
+                              User Name is required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div class="item item-1" fxFlex="50%">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Password</mat-label>
+                            <input matInput placeholder="Last Name" formControlName ="password" type="password" required>
+                            <mat-error *ngIf="submitted && f.password.errors && f.password.errors.required">
+                              Password is required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                      </div>
+
+                      <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+                        <div class="item item-1" fxFlex="50%">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Company</mat-label>
+                            <mat-select formControlName="userCompanyList" name="userCompanyList" required>
+                              <mat-option *ngFor="let company of listOfCompanies" [value]="company">
+                                {{company.companyName}}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="submitted && f.userCompanyList.errors && f.userCompanyList.errors.required">
+                              Company is required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+
+                        <div class="item item-2" fxFlex="50%">
+                          <mat-checkbox formControlName="isAdmin" name="isAdmin">Is Admin</mat-checkbox>
+                        </div>
+                      </div>
+                        <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+
+                        <div class="item item-1" fxFlex="50%">
+                          <mat-checkbox id="isActive" color="primary"
+                          formControlName="isActive">Is Active</mat-checkbox>
+                        </div>
+                      </div>
+
+                    </form>
+                  </section>
+                  <footer>
+                    <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+                      <div class="item item-1" fxFlex="50%">
+                        <button mat-raised-button matTooltip = "Cancel"
+                              color="primary"
+                                name="cancelUserPanel"
+                                (click)="userDetailsSideNav.close()">Cancel</button>
+                      </div>
+                      <div class="item item-2 text-right" fxFlex="50%">
+                        <button color="primary" mat-raised-button matTooltip = "Submit User Details"
+                                name="submitUserPanel"
+                                (click)="submitUserDetails()">Submit</button>
+                      </div>
+                    </div>
+                  </footer>
+                </section>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="margin-top-50">
+      <h1>User Details</h1>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="container margin-top-20">
+      <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+        <div class="item item-1" fxFlex="50%">
+          <button color="primary" mat-button matTooltip = "Add User"
+                  name="addUser"
+                  (click)="addUser()"><mat-icon>add_circle</mat-icon>Add User</button>
+        </div>
+      </div>
+
+
+      <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+        <div class="item item-1" fxFlex="100%">
+          <div class="overflow-auto">
+            <table mat-table [dataSource]="dataSource" matSort>
+              <<ng-container [matColumnDef]="column.name" *ngFor="let column of tableData" [sticky]="column.sticky">
+                <th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.columnDef" [ngClass]="column.class">
+                  {{column.header}}
+                </th>
+                <td mat-cell *matCellDef = "let element; let i=index;">
+                  <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header === 'Action'">
+
+                    <div>
+                      <button mat-button color="primary" matTooltip="Edit User Details" (click)="editUserDetails(element.userId)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </div>
+
+                  </div>
+
+                  <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header !== 'Action'" class="ellipsis" [matTooltip] = "element[column.name]">
+                    {{element[column.name]}}
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef = "displayedColumns"></tr>
+              <tr mat-row *matRowDef = "let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+          <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,15,20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-content>
 
 </mat-sidenav-container>
 
 
-<div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
-  <div class="item item-1" fxFlex="50%">
-    <button color="primary" mat-button matTooltip = "Add User"
-            name="addUser"
-            (click)="addUser()"><mat-icon>add_circle</mat-icon>Add User</button>
-  </div>
-</div>
-
-
-<div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
-  <div class="item item-1" fxFlex="100%">
-    <div class="overflow-auto">
-      <table mat-table [dataSource]="dataSource" matSort>
-        <<ng-container [matColumnDef]="column.name" *ngFor="let column of tableData" [sticky]="column.sticky">
-          <th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.columnDef" [ngClass]="column.class">
-            {{column.header}}
-          </th>
-          <td mat-cell *matCellDef = "let element; let i=index;">
-            <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header === 'Action'">
-
-              <div>
-                <button mat-button color="primary" matTooltip="Edit User Details" (click)="editUserDetails(element.userId)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-              </div>
-
-            </div>
-
-            <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header !== 'Action'" class="ellipsis" [matTooltip] = "element[column.name]">
-              {{element[column.name]}}
-            </div>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef = "displayedColumns"></tr>
-        <tr mat-row *matRowDef = "let row; columns: displayedColumns;"></tr>
-      </table>
-    </div>
-    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,15,20]" showFirstLastButtons></mat-paginator>
-  </div>
-</div>

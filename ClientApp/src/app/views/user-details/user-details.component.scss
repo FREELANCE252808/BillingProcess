@@ -13,7 +13,23 @@
 
   &_sidenav {
     &::before {
-      
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      display: block;
+      height: 100%;
     }
   }
+}
+
+.margin-bottom-0{
+  margin-bottom: 0;
+}
+
+.mat-header-cell {
+  font-size: 15px;
+  font-weight: 800;
+  color: #00385e;
+  text-align: left;
+  background: #f7f7f7;
 }

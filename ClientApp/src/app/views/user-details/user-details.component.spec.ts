@@ -23,3 +23,23 @@ describe('UserDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+
+
+{
+  "userId": 1,
+  "firstName": "Bipin",
+  "lastName": "Singh",
+  "isAdmin": true,
+  "isActive": true,
+  "userName": "admin",
+  "password": "Q/Iykc7D/qLZUhdiCWeWzg==",
+  "userCompanyList": [
+  {
+  "companyName": "Microsoft",
+  "companyCode": "MS"
+  },
+  {
+  "companyName": "Apple",
+  "companyCode": "APP"
+  }
