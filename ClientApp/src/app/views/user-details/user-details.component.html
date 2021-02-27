@@ -107,7 +107,7 @@
                 </section>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div class="margin-top-50">
+    <div>
       <h1>User Details</h1>
     </div>
 
@@ -142,8 +142,9 @@
 
                   </div>
 
-                  <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header !== 'Action'" class="ellipsis" [matTooltip] = "element[column.name]">
-                    {{element[column.name]}}
+                  <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header !== 'Action'" class="ellipsis"
+                   [matTooltip] = "(column.type === 'string') ? element[column.name]: getFlatData(element[column.name])">
+                    {{(column.type === 'string') ? element[column.name]: getFlatData(element[column.name])}}
                   </div>
                 </td>
               </ng-container>

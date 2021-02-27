@@ -20,14 +20,14 @@ export class UserDetailsComponent implements OnInit, OnChanges {
   addOrEditUserDetail: UserDetails;
   dataSource = new MatTableDataSource<any>();
   tableData = [
-    {header: 'Action', name: 'userId', class:'sm', sticky: true},
-    {header: 'First Name', name: 'firstName', class:'sm', sticky: false},
-    {header: 'Last Name', name: 'lastName', class:'sm', sticky: false},
-    {header: 'User Name', name: 'userName', class:'sm', sticky: false},
-    {header: 'Password', name: 'password', class:'sm', sticky: false},
-    {header: 'Company', name: 'companyList', class:'sm', sticky: false},
-    {header: 'Is Admin', name: 'isAdmin', class:'sm', sticky: false},
-    {header: 'Is Active', name: 'isActive', class:'sm', sticky: false},
+    {header: 'Action', name: 'userId', class:'sm', type: 'string',sticky: true},
+    {header: 'First Name', name: 'firstName', class:'sm', type: 'string',sticky: false},
+    {header: 'Last Name', name: 'lastName', class:'sm', type: 'string',sticky: false},
+    {header: 'User Name', name: 'userName', class:'sm', type: 'string',sticky: false},
+    {header: 'Password', name: 'password', class:'sm', type: 'string',sticky: false},
+    {header: 'Company', name: 'userCompanyList', class:'sm', type: 'array',sticky: false},
+    {header: 'Is Admin', name: 'isAdmin', class:'sm', type: 'string',sticky: false},
+    {header: 'Is Active', name: 'isActive', class:'sm', type: 'string',sticky: false},
   ];
   displayedColumns = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -47,7 +47,8 @@ export class UserDetailsComponent implements OnInit, OnChanges {
       password: ['', [Validators.required, Validators.minLength(6)]],
       isAdmin: [false],
       isActive: [true],
-      userCompanyList: this.formBuilder.array([])
+      userCompanyList:[[]]
+      // userCompanyList: this.formBuilder.array([])
       // userCompanyList: this.formBuilder.array([], Validators.required)
     });
     this.displayedColumns = this.tableData.map(data=> data.name);
@@ -58,7 +59,6 @@ export class UserDetailsComponent implements OnInit, OnChanges {
       userName: "shreyash",
       password: "shreyash",
       userCompanyList: [{companyId: '1', companyName: 'abc'}, {companyId: '2', companyName: 'bcd'}],
-      companyList: ['abc', 'bcd'],
       isAdmin: true,
       isActive: true
     },{
@@ -68,7 +68,6 @@ export class UserDetailsComponent implements OnInit, OnChanges {
       userName: "Bipin",
       password: "Bipin",
       userCompanyList: [{companyId: '1', companyName: 'abc'}, {companyId: '2', companyName: 'bcd'}],
-      companyList: ['abc', 'bcd'],
       isAdmin: true,
       isActive: true
     }];
@@ -100,7 +99,7 @@ export class UserDetailsComponent implements OnInit, OnChanges {
     console.log(event);
     this.addOrEditUserDetail = this.userDetails.filter(data=> data.userId)[0];
     console.log('this.addOrEditUserDetail', this.addOrEditUserDetail);
-    this.registerForm.setValue(this.addOrEditUserDetail);
+    this.registerForm.patchValue(this.addOrEditUserDetail);
     this.sideNav.open();
   }
 
@@ -123,6 +122,10 @@ export class UserDetailsComponent implements OnInit, OnChanges {
   onReset() {
     this.submitted = false;
     this.registerForm.reset();
-}
+  }
+
+  getFlatData(data){
+    return data.map(data=> data.companyName);
+  }
 
 }

@@ -363,3 +363,12 @@ th.xl.mat-header-cell {
 .margin-top-50 {
   margin-top: 5%;
 }
+
+.mat-drawer-content {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  overflow: hidden !important;
+}

@@ -4,7 +4,7 @@
   flex: 1 0 0;
   position: absolute;
   background: transparent;
-  top: 0;
+  top: 50px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -33,3 +33,12 @@
   text-align: left;
   background: #f7f7f7;
 }
+
+.mat-drawer-content {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  overflow: hidden !important;
+}
+
