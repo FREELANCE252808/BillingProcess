@@ -12,6 +12,9 @@ const routes: Routes = [
   },{
     path: 'login',
     loadChildren: () => import('./views/login/login.module').then(m => m.LoginModule)
+  },{
+    path: 'change-password',
+    loadChildren: () => import('./views/change-password/change-password.module').then(m => m.ChangePasswordModule)
   }
 ];
 

@@ -2,5 +2,14 @@
   <button mat-icon-button id="menu" (click)="navService.openNav()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Admin Billing Process</span>
+
+  <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">
+    <div class="item item-1" fxFlex="80%">
+      <span>Admin Billing Process</span>
+    </div>
+    <div class="item item-2 text-right" fxFlex="20%">
+      <button mat-raised-button color="primary" (click)="logOut()"><mat-icon>logout</mat-icon>LogOut</button>
+    </div>
+    </div>
+
 </mat-toolbar>

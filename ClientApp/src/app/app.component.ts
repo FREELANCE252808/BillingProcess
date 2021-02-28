@@ -1,4 +1,5 @@
 import {Component, ViewChild, ElementRef, ViewEncapsulation, AfterViewInit} from '@angular/core';
+import { Router } from '@angular/router';
 import { NavItem } from './models/nav-item';
 import { NavService } from './services/nav.service';
 
@@ -17,17 +18,17 @@ export class AppComponent implements AfterViewInit {
       children: []
     },
     {
+      displayName: 'Change Password',
+      iconName: 'password',
+      route: '/change-password',
+      children: []
+    },
+    {
       displayName: 'User Details',
       iconName: 'account_circle',
       route: 'user',
       children: [
       ]
-    },
-    {
-      displayName: 'Logout',
-      iconName: 'logout',
-      route: '',
-      children: []
     },
     {
       displayName: 'Orlando',
@@ -205,10 +206,15 @@ export class AppComponent implements AfterViewInit {
     },
   ];
 
-  constructor(private navService: NavService) {
+  constructor(private navService: NavService, private router: Router) {
   }
 
   ngAfterViewInit() {
     this.navService.appDrawer = this.appDrawer;
+  }
+
+  logOut(event){
+    console.log('event');
+    this.router.navigateByUrl('/login');
   }
 }

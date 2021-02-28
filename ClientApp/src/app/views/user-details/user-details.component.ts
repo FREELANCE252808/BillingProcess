@@ -91,13 +91,14 @@ export class UserDetailsComponent implements OnInit, OnChanges {
 
   addUser(): void{
     this.addOrEditUserDetail = new UserDetails()
+    this.registerForm.patchValue(this.addOrEditUserDetail);
     console.log('addition this.addOrEditUserDetail', this.addOrEditUserDetail)
     this.sideNav.open();
   }
 
   editUserDetails(event): void {
     console.log(event);
-    this.addOrEditUserDetail = this.userDetails.filter(data=> data.userId)[0];
+    this.addOrEditUserDetail = this.userDetails.filter(data=> data.userId === event)[0];
     console.log('this.addOrEditUserDetail', this.addOrEditUserDetail);
     this.registerForm.patchValue(this.addOrEditUserDetail);
     this.sideNav.open();

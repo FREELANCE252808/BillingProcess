@@ -23,7 +23,7 @@
                           <mat-form-field appearance="outline">
                             <mat-label>First Name</mat-label>
                             <input matInput placeholder="First Name" formControlName ="firstName" required>
-                            <mat-error *ngIf="submitted && f.firstName.errors && f.firstName.errors.required">
+                            <mat-error>
                               First Name is required
                             </mat-error>
                           </mat-form-field>
@@ -32,7 +32,7 @@
                           <mat-form-field appearance="outline">
                             <mat-label>Last Name</mat-label>
                             <input matInput placeholder="Last Name" formControlName ="lastName" required>
-                            <mat-error *ngIf="submitted && f.lastName.errors && f.lastName.errors.required">
+                            <mat-error>
                               Last Name is required
                             </mat-error>
                           </mat-form-field>
@@ -44,7 +44,7 @@
                           <mat-form-field appearance="outline">
                             <mat-label>User Name</mat-label>
                             <input matInput placeholder="user Name" formControlName ="userName" required>
-                            <mat-error *ngIf="submitted && f.userName.errors && f.userName.errors.required">
+                            <mat-error>
                               User Name is required
                             </mat-error>
                           </mat-form-field>
@@ -53,7 +53,7 @@
                           <mat-form-field appearance="outline">
                             <mat-label>Password</mat-label>
                             <input matInput placeholder="Last Name" formControlName ="password" type="password" required>
-                            <mat-error *ngIf="submitted && f.password.errors && f.password.errors.required">
+                            <mat-error>
                               Password is required
                             </mat-error>
                           </mat-form-field>
@@ -69,14 +69,14 @@
                                 {{company.companyName}}
                               </mat-option>
                             </mat-select>
-                            <mat-error *ngIf="submitted && f.userCompanyList.errors && f.userCompanyList.errors.required">
+                            <mat-error>
                               Company is required
                             </mat-error>
                           </mat-form-field>
                         </div>
 
                         <div class="item item-2" fxFlex="50%">
-                          <mat-checkbox formControlName="isAdmin" name="isAdmin">Is Admin</mat-checkbox>
+                          <mat-checkbox color="primary" formControlName="isAdmin" name="isAdmin">Is Admin</mat-checkbox>
                         </div>
                       </div>
                         <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="left" fxlayoutGap="2em" fxLayoutGap.xs="0">

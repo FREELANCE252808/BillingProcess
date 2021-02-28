@@ -20,7 +20,7 @@ import { AuthService } from './views/login/services/auth.service';
   declarations: [
     AppComponent,
     TopNavComponent,
-    MenuListItemComponent,
+    MenuListItemComponent
   ],
   imports: [
     HttpClientModule,
