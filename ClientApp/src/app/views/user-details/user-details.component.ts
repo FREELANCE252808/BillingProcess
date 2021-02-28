@@ -52,6 +52,8 @@ export class UserDetailsComponent implements OnInit, OnChanges {
       // userCompanyList: this.formBuilder.array([], Validators.required)
     });
     this.displayedColumns = this.tableData.map(data=> data.name);
+    // API Call and assign value to user details
+    // API Call for companies also and assing it to listOfCompanies
     this.userDetails = [{
       userId: 0,
       firstName: "Shreyash",

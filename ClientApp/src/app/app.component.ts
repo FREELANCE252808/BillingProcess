@@ -2,6 +2,7 @@ import {Component, ViewChild, ElementRef, ViewEncapsulation, AfterViewInit} from
 import { Router } from '@angular/router';
 import { NavItem } from './models/nav-item';
 import { NavService } from './services/nav.service';
+import { AuthService } from './views/login/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -206,7 +207,7 @@ export class AppComponent implements AfterViewInit {
     },
   ];
 
-  constructor(private navService: NavService, private router: Router) {
+  constructor(private navService: NavService, private router: Router, public authService: AuthService) {
   }
 
   ngAfterViewInit() {

@@ -12,6 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AuthService } from './services/auth.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { UtilityService } from 'src/app/services/utility.service';
 
 
 @NgModule({
@@ -27,8 +29,9 @@ import { AuthService } from './services/auth.service';
     MatInputModule,
     MatIconModule,
     MatSelectModule,
+    MatSnackBarModule,
     LoginRoutingModule
   ],
-  providers: [AuthService]
+  providers: [AuthService, UtilityService]
 })
 export class LoginModule { }

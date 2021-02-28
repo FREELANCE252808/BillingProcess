@@ -15,12 +15,14 @@ import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { MenuListItemComponent } from './components/menu-list-item/menu-list-item.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from './views/login/services/auth.service';
+import { AccessDeniedPageComponent } from './views/accessDenied-page/accessDenied-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TopNavComponent,
-    MenuListItemComponent
+    MenuListItemComponent,
+    AccessDeniedPageComponent
   ],
   imports: [
     HttpClientModule,

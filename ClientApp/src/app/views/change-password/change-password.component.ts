@@ -11,14 +11,12 @@ import { AuthService } from '../login/services/auth.service';
 export class ChangePasswordComponent implements OnInit {
   changePassword: any =  {
     userId: '',
-    currentPassword: '',
     newPassword: '',
     confirmNewPassword: ''
   };
   constructor(private authService: AuthService,private utilityService: UtilityService, private snackBar: MatSnackBar) {
     this.changePassword = {
       userId: '',
-      currentPassword: '',
       newPassword: '',
       confirmNewPassword: ''
     };
@@ -37,6 +35,7 @@ export class ChangePasswordComponent implements OnInit {
     } else if(this.changePassword.newPassword !== this.changePassword.confirmNewPassword){
       this.utilityService.openSnackbar(this.snackBar, 'New Password and Confirm Password should be same.', '', 'red-snackbar');
     } else {
+       // Add API Call to Post change password
 
     }
   }

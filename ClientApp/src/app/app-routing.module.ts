@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AccessDeniedPageComponent } from './views/accessDenied-page/accessDenied-page.component';
 
 
 const routes: Routes = [
@@ -15,7 +16,15 @@ const routes: Routes = [
   },{
     path: 'change-password',
     loadChildren: () => import('./views/change-password/change-password.module').then(m => m.ChangePasswordModule)
-  }
+  },
+  {
+		path: '**',
+		component: AccessDeniedPageComponent
+	},{
+		path: '**',
+		redirectTo: '404',
+		pathMatch: 'full'
+	}
 ];
 
 @NgModule({

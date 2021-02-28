@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-content>
     <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <h2>Log In</h2>
+      <h2>Open Billing Portal</h2>
       <!-- <mat-error *ngIf="loginInvalid">
         The username and password were not recognised
       </mat-error> -->
@@ -13,6 +13,13 @@
       </mat-form-field>
       <mat-form-field class="full-width-input">
         <input matInput type="password" placeholder="Password" formControlName="password" required>
+        <mat-error>
+          Please provide a valid Password
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width-input">
+        <input matInput type="input" placeholder="Session Date" value="{{sessionDate | date: 'dd/MMMM/YYYY'}}" disabled>
         <mat-error>
           Please provide a valid Password
         </mat-error>
