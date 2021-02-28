@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WebAPI.Dtos;
 using WebAPI.Helpers;
 using WebAPI.Interfaces;
@@ -29,40 +33,127 @@ namespace WebAPI.Controllers
             this.mapper = mapper;
             this.logger = logger;
         }
-
+      
         [HttpGet]
-        [Route("GetUsers")]
+        [Route("GetAllUsers")]
         public async Task<IActionResult> GetUsers()
         {
-            ResponseResultDto result = new ResponseResultDto();
+            UserResDto responseResult = new UserResDto();
             List<User> lstUsers = new List<User>();
             try
             {
 
-                var identity = User.Identity as ClaimsIdentity;
-                if (identity != null)
+                lstUsers = await uow.UserRepository.GetUsersAsync();
+                List<UserReqDto> lstreqDto = new List<UserReqDto>();
+                foreach (var item in lstUsers)
                 {
-                    IEnumerable<Claim> claims = identity.Claims;
-                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
-                    int companyID = Convert.ToInt32(CompanyId);
-
-                    lstUsers = await uow.UserRepository.GetUsersAsync();
-                    result.data = lstUsers;
-                    result.MessageType = "S";
+                    UserReqDto reqDto = new UserReqDto();
+                    reqDto = mapper.Map<UserReqDto>(item);
+                    List<UserCompanyList> lstUserCompany = new List<UserCompanyList>();
+                    List<UserCompany> lstcom = await uow.UserCompanyRepository.GetUserCompanyByUserId(reqDto.userId);
+                    foreach (var userCompany in lstcom)
+                    {
+                        UserCompanyList lst = new UserCompanyList();
+                        lst.companyCode = userCompany.CompanyCode;
+                        lst.companyName = userCompany.CompanyName;
+                        lstUserCompany.Add(lst);
+                    }
+                    reqDto.userCompanyList = lstUserCompany;
+                    lstreqDto.Add(reqDto);
                 }
-                else
-                {
-                    result.MessageType = "E";
-                    result.Message = MessageConstant.Something_went_wrong;
-                }
+                responseResult.UserReqDto = lstreqDto;
+                responseResult.messageType = "S";
             }
             catch (Exception ex)
             {
                 logger.Log(LogLevel.Error, ex.Message);
             }
 
-            return Ok(new { ResponseResultDto = result });
+            return Ok(new { responseDto = responseResult });
         }
+
+        
+             [HttpGet]
+        [Route("GetCompanyList")]
+        public async Task<IActionResult> GetCompanyList()
+        {
+
+            List<CompanyListDto> lstcompanyListDto = new List<CompanyListDto>();
+            try
+            {
+             
+                var folderDetails = Path.Combine(Directory.GetCurrentDirectory(), $"{"MasterData\\CompanyList.json"}");
+                var JSON =System.IO.File.ReadAllText(folderDetails);
+                return Ok(new { responseDto = JSON });
+
+
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.Message);
+            }
+
+            return Ok(new { responseDto = lstcompanyListDto });
+        }
+
+
+    
+
+        [HttpPost]
+        [Route("changePassword")]
+        public async Task<IActionResult> changePassword(ChangePasswordReqDto changePassword)
+        {
+
+            ResponseDto res = new ResponseDto();
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity != null)
+                {
+                    IEnumerable<Claim> claims = identity.Claims;
+                    var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
+                    var CompanyId = claims.Where(p => p.Type == "companyId").FirstOrDefault()?.Value;
+                    int companyID = Convert.ToInt32(CompanyId);
+                    int userID = Convert.ToInt32(UserId);
+                    User userObj = await uow.AccountRepository.FindUser(changePassword.userId);
+                    if (userObj == null)
+                    {
+                        res.MessageType = "S";
+                        res.Message = MessageConstant.BadRequest;
+                        return Ok(new { ResponseDto = res });
+                    }
+                    string newPwd = CommonFuntions.Encrypt(changePassword.newPassword.Trim());
+                    userObj.password = newPwd;
+                    userObj.ModifiedBy = userID;
+                    userObj.ModifiedOn = DateTime.Now;
+                    userObj.userId = Convert.ToInt32(changePassword.userId);
+                    //  userObj.co = companyID;
+                    userObj.ModifiedBy = userID;
+                    userObj.ModifiedOn = DateTime.Now;
+                    await uow.SaveAsync();
+                    res.MessageType = "S";
+                    res.Message = MessageConstant.Password_changed_successfully;
+                    return Ok(new { ResponseDto = res });
+                }
+                else
+                {
+
+                    res.MessageType = "E";
+                    res.Message = MessageConstant.BadRequest;
+                    return Ok(new { ResponseDto = res });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex.Message);
+
+                res.MessageType = "E";
+                res.Message = MessageConstant.Something_went_wrong;
+                return Ok(new { ResponseDto = res });
+            }
+        }
+
 
         // GET: api/User/5
         [HttpGet("{id}", Name = "GetUserByUserID")]
@@ -131,7 +222,7 @@ namespace WebAPI.Controllers
                     var UserId = claims.Where(p => p.Type == "userId").FirstOrDefault()?.Value;
                     int userID = Convert.ToInt32(UserId);
 
-                    if (uow.UserRepository.IsUserNameExists(userData.userName, companyID, userData.userId))
+                    if (uow.UserRepository.IsUserNameExists(userData.userName,  userData.userId))
                     {
                         res.MessageType = "E";
                         res.Message = String.Format(MessageConstant.RecordAlreadyExists, "username '" + userData.userName + "'");

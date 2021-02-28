@@ -47,7 +47,7 @@ namespace WebAPI.Data.Repo
             dc.Users.Update(user);
         }
 
-        public bool IsUserNameExists(string userName, int companyID, int userID = 0)
+        public bool IsUserNameExists(string userName, int userID = 0)
         {
             if (userID == 0)
                 return dc.Users.Where(u => u.userName == userName && u.isActive == true).Count() > 0 ? true : false;
