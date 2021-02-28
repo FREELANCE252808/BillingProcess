@@ -24,10 +24,7 @@ namespace WebAPI.Models
 
 
         [StringLength(200, MinimumLength = 2)]
-        public string userName { get; set; }
-
-
-     
+        public string userName { get; set; }     
         public bool isAdmin { get; set; }
         public bool isActive { get; set; }
 

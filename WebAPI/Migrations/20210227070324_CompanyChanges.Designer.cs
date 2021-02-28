@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPI.Data;
 
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210227070324_CompanyChanges")]
+    partial class CompanyChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,9 +73,6 @@ namespace WebAPI.Migrations
                     b.Property<string>("companyCode")
                         .HasColumnType("nvarchar(300)")
                         .HasMaxLength(300);
-
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
 
                     b.HasKey("CompanyID");
 
@@ -442,6 +441,10 @@ namespace WebAPI.Migrations
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(1)")
+                        .HasMaxLength(1);
+
                     b.Property<string>("firstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(200)")
@@ -477,9 +480,8 @@ namespace WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CompanyCode")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                    b.Property<int>("CompanyID")
+                        .HasColumnType("int");
 
                     b.Property<string>("CompanyName")
                         .HasColumnType("nvarchar(200)")
