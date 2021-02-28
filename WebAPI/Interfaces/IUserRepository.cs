@@ -17,7 +17,7 @@ namespace WebAPI.Interfaces
 
         public Task<List<User>> GetUsersAsync();
 
-        public bool IsUserNameExists(string username, int companyID, int userID = 0);
+        public bool IsUserNameExists(string username, int userID = 0);
 
         public bool IsUserDeleteAllow(int userID);
 

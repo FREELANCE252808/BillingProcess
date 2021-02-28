@@ -21,4 +21,12 @@ namespace WebAPI.Dtos
         public int IntData;
        
     }
+    public class ResponseDto
+    {
+        public string Message;
+        public string MessageType;
+     
+       
+
+    }
 }

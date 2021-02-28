@@ -1,0 +1,20 @@
+{
+  "ConpanyList": [
+    {
+      "CompanyCode": "0001",
+      "CompanyName": "Applie"
+    },
+    {
+      "CompanyCode": "0002",
+      "CompanyName": "Microsoft"
+    },
+    {
+      "CompanyCode": "0003",
+      "CompanyName": "Reliance"
+    },
+    {
+      "CompanyCode": "0004",
+      "CompanyName": "Facebook"
+    }
+  ]
+}
