@@ -14,6 +14,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { MenuListItemComponent } from './components/menu-list-item/menu-list-item.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from './views/login/services/auth.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatButtonModule,
     MatIconModule
   ],
-  providers: [NavService],
+  providers: [NavService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
