@@ -15,6 +15,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -23,10 +27,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    MatInputModule,
+    MatDividerModule,
     MatSidenavModule,
     MatTableModule,
     MatSortModule,
     NgxMatSelectSearchModule,
+    MatCheckboxModule,
+    MatSelectModule,
     MatPaginatorModule,
     MatTooltipModule,
     MatFormFieldModule,
