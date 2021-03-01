@@ -7,12 +7,16 @@ import { environment } from 'src/environments/environment';
 })
 export class UserDetailsService {
   baseUrl = environment.API_URL;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+   }
 
   getAllCompanies(){
 
   }
 
+  GetAllUsers(data){
+    return this.http.post(`${this.baseUrl}api/User/GetAllUsers`, data)
+  }
   addUpdateUser(data){
     return this.http.post(`${this.baseUrl}api/User/AddEditUser`, data)
   }

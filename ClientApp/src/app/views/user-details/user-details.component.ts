@@ -36,7 +36,10 @@ export class UserDetailsComponent implements OnInit, OnChanges {
   registerForm: FormGroup;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private userDetailsService: UserDetailsService) { }
+  constructor(private formBuilder: FormBuilder,
+    private userDetailsService: UserDetailsService) {
+
+     }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
@@ -118,8 +121,6 @@ export class UserDetailsComponent implements OnInit, OnChanges {
         }, error=> {
           console.error(error)
         })
-
-
   }
 
   onReset() {
