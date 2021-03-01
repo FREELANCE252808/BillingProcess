@@ -4,6 +4,7 @@ import { Subject, from, Observable } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user';
+import { TokenStorage } from './token-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   baseURL = environment.API_URL;
   public onCredentialUpdated$: Subject<any>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private tokenStorage:TokenStorage) {
     this.onCredentialUpdated$ = new Subject();
   }
 
@@ -33,21 +34,20 @@ export class AuthService {
     // API
   }
 
-  private saveAccessData(accessData: any) {
+  public saveAccessData(accessData: any) {
 		debugger;
-		if (typeof accessData !== 'undefined') {
-			/* this.tokenStorage
-				.setAccessToken(accessData["accessData"].accessToken)
-				.setuserNameToken(accessData["accessData"].UserName)
-				.setuserIDToken(accessData["accessData"].UserID)
-				.setCompanyIDToken(accessData["accessData"].CompanyId)
-				.setEmailIDToken(accessData["accessData"].EmailID)
-				.setRefreshToken(accessData["accessData"].refreshToken)
-				.setHODToken(accessData["accessData"].HOD)
-				.setDepartmentIDToken(accessData["accessData"].DepartmentID)
-				.setUserRoles(accessData["accessData"].roles)
-				.setLocalImagePath(accessData["accessData"].ImagePath);
-			this.onCredentialUpdated$.next(accessData["accessData"]); */
+    		if (typeof accessData !== 'undefined') {
+			 this.tokenStorage
+				.settoken(accessData["accessData"].token)
+				.setuserFirstName(accessData["accessData"].firstName)
+        .setuserLastName(accessData["accessData"].lastName)
+				.setuserID(accessData["accessData"].UserID)
+				.setCompanyID(accessData["accessData"].CompanyId)
+				.setisAdmin(accessData["accessData"].isAdmin)
+				.setexpiration(accessData["accessData"].expiration)
+				.setRefreshToken(accessData["accessData"].RefreshToken)
+				.setloginStatus(true)
+			this.onCredentialUpdated$.next(accessData["accessData"]);
 		}
 	}
 
@@ -58,7 +58,7 @@ export class AuthService {
 		const headers = new HttpHeaders()
 			.set("Content-Type", "application/json; charset=utf-8");
 		return this.http.post<any>('api/Token/Login', credential, { headers: headers, params: params }).pipe(
-			map((result: any) => {
+			map(result => {
 				if (result instanceof Array) {
 					return result.pop();
 				}

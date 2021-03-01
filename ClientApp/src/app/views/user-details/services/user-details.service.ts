@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import {  UserDetails } from '../models/UserDetails';
+import { UserDetailsComponent } from '../user-details.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +13,16 @@ export class UserDetailsService {
    }
 
   getAllCompanies(){
-
+    return this.http.get(`${this.baseUrl}api/User/GetCompanyList`)
   }
 
-  GetAllUsers(data){
-    return this.http.post(`${this.baseUrl}api/User/GetAllUsers`, data)
+  GetAllUsers(){
+    return this.http.get(`${this.baseUrl}api/User/GetAllUsers`)
   }
-  addUpdateUser(data){
-    return this.http.post(`${this.baseUrl}api/User/AddEditUser`, data)
+
+  addUpdateUser(userData:any){
+    return this.http.post<any>(`${this.baseUrl}api/User/AddEditUser`, userData)
   }
+
+
 }

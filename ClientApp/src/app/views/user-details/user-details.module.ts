@@ -19,6 +19,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     NgxMatSelectSearchModule,
     MatCheckboxModule,
     MatSelectModule,
+    MatSnackBarModule,
     MatPaginatorModule,
     MatTooltipModule,
     MatFormFieldModule,

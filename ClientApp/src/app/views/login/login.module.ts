@@ -14,6 +14,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AuthService } from './services/auth.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UtilityService } from 'src/app/services/utility.service';
+import { AccountService } from './services/account.service';
+import { TokenStorage } from './services/token-storage.service';
+import { JwtIntercepterService } from 'src/app/interceptor/jwt.intercepter.service';
 
 
 @NgModule({
@@ -32,6 +35,6 @@ import { UtilityService } from 'src/app/services/utility.service';
     MatSnackBarModule,
     LoginRoutingModule
   ],
-  providers: [AuthService, UtilityService]
+  providers: [AuthService, UtilityService,AccountService,TokenStorage,JwtIntercepterService]
 })
 export class LoginModule { }

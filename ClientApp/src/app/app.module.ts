@@ -13,9 +13,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { MenuListItemComponent } from './components/menu-list-item/menu-list-item.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from './views/login/services/auth.service';
 import { AccessDeniedPageComponent } from './views/accessDenied-page/accessDenied-page.component';
+import { JwtIntercepterService } from './interceptor/jwt.intercepter.service';
+import { TokenStorage } from './views/login/services/token-storage.service';
+import { AccountService } from './views/login/services/account.service';
+import { UtilsService } from './views/login/services/utils.service';
+import { CustomDialogModule } from './components/customdialog/custom-dialog.module';
 
 @NgModule({
   declarations: [
@@ -36,9 +41,11 @@ import { AccessDeniedPageComponent } from './views/accessDenied-page/accessDenie
     MatListModule,
     MatToolbarModule,
     MatButtonModule,
+    CustomDialogModule,
     MatIconModule
   ],
-  providers: [NavService, AuthService],
+  providers: [NavService,TokenStorage,AccountService,
+    UtilsService, AuthService,{provide: HTTP_INTERCEPTORS, useClass: JwtIntercepterService, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

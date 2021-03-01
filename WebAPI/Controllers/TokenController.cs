@@ -194,7 +194,7 @@ namespace WebAPI.Controllers
             try
             {
 
-                if (model.userName != null && model.password != null)
+                if (model.userName != null)
                 {
                     // check if the received refreshToken exists for the given clientId
                     var rt = uow.TokenRepository.GetTokenAsync().Result.FirstOrDefault(t => t.ClientId == _appSettings.ClientId && t.Value == model.refreshtoken.ToString());

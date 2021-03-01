@@ -64,7 +64,9 @@
                         <div class="item item-1" fxFlex="50%">
                           <mat-form-field appearance="outline">
                             <mat-label>Company</mat-label>
-                            <mat-select formControlName="userCompanyList" name="userCompanyList" required>
+                            <mat-select formControlName="userCompanyList" name="userCompanyList" multiple
+                            [compareWith]="compareFn"
+                             required>
                               <mat-option *ngFor="let company of listOfCompanies" [value]="company">
                                 {{company.companyName}}
                               </mat-option>
@@ -143,8 +145,8 @@
                   </div>
 
                   <div fxLayout = "row" fxLayout.lt-md="column" *ngIf="column.header !== 'Action'" class="ellipsis"
-                   [matTooltip] = "(column.type === 'string') ? element[column.name]: getFlatData(element[column.name])">
-                    {{(column.type === 'string') ? element[column.name]: getFlatData(element[column.name])}}
+                   [matTooltip] = "(column.type === 'string') ? element[column.name]: getFlatData(element[column.name],column.type)">
+                    {{(column.type === 'string') ? element[column.name]: getFlatData(element[column.name], column.type)}}
                   </div>
                 </td>
               </ng-container>

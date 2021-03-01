@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
+import { AccountService } from './services/account.service';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
   showCompany = false;
   showLogin = true;
   sessionDate = new Date();
-  constructor(private authService: AuthService,
+  selectedCompany = '';
+  constructor(private accountService: AccountService,
      private router: Router,
      private formBuilder: FormBuilder,
      private snackBar: MatSnackBar,
@@ -26,37 +28,59 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.loginForm  =  this.formBuilder.group({
       username: ['', Validators.required],
-      password: ['', Validators.required]
-  });
+      password: ['', Validators.required],
+      selectedCompany: ['']
+   });
   }
 
   get formControls() { return this.loginForm.controls; }
 
+  loginWithCompany(){
+    debugger;
+    console.log('this.loginForm.value.selectedCompany', this.loginForm.value.selectedCompany);
+    if(this.loginForm.value.selectedCompany == ''){
+      this.utilityService.openSnackbar(this.snackBar, 'Please select company to continue', '', 'red-snackbar');
+    } else {
+      localStorage.setItem('companyId', this.loginForm.value.selectedCompany);
+      this.router.navigateByUrl('/');
+    }
+  }
+
   login(){
-    console.log(this.loginForm.value);
-    let login = this.loginForm.value;
-    login.grantType = "password";
-    login.refreshtoken = ""
+    this.showCompanyList = [];
+    this.selectedCompany = '';
+    debugger;
+    let data = this.loginForm.value;
+    console.log("data", data);
+
+    let login={
+      username : data.username,
+password : data.password,
+grantType : "password",
+refreshtoken : ""
+    };
     this.isSubmitted = true;
     if(this.loginForm.invalid){
       return;
     }
     console.log('login',login)
-    this.authService.login(login).subscribe(response=> {
-        if (response && response.authToken.token!=null && response.authToken.messageType != "I") {
-          this.showCompany = true;
-          this.showLogin = false;
-          // Set Local Storage and other related data
+    this.accountService.login(login).subscribe(response=> {
+
+debugger;
+        if (response && response.authToken.token!=null) {
+
+        this.showCompanyList=  response.authToken.userCompanyList;
+          if(this.showCompanyList && this.showCompanyList.length === 0){
+            this.utilityService.openSnackbar(this.snackBar,'No Company Mapped to User.', '', 'red-snackbar');
+          }
+          // this.router.navigateByUrl('/');
         }
         else if (typeof response && response.authToken.messageType == "I") {
-          this.showCompany = false;
-          this.showLogin = true;
           this.utilityService.openSnackbar(this.snackBar,'Invalid Credentials', '', 'red-snackbar');
         }
         else {
           this.utilityService.openSnackbar(this.snackBar,'Invalid Credentials', '', 'red-snackbar');
-          this.showCompany = false;
-          this.showLogin = true;
+
         }
       });
 
