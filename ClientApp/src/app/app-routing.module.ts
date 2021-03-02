@@ -8,6 +8,11 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./views/master-page/master-page.module').then(m => m.MasterPageModule)
   },
+
+  {
+    path: 'login',
+    loadChildren: () => import('./views/login/login.module').then(m => m.LoginModule)
+  },
   {
 		path: '**',
 		component: AccessDeniedPageComponent

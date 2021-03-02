@@ -23,7 +23,11 @@ export class TopNavComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.logOut();
+      debugger;
+      if(result==""){
+
+        this.logOut();
+      }
        });
   }
 
