@@ -1,5 +1,5 @@
-<!-- <ng-container *ngIf="authService.isLoggedIn();else login"> -->
-<ng-container>
+<ng-container *ngIf="authService.isLoggedIn();else login">
+<!-- <ng-container> -->
   <app-top-nav class="fixed-topnav" fxHide.gt-xs (logoutEvent)="logOut($event)"></app-top-nav>
   <mat-sidenav-container class="overflow-hidden">
     <mat-sidenav #appDrawer mode="over" opened="false" role="navigation">
@@ -13,6 +13,6 @@
     <!-- <span class="version-info">Current build: {{version.full ? version.full : version}}</span> -->
   </mat-sidenav-container>
 </ng-container>
-<!-- <ng-template #login>
+<ng-template #login>
 	<router-outlet></router-outlet>
-</ng-template> -->
+</ng-template>

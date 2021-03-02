@@ -21,13 +21,15 @@ import { TokenStorage } from './views/login/services/token-storage.service';
 import { AccountService } from './views/login/services/account.service';
 import { UtilsService } from './views/login/services/utils.service';
 import { CustomDialogModule } from './components/customdialog/custom-dialog.module';
+import { MasterPageComponent } from './views/master-page/master-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TopNavComponent,
     MenuListItemComponent,
-    AccessDeniedPageComponent
+    AccessDeniedPageComponent,
+    MasterPageComponent
   ],
   imports: [
     HttpClientModule,
