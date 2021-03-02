@@ -160,7 +160,7 @@ export class UserDetailsComponent implements OnInit, OnChanges {
           this.addOrEditUserDetail.userCompanyList =this.registerForm.value.userCompanyList;
           this.addOrEditUserDetail.userName=this.registerForm.value.userName;
         this.userDetailsService.addUpdateUser(this.addOrEditUserDetail).subscribe(data=>{
-debugger;
+
           this.userDetails = data.responseDto.userReqDto;
           this.setMatTable(this.userDetails);
           this.utilityService.openSnackbar(this.snackBar, data.responseDto.message, '', 'green-snackbar');
@@ -181,13 +181,11 @@ debugger;
     } else if(type === 'boolean'){
       return data ? 'Yes': 'No';
     }
-
   }
 
   compareFn(a, b){
 
-    console.log("a",a);
-    console.log("b",b);
+
     return a.CompanyCode == b.CompanyCode
   }
 
