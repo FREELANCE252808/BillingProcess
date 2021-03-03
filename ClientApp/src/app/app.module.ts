@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatButtonModule } from "@angular/material/button";
@@ -19,14 +19,16 @@ import { TokenStorage } from './views/login/services/token-storage.service';
 import { AccountService } from './views/login/services/account.service';
 import { UtilsService } from './views/login/services/utils.service';
 import { CustomDialogModule } from './components/customdialog/custom-dialog.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA
+],
   declarations: [
     AppComponent,
-
     AccessDeniedPageComponent
   ],
-  imports: [
+  imports: [NgxSpinnerModule,
     HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -39,7 +41,7 @@ import { CustomDialogModule } from './components/customdialog/custom-dialog.modu
     MatToolbarModule,
     MatButtonModule,
     CustomDialogModule,
-    MatIconModule
+    MatIconModule,
   ],
   providers: [NavService,TokenStorage,AccountService,
     UtilsService, AuthService,{provide: HTTP_INTERCEPTORS, useClass: JwtIntercepterService, multi: true}],

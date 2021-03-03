@@ -25,7 +25,6 @@ export class TopNavComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       debugger;
       if(result==""){
-
         this.logOut();
       }
        });

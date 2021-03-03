@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { TopNavComponent } from 'src/app/components/top-nav/top-nav.component';
 import { MenuListItemComponent } from 'src/app/components/menu-list-item/menu-list-item.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { MenuListItemComponent } from 'src/app/components/menu-list-item/menu-li
     MatSidenavModule,
     MatToolbarModule,
     MatButtonModule,
+    FlexLayoutModule,
     MatListModule,
     MatIconModule,
     MasterPageRoutingModule

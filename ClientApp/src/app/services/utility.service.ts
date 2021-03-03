@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
 
-  constructor() { }
+  constructor(private spinner: NgxSpinnerService) { }
 
   openSnackbar(snackbar, message: string, action: string, className: string, timeElapsed = 4000){
     snackbar.open(message, action, {
@@ -14,5 +15,13 @@ export class UtilityService {
       horizontalPosition: 'right',
       panelClass: [className]
     });
+  }
+
+  startLoading() {
+    this.spinner.show();
+  }
+
+  stopLoading() {
+    this.spinner.hide();
   }
 }

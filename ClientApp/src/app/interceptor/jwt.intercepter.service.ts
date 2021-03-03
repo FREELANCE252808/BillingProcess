@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
 import { AccountService } from '../views/login/services/account.service';
 import { AuthService } from '../views/login/services/auth.service';
+import { UtilityService } from '../services/utility.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,25 +14,29 @@ import { AuthService } from '../views/login/services/auth.service';
 export class JwtIntercepterService implements HttpInterceptor {
     private isTokenRefreshing: boolean = false;
   tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
-	constructor(private acct: AccountService,private authService:AuthService) { }
+	constructor(private acct: AccountService,
+    private authService:AuthService,private utilityService: UtilityService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     debugger;
     // Check if the user is logging in for the first time
-
+      this.utilityService.startLoading();
     return next.handle(this.attachTokenToRequest(request)).pipe(
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           console.log("Success");
+          this.utilityService.stopLoading();
+
         }
       }),
 		catchError((err): Observable<any> => {
-
+      this.utilityService.stopLoading();
 			if (err instanceof HttpErrorResponse) {
 
           switch ((<HttpErrorResponse>err).status) {
             case 401:
               console.log("Token expired. Attempting refresh ...");
+
               return this.handleHttpResponseError(request, next);
             case 400:
               return <any>this.acct.logout();
@@ -43,7 +48,9 @@ export class JwtIntercepterService implements HttpInterceptor {
         }
       })
 
-    );
+
+
+      );
 
   }
 
