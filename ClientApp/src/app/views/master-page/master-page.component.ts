@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef,  OnInit,  ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { NavItem } from 'src/app/models/nav-item';
 import { NavService } from 'src/app/services/nav.service';
@@ -9,43 +15,46 @@ import { TokenStorage } from '../login/services/token-storage.service';
 @Component({
   selector: 'app-master-page',
   templateUrl: './master-page.component.html',
-  styleUrls: ['./master-page.component.scss']
+  styleUrls: ['./master-page.component.scss'],
 })
-export class MasterPageComponent implements OnInit,  AfterViewInit {
+export class MasterPageComponent implements OnInit, AfterViewInit {
   @ViewChild('appDrawer') appDrawer: ElementRef;
   navItems: NavItem[] = [];
 
-  constructor(private navService: NavService, private router: Router,
-     public accountService: AccountService,public tokenStorage:TokenStorage) {
-  }
+  constructor(
+    private navService: NavService,
+    private router: Router,
+    public accountService: AccountService,
+    public tokenStorage: TokenStorage
+  ) {}
   ngOnInit(): void {
     this.navItems = [
       {
         displayName: 'Home',
         iconName: 'home',
         route: '',
-        children: []
+        children: [],
       },
       {
         displayName: 'Change Password',
         iconName: 'password',
         route: '/change-password',
-        children: []
+        children: [],
       },
       {
         displayName: 'Add Charges',
         iconName: 'add',
         route: '',
-        children: []
+        children: [],
       },
 
       {
         displayName: 'Move Charges',
         iconName: 'compare_arrows',
         route: '',
-        children: []
+        children: [],
       },
-  /*
+      /*
       {
         displayName: 'Orlando',
         iconName: 'videocam',
@@ -223,27 +232,23 @@ export class MasterPageComponent implements OnInit,  AfterViewInit {
       */
     ];
 
-    this.tokenStorage.getisAdmin().subscribe(isAdmin=>{
-      if(isAdmin=="true")
-      {
-          this.navItems.push({
-            displayName: 'User Details',
-            iconName: 'account_circle',
-            route: 'user',
-            children: [
-            ]
-          })
+    this.tokenStorage.getisAdmin().subscribe((isAdmin) => {
+      if (isAdmin == 'true') {
+        this.navItems.push({
+          displayName: 'User Details',
+          iconName: 'account_circle',
+          route: 'user',
+          children: [],
+        });
       }
-    })
-
+    });
   }
 
   ngAfterViewInit() {
     this.navService.appDrawer = this.appDrawer;
   }
 
-  logOut(event){
-    console.log('event');
+  logOut(event) {
     this.router.navigateByUrl('/login');
   }
 }

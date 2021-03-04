@@ -9,24 +9,24 @@ import { ChangePasswordService } from './services/change-password.service';
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  styleUrls: ['./change-password.component.scss']
+  styleUrls: ['./change-password.component.scss'],
 })
 export class ChangePasswordComponent implements OnInit {
-  changePassword: any =  {
+  changePassword: any = {
     userId: '',
     newPassword: '',
-    comfirmPassword: ''
+    comfirmPassword: '',
   };
-  constructor(private changePasswordService: ChangePasswordService,
+  constructor(
+    private changePasswordService: ChangePasswordService,
     private tokenStorage: TokenStorage,
-    private utilityService: UtilityService, private snackBar: MatSnackBar) {
-
-  }
+    private utilityService: UtilityService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-     this.tokenStorage.getuserID().subscribe(data=>{
+    this.tokenStorage.getuserID().subscribe((data) => {
       this.changePassword.userId = data;
-      console.log('this.changePassword.userId', this.changePassword.userId);
     });
 
     //  For setting userId
@@ -34,36 +34,49 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   changePasswordMethod() {
-    const result = !Object.values(this.changePassword).some(o=> o === '');
-    if(!result){
-      this.utilityService.openSnackbar(this.snackBar, 'Please fill all the mandatory fields to continue', '', 'red-snackbar');
+    const result = !Object.values(this.changePassword).some((o) => o === '');
+    if (!result) {
+      this.utilityService.openSnackbar(
+        this.snackBar,
+        'Please fill all the mandatory fields to continue',
+        '',
+        'red-snackbar'
+      );
       return;
-    } else if(this.changePassword.newPassword !== this.changePassword.comfirmPassword){
-      this.utilityService.openSnackbar(this.snackBar, 'New Password and Confirm Password should be same.', '', 'red-snackbar');
+    } else if (
+      this.changePassword.newPassword !== this.changePassword.comfirmPassword
+    ) {
+      this.utilityService.openSnackbar(
+        this.snackBar,
+        'New Password and Confirm Password should be same.',
+        '',
+        'red-snackbar'
+      );
     } else {
-       // Add API Call to Post change password
-console.log('this.changePassword', this.changePassword)
-       this.changePasswordService.updatePassword(this.changePassword)
-       .subscribe((res:any) =>
-       {
-        debugger;
-        if(res.responseDto.messageType=="S")
-        {
-          this.utilityService.openSnackbar(this.snackBar, res.responseDto.message, '', 'green-snackbar');
+      // Add API Call to Post change password
 
+      this.changePasswordService.updatePassword(this.changePassword).subscribe(
+        (res: any) => {
+          if (res.responseDto.messageType == 'S') {
+            this.utilityService.openSnackbar(
+              this.snackBar,
+              res.responseDto.message,
+              '',
+              'green-snackbar'
+            );
+          } else {
+            this.utilityService.openSnackbar(
+              this.snackBar,
+              res.responseDto.message,
+              '',
+              'red-snackbar'
+            );
+          }
+        },
+        (error) => {
+          console.error(error);
         }
-        else
-        {
-          this.utilityService.openSnackbar(this.snackBar, res.responseDto.message, '', 'red-snackbar');
-
-        }
-      }, error=> {
-        console.error(error)
-      })
+      );
     }
   }
-
-
-
-
 }

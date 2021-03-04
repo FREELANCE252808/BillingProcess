@@ -7,31 +7,36 @@ import { CustomdialogComponent } from '../customdialog/customdialog.component';
 @Component({
   selector: 'app-top-nav',
   templateUrl: './top-nav.component.html',
-  styleUrls: ['./top-nav.component.scss']
+  styleUrls: ['./top-nav.component.scss'],
 })
 export class TopNavComponent implements OnInit {
   @Output() logoutEvent = new EventEmitter<string>();
-  constructor(public navService: NavService,public dialog: MatDialog, private accountService: AccountService) { }
+  constructor(
+    public navService: NavService,
+    public dialog: MatDialog,
+    private accountService: AccountService
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomdialogComponent, {
       width: '250px',
-      data: {title: "Logout?", message: "Are you sure want to logout?",action:""}
+      data: {
+        title: 'Logout?',
+        message: 'Are you sure want to logout?',
+        action: '',
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      debugger;
-      if(result==""){
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result == '') {
         this.logOut();
       }
-       });
+    });
   }
 
-  logOut(){
+  logOut() {
     this.accountService.logout();
   }
-
 }
