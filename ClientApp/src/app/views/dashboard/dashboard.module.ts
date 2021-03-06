@@ -5,6 +5,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UtilityService } from 'src/app/services/utility.service';
-
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -43,10 +44,12 @@ import { UtilityService } from 'src/app/services/utility.service';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatIconModule,
     FlexLayoutModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
   ],
-  providers: [UtilityService]
+  providers: [UtilityService],
 })
-export class DashboardModule { }
+export class DashboardModule {}

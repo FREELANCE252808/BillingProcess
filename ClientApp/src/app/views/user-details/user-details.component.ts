@@ -5,7 +5,10 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
+import { AccountService } from '../login/services/account.service';
+import { TokenStorage } from '../login/services/token-storage.service';
 import { UserDetails } from './models/UserDetails';
 import { UserDetailsService } from './services/user-details.service';
 
@@ -83,7 +86,10 @@ export class UserDetailsComponent implements OnInit, OnChanges {
     private formBuilder: FormBuilder,
     private utilityService: UtilityService,
     private snackBar: MatSnackBar,
-    private userDetailsService: UserDetailsService
+    private tokenStorage: TokenStorage,
+    private accountService: AccountService,
+    private userDetailsService: UserDetailsService,
+    private router: Router
   ) {
     this.userDetailsService.getAllCompanies().subscribe((data: any) => {
       this.listOfCompanies = JSON.parse(data.responseDto).ConpanyList;
@@ -91,6 +97,19 @@ export class UserDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.tokenStorage.getisAdmin().subscribe((isAdmin) => {
+      if (isAdmin == 'true') {
+        return;
+      } else {
+        this.utilityService.openSnackbar(
+          this.snackBar,
+          'You are not authorized to change this document.',
+          '',
+          'red-snackbar'
+        );
+        this.router.navigateByUrl('/');
+      }
+    });
     this.registerForm = this.formBuilder.group({
       userId: [0],
       userName: ['', Validators.required],

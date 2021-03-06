@@ -1,1 +1,632 @@
-<p>dashboard works!</p>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav
+    class="example-container_sidenav"
+    #dashboardSideNav
+    position="end"
+    [disableClose]="true"
+    mode="over"
+    style="overflow: hidden"
+  >
+    <section class="application-sidenav">
+      <header>
+        <div
+          class="container"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="80%">
+            <h3 class="margin-bottom-0">Generate Bill Details</h3>
+          </div>
+          <div class="item item-1" fxFlex="20%">
+            <button
+              mat-button
+              matTooltip="Close"
+              name="closeUserPanel"
+              (click)="dashboardSideNav.close()"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </header>
+      <section class="main">
+        <!-- (ngSubmit)="onSubmit()" -->
+        <form [formGroup]="registerForm">
+          <div
+            class="container"
+            fxLayout
+            fxLayout.xs="column"
+            fxLayoutAlign="left"
+            fxlayoutGap="2em"
+            fxLayoutGap.xs="0"
+          >
+            <div class="container item item-1" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>CutOff By</mat-label>
+
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="cutOffDate"
+                  placeholder="DD/MM/YYYY"
+                  required
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker disabled="false"></mat-datepicker>
+
+                <mat-error> CutOff By is required </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="container item item-1" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>Document Date</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="picker1"
+                  formControlName="documentDate"
+                  required
+                  placeholder="DD/MM/YYYY"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker1"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker1 disabled="false"></mat-datepicker>
+                <mat-error> Document Date is required </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div
+            class="container"
+            fxLayout
+            fxLayout.xs="column"
+            fxLayoutAlign="left"
+            fxlayoutGap="2em"
+            fxLayoutGap.xs="0"
+          >
+            <div class="container item item-1" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>Description</mat-label>
+                <input
+                  matInput
+                  placeholder="Description"
+                  formControlName="description"
+                  required
+                />
+                <mat-error> Description is required </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="container item item-1" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>Customer</mat-label>
+                <mat-select
+                  formControlName="customer"
+                  name="customer"
+                  multiple
+                  [compareWith]="compareFn"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let company of billsDropDown"
+                    [value]="company"
+                  >
+                    {{ company }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div
+            class="container"
+            fxLayout
+            fxLayout.xs="column"
+            fxLayoutAlign="left"
+            fxlayoutGap="2em"
+            fxLayoutGap.xs="0"
+          >
+            <div class="container item item-1" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>Cases</mat-label>
+                <mat-select
+                  formControlName="cases"
+                  name="cases"
+                  multiple
+                  [compareWith]="compareFn"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let company of listofCases"
+                    [value]="company"
+                  >
+                    {{ company }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> Cases is required </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="container item item-2" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>Stages</mat-label>
+                <mat-select
+                  formControlName="stages"
+                  name="stages"
+                  multiple
+                  [compareWith]="compareFn"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let company of listOfStages"
+                    [value]="company"
+                  >
+                    {{ company }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> Stages is required </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div
+            class="container"
+            fxLayout
+            fxLayout.xs="column"
+            fxLayoutAlign="left"
+            fxlayoutGap="2em"
+            fxLayoutGap.xs="0"
+          >
+            <div class="container item item-1" fxFlex="50%">
+              <mat-form-field
+                appearance="outline"
+                class="mat-form-field-full-width"
+              >
+                <mat-label>Tasks</mat-label>
+                <mat-select
+                  formControlName="tasks"
+                  name="tasks"
+                  multiple
+                  [compareWith]="compareFn"
+                  required
+                >
+                  <mat-option
+                    *ngFor="let company of listOfTasks"
+                    [value]="company"
+                  >
+                    {{ company }}
+                  </mat-option>
+                </mat-select>
+                <mat-error> Tasks is required </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+      </section>
+      <footer>
+        <div
+          class="container"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="50%">
+            <button
+              mat-raised-button
+              matTooltip="Cancel"
+              color="primary"
+              name="cancelUserPanel"
+              (click)="dashboardSideNav.close()"
+            >
+              Cancel
+            </button>
+          </div>
+          <div class="item item-2 text-right" fxFlex="50%">
+            <button
+              color="primary"
+              mat-raised-button
+              matTooltip="Generate Bill Details"
+              name="submitUserPanel"
+              (click)="submitUserDetails()"
+            >
+              Generate
+            </button>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- <div>
+      <h1>Biling</h1>
+    </div>
+
+    <mat-divider></mat-divider>
+ -->
+    <div class="container margin-top-20">
+      <div
+        class="container padding-16"
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="left"
+        fxlayoutGap="2em"
+        fxLayoutGap.xs="0"
+      >
+        <div class="container item item-1" fxFlex="100%">
+          <button
+            color="primary"
+            mat-raised-button
+            matTooltip="Generate Bill"
+            name="generateBill"
+            (click)="generateBill()"
+          >
+            <mat-icon>add_circle</mat-icon>
+            Add
+          </button>
+          &nbsp;
+          <button mat-raised-button color="primary" matTooltip="Save">
+            Save
+          </button>
+          &nbsp;
+          <button mat-raised-button color="primary" matTooltip="Post">
+            Post
+          </button>
+          &nbsp;
+          <button mat-raised-button color="secondary" matTooltip="Close">
+            Close
+          </button>
+          &nbsp;
+          <button mat-raised-button color="secondary" matTooltip="Delete">
+            Delete
+          </button>
+          &nbsp;
+          <mat-form-field appearance="outline">
+            <mat-label>Bills</mat-label>
+            <mat-select
+              [(ngModel)]="selectedBillId"
+              name="selectedBill"
+              required
+            >
+              <mat-option
+                *ngFor="let company of billsDropDown"
+                [value]="company"
+              >
+                {{ company }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+      <div
+        class="container padding-2"
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="left"
+        fxlayoutGap="2em"
+        fxLayoutGap.xs="0"
+      >
+        <div class="container item item-1" fxFlex="100%">
+          <span class="border" style="padding-left: 0">
+            <span class="padding-2">Test Description</span>
+          </span>
+          &nbsp;
+          <span class="border">
+            <span style="padding: 1em 0; vertical-align: middle"
+              ><mat-icon>alarm</mat-icon></span
+            >
+            <span style="padding: 1em 0.5em; padding-left: 0">
+              &nbsp;30/01/2021</span
+            >
+          </span>
+          &nbsp;
+          <span class="border">
+            <span class="padding-2">GBP</span>
+          </span>
+          &nbsp;
+          <span class="border">
+            <span class="padding-2">WIP Amount: 500 </span>
+          </span>
+          &nbsp;
+          <span class="border">
+            <span class="padding-2">Selected Amount: 500 </span>
+          </span>
+          &nbsp;
+          <span class="border">
+            <span class="padding-2">Worksheet Amount: 500 </span>
+          </span>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div
+        class="container"
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="left"
+        fxlayoutGap="2em"
+        fxLayoutGap.xs="0"
+      >
+        <div class="container item item-1 padding-16" fxFlex="100%">
+          <div class="overflow-auto">
+            <table mat-table [dataSource]="dataSource" matSort>
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Action
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <!-- (click)="editUserDetails(element.userId)" -->
+                  <div>
+                    <button
+                      mat-button
+                      color="primary"
+                      matTooltip="Edit User Details"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- rowId Column -->
+              <ng-container matColumnDef="rowId">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Row Id
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  matTooltip="row.serialNumber"
+                >
+                  {{ row.serialNumber }}
+                </td>
+              </ng-container>
+              <!-- Customer Name -->
+              <ng-container matColumnDef="customerName">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Customer
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.customer">
+                  {{ row.customer }}
+                </td>
+              </ng-container>
+
+              <!-- case Name -->
+              <ng-container matColumnDef="case">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Case
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.case">
+                  {{ row.case }}
+                </td>
+              </ng-container>
+
+              <!-- stage Name -->
+              <ng-container matColumnDef="stage">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Stage
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.stage">
+                  {{ row.stage }}
+                </td>
+              </ng-container>
+
+              <!-- task Name -->
+              <ng-container matColumnDef="task">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Task
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.task">
+                  {{ row.task }}
+                </td>
+              </ng-container>
+
+              <!-- resource Name -->
+              <ng-container matColumnDef="resource">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Resource
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.resource">
+                  {{ row.resource }}
+                </td>
+              </ng-container>
+
+              <!-- description Name -->
+              <ng-container matColumnDef="description">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="lg"
+                >
+                  Description
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="row.description"
+                >
+                  {{ row.description }}
+                </td>
+              </ng-container>
+
+              <!-- uom Name -->
+              <ng-container matColumnDef="quantity">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Quantity
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="row.quantity.toFixed(2)"
+                >
+                  {{ row.quantity.toFixed(2) }}
+                </td>
+              </ng-container>
+
+              <!-- uom Name -->
+              <ng-container matColumnDef="uom">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  UOM
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.uom">
+                  {{ row.uom }}
+                </td>
+              </ng-container>
+
+              <!-- rate -->
+              <ng-container matColumnDef="rate">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Rate
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="row.rate.toFixed(2)"
+                >
+                  {{ row.rate.toFixed(2) }}
+                </td>
+              </ng-container>
+
+              <!-- totalBillingAmount -->
+              <ng-container matColumnDef="totalBillingAmount">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="lg"
+                >
+                  Total Billing Amount
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="(row.rate * row.quantity).toFixed(2)"
+                >
+                  {{ (row.rate * row.quantity).toFixed(2) }}
+                </td>
+              </ng-container>
+              <!-- comments -->
+              <ng-container matColumnDef="comments">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Comments
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.comments">
+                  {{ row.comments }}
+                </td>
+              </ng-container>
+
+              <!-- more -->
+              <ng-container matColumnDef="more">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  More
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox
+                    color="primary"
+                    [checked]="row.more"
+                    disabled
+                  ></mat-checkbox>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+          <mat-paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 15, 20]"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
