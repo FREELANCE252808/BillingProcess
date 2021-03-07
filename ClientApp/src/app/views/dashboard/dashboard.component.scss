@@ -59,3 +59,27 @@
 .padding-16 {
   padding: 16px;
 }
+
+th.mat-header-cell:first-of-type,
+td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type {
+  padding-left: 0;
+}
+
+th.mat-header-cell.cdk-header-cell.xs.cdk-column-edit.mat-column-edit.ng-star-inserted.mat-table-sticky {
+  padding-left: 16px;
+}
+
+th.mat-sort-header.mat-header-cell.cdk-header-cell.sm.ng-tns-c163-21.cdk-column-customerName.mat-column-customerName,
+td.mat-tooltip-trigger.mat-cell.cdk-cell.cdk-column-customerName.mat-column-customerName.ng-star-inserted {
+  padding-left: 20px;
+}
+
+.application-sidenav footer {
+  bottom: 20px;
+  position: sticky;
+}
+
+.height-full {
+  height: 100%;
+}

@@ -261,6 +261,10 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
   width: 100%;
 }
 
+th.xs.mat-header-cell {
+  width: 70px;
+}
+
 th.sm.mat-header-cell {
   min-width: 150px;
 }
@@ -302,7 +306,7 @@ th.xl.mat-header-cell {
   overflow: auto;
 
   .mat-header-cell {
-    background-color: #f7f7f7;
+    background-color: #00395d;
     opacity: 1;
   }
 

@@ -1,4 +1,5 @@
 import { Component, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -11,7 +12,7 @@ import { TokenStorage } from '../login/services/token-storage.service';
 import { UserDetails } from '../user-details/models/UserDetails';
 import { UserDetailsService } from '../user-details/services/user-details.service';
 import { GenerateBill } from './models/GenerateBill';
-
+import { pull, union } from 'lodash';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -19,64 +20,13 @@ import { GenerateBill } from './models/GenerateBill';
 })
 export class DashboardComponent implements OnInit, OnChanges {
   @ViewChild('dashboardSideNav') sideNav: MatSidenav;
-  userDetails: UserDetails[] = [];
+  /* userDetails: UserDetails[] = []; */
   addOrEditUserDetail: UserDetails;
+  editBillingDetails: any;
   dataSource = new MatTableDataSource<any>();
-  //  {header: 'Password', name: 'password', class:'sm', type: 'string',sticky: false},
-  tableData = [
-    {
-      header: 'Action',
-      name: 'userId',
-      class: 'sm',
-      type: 'string',
-      sticky: true,
-    },
-    {
-      header: 'First Name',
-      name: 'firstName',
-      class: 'sm',
-      type: 'string',
-      sticky: false,
-    },
-    {
-      header: 'Last Name',
-      name: 'lastName',
-      class: 'sm',
-      type: 'string',
-      sticky: false,
-    },
-    {
-      header: 'User Name',
-      name: 'userName',
-      class: 'sm',
-      type: 'string',
-      sticky: false,
-    },
-    {
-      header: 'Company',
-      name: 'userCompanyList',
-      class: 'sm',
-      type: 'array',
-      sticky: false,
-    },
-    {
-      header: 'Is Admin',
-      name: 'isAdmin',
-      class: 'sm',
-      type: 'boolean',
-      sticky: false,
-    },
-    {
-      header: 'Is Active',
-      name: 'isActive',
-      class: 'sm',
-      type: 'boolean',
-      sticky: false,
-    },
-  ];
-  /* displayedColumns = ['action', 'rowId']; */
   displayedColumns = [
     'action',
+    'edit',
     'rowId',
     'customerName',
     'case',
@@ -102,6 +52,10 @@ export class DashboardComponent implements OnInit, OnChanges {
   listofCases = [];
   listOfStages = [];
   listOfTasks = [];
+  optionalDropdownData = [
+    { key: 1, value: 'File Type' },
+    { key: 2, value: 'File Number' },
+  ];
   gridData = [
     {
       rowId: 1,
@@ -123,7 +77,9 @@ export class DashboardComponent implements OnInit, OnChanges {
       totalBillingAmount: 1600.0,
       comments: 'Time Spent On Filing',
       more: true,
-      additionalData: [],
+      additionalData: [
+        { type: { key: 1, value: 'File Type' }, description: 'test' },
+      ],
     },
     {
       rowId: 2,
@@ -160,7 +116,20 @@ export class DashboardComponent implements OnInit, OnChanges {
     selectedAmount: null;
     worksheetAmount: null;
   };
-  // End of Readonly fields at top
+  selection = new SelectionModel<any>(true, []);
+  // Data for Post
+  selectedDataForPost = [];
+  // End for Data for Post
+
+  //Show and Hide panel variables
+  isGenerateBillDetails = false;
+  isEditableRow = false;
+  //End Show and Hide panel variables
+
+  // Additional Data Addition
+  defaultAdditonalData = { type: { key: null, value: '' }, description: '' };
+  // End of Additional Data
+
   constructor(
     private formBuilder: FormBuilder,
     private utilityService: UtilityService,
@@ -187,7 +156,6 @@ export class DashboardComponent implements OnInit, OnChanges {
       stages: [[]],
       tasks: [[]],
     });
-    // this.displayedColumns = this.tableData.map((data) => data.name);
     this.setMatTable();
   }
 
@@ -210,16 +178,14 @@ export class DashboardComponent implements OnInit, OnChanges {
   generateBill(): void {
     this.addOrEditUserDetail = new UserDetails();
     this.registerForm.patchValue(this.addOrEditUserDetail);
-
+    this.isGenerateBillDetails = true;
+    this.isEditableRow = false;
     this.sideNav.open();
   }
 
   editUserDetails(event): void {
-    this.addOrEditUserDetail = this.userDetails.filter(
-      (data) => data.userId === event
-    )[0];
-
-    this.registerForm.patchValue(this.addOrEditUserDetail);
+    this.isGenerateBillDetails = false;
+    this.isEditableRow = true;
     this.sideNav.open();
   }
 
@@ -230,7 +196,7 @@ export class DashboardComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.userDetailsService.addUpdateUser(this.registerForm.value).subscribe(
+    /* this.userDetailsService.addUpdateUser(this.registerForm.value).subscribe(
       (data) => {
         this.userDetails = data.responseDto.userReqDto;
         this.setMatTable();
@@ -245,7 +211,7 @@ export class DashboardComponent implements OnInit, OnChanges {
       (error) => {
         console.error(error);
       }
-    );
+    ); */
   }
 
   onReset() {
@@ -263,5 +229,58 @@ export class DashboardComponent implements OnInit, OnChanges {
 
   compareFn(a, b) {
     return a.CompanyCode == b.CompanyCode;
+  }
+  compareOptionalFn(a, b) {
+    return a.key == b.key;
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.data.forEach((row) => this.selection.select(row));
+
+    this.selectedDataForPost = this.isAllSelected()
+      ? this.dataSource.data.map((request) => request.rowId)
+      : [];
+    this.selectedDataForPost = union(this.selectedDataForPost);
+    console.log('union this.selectedDataForPost', this.selectedDataForPost);
+  }
+
+  selectedData(event, row) {
+    if (event) {
+      this.selection.toggle(row);
+    } else {
+      return null;
+    }
+
+    if (event.checked) {
+      this.selectedDataForPost.push(row.rowId);
+    } else {
+      pull(this.selectedDataForPost, row.rowId);
+    }
+  }
+
+  editBillDetails(data): void {
+    console.log('edit', data);
+    this.editBillingDetails = data;
+    this.isEditableRow = true;
+    this.isGenerateBillDetails = false;
+    this.sideNav.open();
+  }
+
+  addAdditionalData(data) {
+    data.push(this.defaultAdditonalData);
+  }
+
+  updateBillDetails() {
+    console.log('edit', this.editBillingDetails);
   }
 }
