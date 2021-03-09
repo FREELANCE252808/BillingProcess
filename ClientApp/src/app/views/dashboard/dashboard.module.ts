@@ -23,11 +23,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatNativeDateModule } from '@angular/material/core';
+import { CustomDialogModule } from 'src/app/components/customdialog/custom-dialog.module';
 
 @NgModule({
   declarations: [DashboardComponent],
   imports: [
     CommonModule,
+    CustomDialogModule,
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,

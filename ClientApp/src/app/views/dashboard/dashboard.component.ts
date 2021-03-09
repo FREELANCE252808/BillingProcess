@@ -13,6 +13,8 @@ import { UserDetails } from '../user-details/models/UserDetails';
 import { UserDetailsService } from '../user-details/services/user-details.service';
 import { GenerateBill } from './models/GenerateBill';
 import { pull, union } from 'lodash';
+import { CustomdialogComponent } from 'src/app/components/customdialog/customdialog.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -39,76 +41,148 @@ export class DashboardComponent implements OnInit, OnChanges {
     'rate',
     'totalBillingAmount',
     'comments',
-    'more',
   ];
+  //  'more',
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   // Form Fields
   listOfCompanies = [];
+  listOfbillingDropDown = [
+    { key: 1, value: 'ARBILL0001' },
+    { key: 2, value: 'ARBILL0002' },
+  ];
   registerForm: FormGroup;
   submitted = false;
   listOfCustomers = [];
   listofCases = [];
   listOfStages = [];
   listOfTasks = [];
+
   optionalDropdownData = [
     { key: 1, value: 'File Type' },
     { key: 2, value: 'File Number' },
   ];
-  gridData = [
-    {
-      rowId: 1,
-      serialNumber: 1,
-      customerId: 1,
-      customer: 'A1234',
-      caseId: 1,
-      case: 'T1112',
-      stageId: 1,
-      stage: 'FILING',
-      taskId: 1,
-      task: 'TIME',
-      resourceId: 1,
-      resource: 32111,
-      description: 'Joe Bloggs',
-      quantity: 8.0,
-      uom: 'HRS',
-      rate: 200.0,
-      totalBillingAmount: 1600.0,
-      comments: 'Time Spent On Filing',
-      more: true,
-      additionalData: [
-        { type: { key: 1, value: 'File Type' }, description: 'test' },
-      ],
-    },
-    {
-      rowId: 2,
-      serialNumber: 2,
-      customerId: 1,
-      customer: 'A1234',
-      caseId: 1,
-      case: 'T1112',
-      stageId: 1,
-      stage: 'TITLE',
-      taskId: 1,
-      task: 'TIME',
-      resourceId: 1,
-      resource: 32111,
-      description: 'Trademark License',
-      quantity: 1.0,
-      uom: 'HRS',
-      rate: 2000.0,
-      totalBillingAmount: 2000.0,
-      comments: 'License Renewal',
-      more: true,
-      additionalData: [],
-    },
-  ];
+
+  displayData;
+  billingData1 = {
+    description: 'Case Billing Data for Worksheet January 2021',
+    date: '30-01-2021',
+    currency: 'GBP',
+    wipAmount: 500,
+    selectedAmount: 500,
+    worksheetAmount: 500,
+    gridData: [
+      {
+        rowId: 1,
+        serialNumber: 1,
+        customerId: 1,
+        customer: 'A1234',
+        caseId: 1,
+        case: 'T1112',
+        stageId: 1,
+        stage: 'FILING',
+        taskId: 1,
+        task: 'TIME',
+        resourceId: 1,
+        resource: 32111,
+        description: 'Joe Bloggs',
+        quantity: 8.0,
+        uom: 'HRS',
+        rate: 200.0,
+        totalBillingAmount: 1600.0,
+        comments: 'Time Spent On Filing',
+        more: true,
+        additionalData: [
+          { type: { key: 1, value: 'File Type' }, description: 'test' },
+        ],
+      },
+      {
+        rowId: 2,
+        serialNumber: 2,
+        customerId: 1,
+        customer: 'A1234',
+        caseId: 1,
+        case: 'T1112',
+        stageId: 1,
+        stage: 'TITLE',
+        taskId: 1,
+        task: 'TIME',
+        resourceId: 1,
+        resource: 32111,
+        description: 'Trademark License',
+        quantity: 1.0,
+        uom: 'HRS',
+        rate: 2000.0,
+        totalBillingAmount: 2000.0,
+        comments: 'License Renewal',
+        more: true,
+        additionalData: [],
+      },
+    ],
+  };
+  billingData2 = {
+    description: 'Case Billing Worksheet March 2021',
+    date: '15-03-2021',
+    currency: 'GBP',
+    wipAmount: 1000,
+    selectedAmount: 1000,
+    worksheetAmount: 1000,
+    gridData: [
+      {
+        rowId: 3,
+        serialNumber: 3,
+        customerId: 3,
+        customer: 'A3334',
+        caseId: 3,
+        case: 'T3333',
+        stageId: 3,
+        stage: 'FILING',
+        taskId: 3,
+        task: 'Task',
+        resourceId: 3,
+        resource: 33333,
+        description: 'Joe Bloggs',
+        quantity: 8.0,
+        uom: 'HRS',
+        rate: 300.0,
+        totalBillingAmount: 3600.0,
+        comments: 'Billing',
+        more: true,
+        additionalData: [
+          { type: { key: 1, value: 'File Type' }, description: 'test' },
+        ],
+      },
+      {
+        rowId: 4,
+        serialNumber: 4,
+        customerId: 1,
+        customer: 'A1334',
+        caseId: 1,
+        case: 'T1113',
+        stageId: 1,
+        stage: 'TITLE',
+        taskId: 1,
+        task: 'TIME',
+        resourceId: 1,
+        resource: 32111,
+        description: 'Trademark License',
+        quantity: 1.0,
+        uom: 'HRS',
+        rate: 2000.0,
+        totalBillingAmount: 2000.0,
+        comments: 'License Renewal',
+        more: true,
+        additionalData: [],
+      },
+    ],
+  };
+  gridData = [];
   // End of Form Fields
 
   // Readonly fields at top
   selectedBillId;
-  billsDropDown = [];
+
   dataForSelectedBill: {
     description: '';
     date: null;
@@ -131,6 +205,7 @@ export class DashboardComponent implements OnInit, OnChanges {
   // End of Additional Data
 
   constructor(
+    private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private utilityService: UtilityService,
     private snackBar: MatSnackBar,
@@ -282,5 +357,65 @@ export class DashboardComponent implements OnInit, OnChanges {
 
   updateBillDetails() {
     console.log('edit', this.editBillingDetails);
+  }
+
+  changeBillingData() {
+    if (this.selectedBillId === 1) {
+      this.displayData = this.billingData1;
+      this.gridData = this.billingData1.gridData;
+    } else {
+      this.displayData = this.billingData2;
+      this.gridData = this.billingData2.gridData;
+    }
+    this.setMatTable();
+  }
+
+  openPopUpType(type) {
+    switch (type) {
+      case 'delete':
+        this.openDialog(
+          'Delete  Billing Worksheet',
+          'Confirm you want to delete this worksheet?',
+          'delete'
+        );
+        break;
+
+      case 'post':
+        this.openDialog(
+          'Post Billing Worksheet',
+          'Confirm you want to post this worksheet?',
+          'post'
+        );
+        break;
+      case 'close':
+        this.openDialog(
+          'Close?',
+          'Confirm you want to Close (Unsaved Changes will be lost)?',
+          'close'
+        );
+        break;
+    }
+  }
+
+  openDialog(titleDisplay, messageDisplay, actionType): void {
+    const dialogRef = this.dialog.open(CustomdialogComponent, {
+      width: '350px',
+      data: {
+        title: titleDisplay,
+        message: messageDisplay,
+        action: actionType,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('result', result);
+      if (result == 'delete') {
+        console.log('call delete api');
+      } else if (result == 'post') {
+        console.log('call post api');
+      } else if (result == 'close') {
+        this.accountService.logout();
+      }
+    });
   }
 }

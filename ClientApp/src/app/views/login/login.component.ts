@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from './services/account.service';
 import { AuthService } from './services/auth.service';
+import { TokenStorage } from './services/token-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
   selectedCompany = '';
   constructor(
     private accountService: AccountService,
+    private tokenStorage: TokenStorage,
     private router: Router,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
@@ -32,6 +34,7 @@ export class LoginComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required],
       selectedCompany: [''],
+      sessionDate: [new Date()],
     });
   }
 
@@ -48,7 +51,8 @@ export class LoginComponent implements OnInit {
         'red-snackbar'
       );
     } else {
-      localStorage.setItem('companyId', this.loginForm.value.selectedCompany);
+      this.tokenStorage.setSessionDate(this.loginForm.value.sessionDate);
+      this.tokenStorage.setCompanyID(this.loginForm.value.selectedCompany);
       this.router.navigateByUrl('/');
     }
   }

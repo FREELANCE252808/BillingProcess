@@ -6,33 +6,56 @@
         The username and password were not recognised
       </mat-error> -->
       <mat-form-field class="full-width-input">
-        <input matInput placeholder="Username" formControlName="username" required (blur)="login()">
-        <mat-error>
-          Please provide a valid Username
-        </mat-error>
+        <input
+          matInput
+          placeholder="Username"
+          formControlName="username"
+          required
+          (blur)="login()"
+        />
+        <mat-error> Please provide a valid Username </mat-error>
       </mat-form-field>
       <mat-form-field class="full-width-input">
-        <input matInput type="password" placeholder="Password" formControlName="password" required (blur)="login()">
-        <mat-error>
-          Please provide a valid Password
-        </mat-error>
+        <input
+          matInput
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+          required
+          (blur)="login()"
+        />
+        <mat-error> Please provide a valid Password </mat-error>
       </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Company</mat-label>
-          <mat-select formControlName="selectedCompany" name="userCompany"
-           >
-            <mat-option *ngFor="let company of showCompanyList" [value]="company.companyCode">
-              {{company.companyName}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Company</mat-label>
+        <mat-select formControlName="selectedCompany" name="userCompany">
+          <mat-option
+            *ngFor="let company of showCompanyList"
+            [value]="company.companyCode"
+          >
+            {{ company.companyName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <mat-form-field class="full-width-input">
-        <input matInput type="input" placeholder="Session Date" value="{{sessionDate | date: 'medium'}}" disabled>
-          </mat-form-field>
+      <mat-form-field appearance="outline" class="mat-form-field-full-width">
+        <mat-label>Session Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="sessionDate"
+          placeholder="DD/MM/YYYY"
+          disabled
+        />
+        <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker disabled="false"></mat-datepicker>
 
+        <!-- <mat-error> CutOff By is required </mat-error> -->
+      </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="loginWithCompany()" >Login</button>
+      <button mat-raised-button color="primary" (click)="loginWithCompany()">
+        Login
+      </button>
     </form>
   </mat-card-content>
 </mat-card>

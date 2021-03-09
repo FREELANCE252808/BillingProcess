@@ -126,7 +126,7 @@
                   required
                 >
                   <mat-option
-                    *ngFor="let company of billsDropDown"
+                    *ngFor="let company of listOfCustomers"
                     [value]="company"
                   >
                     {{ company }}
@@ -275,7 +275,7 @@
           <div class="item item-1" fxFlex="80%">
             <h3 class="margin-bottom-0">Edit Bill Details</h3>
           </div>
-          <div class="item item-1 right" fxFlex="20%">
+          <div class="item item-1 text-right" fxFlex="20%">
             <button
               mat-button
               matTooltip="Close"
@@ -297,8 +297,8 @@
           fxlayoutGap="2em"
           fxLayoutGap.xs="0"
         >
-          <div class="container item item-1" fxFlex="50%">
-            <mat-form-field appearance="outline">
+          <div class="item item-1" fxFlex="50%">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
               <mat-label>Quantity</mat-label>
               <input
                 matInput
@@ -307,8 +307,8 @@
               />
             </mat-form-field>
           </div>
-          <div class="container item item-2" fxFlex="50%">
-            <mat-form-field appearance="outline">
+          <div class="item item-2" fxFlex="50%">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
               <mat-label>Rate</mat-label>
               <input
                 matInput
@@ -320,7 +320,7 @@
         </div>
 
         <div
-          class="container"
+          class="container-left"
           fxLayout
           fxLayout.xs="column"
           fxLayoutAlign="left"
@@ -328,7 +328,7 @@
           fxLayoutGap.xs="0"
         >
           <div class="item item-1" fxFlex="50%">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
               <mat-label>Total Billing Amount</mat-label>
               <input
                 matInput
@@ -343,7 +343,7 @@
             </mat-form-field>
           </div>
           <div class="item item-2" fxFlex="50%">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
               <mat-label>Comments</mat-label>
               <input
                 matInput
@@ -376,7 +376,7 @@
               color="primary"
               (click)="addAdditionalData(editBillingDetails.additionalData)"
             >
-              <mat-icon>add</mat-icon>
+              <mat-icon>add</mat-icon> Add Optional Fields
             </button>
           </div>
         </div>
@@ -389,7 +389,7 @@
             "
           >
             <div
-              class="container"
+              class="container-left"
               fxLayout
               fxLayout.xs="column"
               fxLayoutAlign="left"
@@ -397,7 +397,10 @@
               fxLayoutGap.xs="0"
             >
               <div class="item item-1" fxFlex="50%">
-                <mat-form-field appearance="outline">
+                <mat-form-field
+                  appearance="outline"
+                  class="mat-form-field-full"
+                >
                   <mat-label>Type</mat-label>
                   <mat-select
                     [(ngModel)]="data.type"
@@ -413,7 +416,10 @@
                 </mat-form-field>
               </div>
               <div class="item item-2" fxFlex="50%">
-                <mat-form-field appearance="outline">
+                <mat-form-field
+                  appearance="outline"
+                  class="mat-form-field-full"
+                >
                   <mat-label>Optional Field Text</mat-label>
                   <input matInput [(ngModel)]="data.description" />
                 </mat-form-field>
@@ -485,35 +491,53 @@
             <mat-icon>add_circle</mat-icon>
             Add
           </button>
-          &nbsp;
+          <!-- &nbsp;
           <button mat-raised-button color="primary" matTooltip="Save">
             Save
-          </button>
+          </button> -->
           &nbsp;
-          <button mat-raised-button color="primary" matTooltip="Post">
+          <button
+            mat-raised-button
+            color="primary"
+            matTooltip="Post"
+            (click)="openPopUpType('post')"
+            [disabled]="selectedDataForPost && selectedDataForPost.length === 0"
+          >
             Post
           </button>
           &nbsp;
-          <button mat-raised-button color="secondary" matTooltip="Close">
-            Close
+          <button
+            mat-raised-button
+            color="warn"
+            matTooltip="Delete"
+            [disabled]="selectedDataForPost && selectedDataForPost.length === 0"
+            (click)="openPopUpType('delete')"
+          >
+            Delete
           </button>
           &nbsp;
-          <button mat-raised-button color="secondary" matTooltip="Delete">
-            Delete
+          <button
+            mat-raised-button
+            color="secondary"
+            matTooltip="Close"
+            (click)="openPopUpType('close')"
+          >
+            Close
           </button>
           &nbsp;
           <mat-form-field appearance="outline">
             <mat-label>Bills</mat-label>
             <mat-select
               [(ngModel)]="selectedBillId"
+              (selectionChange)="changeBillingData()"
               name="selectedBill"
               required
             >
               <mat-option
-                *ngFor="let company of billsDropDown"
-                [value]="company"
+                *ngFor="let bill of listOfbillingDropDown"
+                [value]="bill.key"
               >
-                {{ company }}
+                {{ bill.value }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -522,6 +546,7 @@
 
       <mat-divider></mat-divider>
       <div
+        *ngIf="selectedBillId"
         class="container padding-2"
         fxLayout
         fxLayout.xs="column"
@@ -531,7 +556,9 @@
       >
         <div class="container item item-1" fxFlex="100%">
           <span class="border" style="padding-left: 0">
-            <span class="padding-2">Test Description</span>
+            <span class="padding-2"
+              ><strong>{{ displayData?.description }}</strong></span
+            >
           </span>
           &nbsp;
           <span class="border">
@@ -539,24 +566,34 @@
               ><mat-icon>alarm</mat-icon></span
             >
             <span style="padding: 1em 0.5em; padding-left: 0">
-              &nbsp;30/01/2021</span
+              &nbsp;{{ displayData?.date }}</span
             >
           </span>
           &nbsp;
           <span class="border">
-            <span class="padding-2">GBP</span>
+            <span class="padding-2"
+              ><strong>{{ displayData?.currency }}</strong></span
+            >
           </span>
           &nbsp;
           <span class="border">
-            <span class="padding-2">WIP Amount: 500 </span>
+            <span class="padding-2"
+              ><strong>WIP Amount:</strong> {{ displayData?.wipAmount }}
+            </span>
           </span>
           &nbsp;
           <span class="border">
-            <span class="padding-2">Selected Amount: 500 </span>
+            <span class="padding-2"
+              ><strong>Selected Amount: </strong
+              >{{ displayData?.selectedAmount }}
+            </span>
           </span>
           &nbsp;
           <span class="border">
-            <span class="padding-2">Worksheet Amount: 500 </span>
+            <span class="padding-2"
+              ><strong>Worksheet Amount:</strong>
+              {{ displayData?.worksheetAmount }}
+            </span>
           </span>
         </div>
       </div>
@@ -618,7 +655,7 @@
                   mat-header-cell
                   *matHeaderCellDef
                   mat-sort-header
-                  class="sm"
+                  class="xs"
                 >
                   Sr. No
                 </th>
@@ -651,7 +688,7 @@
                   mat-header-cell
                   *matHeaderCellDef
                   mat-sort-header
-                  class="sm"
+                  class="xs"
                 >
                   Case
                 </th>
@@ -696,7 +733,7 @@
                   mat-header-cell
                   *matHeaderCellDef
                   mat-sort-header
-                  class="sm"
+                  class="xs"
                 >
                   Resource
                 </th>
@@ -730,7 +767,7 @@
                   mat-header-cell
                   *matHeaderCellDef
                   mat-sort-header
-                  class="sm"
+                  class="xs"
                 >
                   Quantity
                 </th>
@@ -749,7 +786,7 @@
                   mat-header-cell
                   *matHeaderCellDef
                   mat-sort-header
-                  class="sm"
+                  class="xs"
                 >
                   UOM
                 </th>
@@ -764,7 +801,7 @@
                   mat-header-cell
                   *matHeaderCellDef
                   mat-sort-header
-                  class="sm"
+                  class="xs"
                 >
                   Rate
                 </th>

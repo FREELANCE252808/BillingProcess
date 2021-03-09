@@ -76,10 +76,29 @@ td.mat-tooltip-trigger.mat-cell.cdk-cell.cdk-column-customerName.mat-column-cust
 }
 
 .application-sidenav footer {
-  bottom: 20px;
-  position: sticky;
+  bottom: 0;
+  padding: 0;
+  left: auto;
+  position: fixed;
+  width: 700px;
 }
 
 .height-full {
   height: 100%;
+}
+
+.mat-form-field-full {
+  display: inline-block;
+  position: relative;
+  text-align: left;
+  width: 90%;
+}
+
+th {
+  padding: 10px;
+}
+
+.mat-table .mat-cell {
+  opacity: 1;
+  padding: 10px;
 }

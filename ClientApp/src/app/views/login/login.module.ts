@@ -17,7 +17,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from './services/account.service';
 import { TokenStorage } from './services/token-storage.service';
 import { JwtIntercepterService } from 'src/app/interceptor/jwt.intercepter.service';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [LoginComponent],
@@ -33,8 +34,16 @@ import { JwtIntercepterService } from 'src/app/interceptor/jwt.intercepter.servi
     MatIconModule,
     MatSelectModule,
     MatSnackBarModule,
-    LoginRoutingModule
+    MatDatepickerModule,
+    MatNativeDateModule,
+    LoginRoutingModule,
   ],
-  providers: [AuthService, UtilityService,AccountService,TokenStorage,JwtIntercepterService]
+  providers: [
+    AuthService,
+    UtilityService,
+    AccountService,
+    TokenStorage,
+    JwtIntercepterService,
+  ],
 })
-export class LoginModule { }
+export class LoginModule {}

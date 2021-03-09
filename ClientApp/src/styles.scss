@@ -262,23 +262,28 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 }
 
 th.xs.mat-header-cell {
-  width: 70px;
+  min-width: 70px;
+  padding: 10px;
 }
 
 th.sm.mat-header-cell {
   min-width: 150px;
+  padding: 10px;
 }
 
 th.md.mat-header-cell {
   min-width: 200px;
+  padding: 10px;
 }
 
 th.lg.mat-header-cell {
   min-width: 250px;
+  padding: 10px;
 }
 
 th.xl.mat-header-cell {
   min-width: 300px;
+  padding: 10px;
 }
 
 .text-left {
@@ -394,3 +399,7 @@ th.xl.mat-header-cell {
   width: 100%;
 }
  */
+
+.container-left {
+  padding-left: 15px;
+}
