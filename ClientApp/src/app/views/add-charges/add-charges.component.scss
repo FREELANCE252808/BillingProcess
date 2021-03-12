@@ -76,10 +76,10 @@ td.mat-tooltip-trigger.mat-cell.cdk-cell.cdk-column-customerName.mat-column-cust
 }
 
 .application-sidenav footer {
-  bottom: 0;
+  bottom: 5%;
   padding: 0;
   left: auto;
-  position: fixed;
+  position: sticky;
   width: 700px;
 }
 

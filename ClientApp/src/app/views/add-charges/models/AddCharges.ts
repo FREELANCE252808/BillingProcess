@@ -1,10 +1,20 @@
+export class KeyValue {
+  key: number;
+  value: string;
+
+  constructor() {
+    this.key = null;
+    this.value = '';
+  }
+}
 export class AddCharges {
+  rowId: number;
   date: Date;
-  case: string;
-  stage: string;
-  task: string;
+  case: KeyValue;
+  stage: KeyValue;
+  task: KeyValue;
   resource: number;
-  resourceDescription: string;
+  description: string;
   quantity: number;
   uom: string;
   rate: number;
@@ -13,12 +23,13 @@ export class AddCharges {
   more: boolean;
 
   constructor() {
+    this.rowId = null;
     this.date = null;
-    this.case = '';
-    this.stage = '';
-    this.task = '';
+    this.case = null;
+    this.stage = null;
+    this.task = null;
     this.resource = null;
-    this.resourceDescription = '';
+    this.description = '';
     this.quantity = null;
     this.uom = '';
     this.rate = null;
