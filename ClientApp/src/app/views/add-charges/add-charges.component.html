@@ -1,0 +1,505 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav
+    class="example-container_sidenav"
+    #addChargesSideNav
+    position="end"
+    [disableClose]="true"
+    mode="over"
+    style="overflow: hidden"
+  >
+    <!-- <ng-template *ngIf="isEditableRow"> -->
+    <section class="application-sidenav">
+      <header>
+        <div
+          class="container"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="80%">
+            <h3 class="margin-bottom-0">Add / Edit Bill Details</h3>
+          </div>
+          <div class="item item-1 text-right" fxFlex="20%">
+            <button
+              mat-button
+              matTooltip="Close"
+              name="closeUserPanel"
+              (click)="addChargesSideNav.close()"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </header>
+      <section class="main height-full">
+        <!--  <div
+          class="container"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="50%">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
+              <mat-label>Quantity</mat-label>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="editBillingDetails.quantity"
+              />
+            </mat-form-field>
+          </div>
+          <div class="item item-2" fxFlex="50%">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
+              <mat-label>Rate</mat-label>
+              <input
+                matInput
+                type="number"
+                [(ngModel)]="editBillingDetails.rate"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div
+          class="container-left"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="50%">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
+              <mat-label>Total Billing Amount</mat-label>
+              <input
+                matInput
+                type="tel"
+                value="{{
+                  (
+                    editBillingDetails.quantity * editBillingDetails.rate
+                  ).toFixed(2)
+                }}"
+                disabled
+              />
+            </mat-form-field>
+          </div>
+          <div class="item item-2" fxFlex="50%">
+            <mat-form-field appearance="outline" class="mat-form-field-full">
+              <mat-label>Comments</mat-label>
+              <input
+                matInput
+                type="tel"
+                [(ngModel)]="editBillingDetails.comments"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div
+          class="container"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="50%">
+            <mat-checkbox
+              color="primary"
+              [(ngModel)]="editBillingDetails.more"
+              name="isMore"
+              >More</mat-checkbox
+            >
+          </div>
+          <div class="item item-2" fxFlex="50%" *ngIf="editBillingDetails.more">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="addAdditionalData(editBillingDetails.additionalData)"
+            >
+              <mat-icon>add</mat-icon> Add Optional Fields
+            </button>
+          </div>
+        </div>
+
+        <ng-container *ngIf="editBillingDetails.more">
+          <ng-container
+            *ngFor="
+              let data of editBillingDetails.additionalData;
+              let i = index
+            "
+          >
+            <div
+              class="container-left"
+              fxLayout
+              fxLayout.xs="column"
+              fxLayoutAlign="left"
+              fxlayoutGap="2em"
+              fxLayoutGap.xs="0"
+            >
+              <div class="item item-1" fxFlex="50%">
+                <mat-form-field
+                  appearance="outline"
+                  class="mat-form-field-full"
+                >
+                  <mat-label>Type</mat-label>
+                  <mat-select
+                    [(ngModel)]="data.type"
+                    [compareWith]="compareOptionalFn"
+                  >
+                    <mat-option
+                      *ngFor="let optionalData of optionalDropdownData"
+                      [value]="optionalData"
+                    >
+                      {{ optionalData.value }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="item item-2" fxFlex="50%">
+                <mat-form-field
+                  appearance="outline"
+                  class="mat-form-field-full"
+                >
+                  <mat-label>Optional Field Text</mat-label>
+                  <input matInput [(ngModel)]="data.description" />
+                </mat-form-field>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container> -->
+      </section>
+      <footer>
+        <div
+          class="container"
+          fxLayout
+          fxLayout.xs="column"
+          fxLayoutAlign="left"
+          fxlayoutGap="2em"
+          fxLayoutGap.xs="0"
+        >
+          <div class="item item-1" fxFlex="50%">
+            <button
+              mat-raised-button
+              matTooltip="Cancel"
+              color="primary"
+              name="cancelUserPanel"
+              (click)="addChargesSideNav.close()"
+            >
+              Cancel
+            </button>
+          </div>
+          <div class="item item-2 text-right" fxFlex="50%">
+            <button
+              color="primary"
+              mat-raised-button
+              matTooltip="Update Bill Details"
+              name="updateBillDetailsPannel"
+              (click)="updateBillDetails()"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </footer>
+    </section>
+    <!-- </ng-template> -->
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!-- <div>
+      <h1>Add Charges</h1>
+    </div>
+
+    <mat-divider></mat-divider>
+ -->
+    <div class="container margin-top-20">
+      <div
+        class="container padding-16"
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="left"
+        fxlayoutGap="2em"
+        fxLayoutGap.xs="0"
+      >
+        <div class="container item item-1" fxFlex="100%">
+          <button
+            color="primary"
+            mat-raised-button
+            matTooltip="Add Charges"
+            name="addCharges"
+            (click)="addEditCharges(null)"
+          >
+            <mat-icon>add_circle</mat-icon>
+            Add Charges
+          </button>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div
+        class="container"
+        fxLayout
+        fxLayout.xs="column"
+        fxLayoutAlign="left"
+        fxlayoutGap="2em"
+        fxLayoutGap.xs="0"
+      >
+        <div class="container item item-1 padding-16" fxFlex="100%">
+          <div class="overflow-auto">
+            <table mat-table [dataSource]="dataSource" matSort>
+              <ng-container matColumnDef="action" sticky>
+                <th mat-header-cell *matHeaderCellDef class="xs">Edit</th>
+                <td mat-cell *matCellDef="let row">
+                  <div>
+                    <button
+                      mat-button
+                      color="primary"
+                      matTooltip="Edit Bill Charges"
+                      (click)="addEditCharges(row)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- rowId Column -->
+              <ng-container matColumnDef="rowId" sticky>
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="xs"
+                >
+                  Sr. No
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  matTooltip="row.serialNumber"
+                >
+                  {{ row.serialNumber }}
+                </td>
+              </ng-container>
+
+              <!-- Date -->
+              <ng-container matColumnDef="date">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Date
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.date">
+                  <span style="padding: 1em 0; vertical-align: middle"
+                    ><mat-icon>alarm</mat-icon></span
+                  >
+                  <span style="padding: 1em 0.5em; padding-left: 0">
+                    &nbsp;{{ row.date }}</span
+                  >
+                </td>
+              </ng-container>
+
+              <!-- case Name -->
+              <ng-container matColumnDef="case">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="xs"
+                >
+                  Case
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.case">
+                  {{ row.case }}
+                </td>
+              </ng-container>
+
+              <!-- stage Name -->
+              <ng-container matColumnDef="stage">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Stage
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.stage">
+                  {{ row.stage }}
+                </td>
+              </ng-container>
+
+              <!-- task Name -->
+              <ng-container matColumnDef="task">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Task
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.task">
+                  {{ row.task }}
+                </td>
+              </ng-container>
+
+              <!-- resource Name -->
+              <ng-container matColumnDef="resource">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="xs"
+                >
+                  Resource
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.resource">
+                  {{ row.resource }}
+                </td>
+              </ng-container>
+
+              <!-- description Name -->
+              <ng-container matColumnDef="description">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="lg"
+                >
+                  Resource / Description
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="row.description"
+                >
+                  {{ row.description }}
+                </td>
+              </ng-container>
+
+              <!-- uom Name -->
+              <ng-container matColumnDef="quantity">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="xs"
+                >
+                  Quantity
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="row.quantity.toFixed(2)"
+                >
+                  {{ row.quantity.toFixed(2) }}
+                </td>
+              </ng-container>
+
+              <!-- uom Name -->
+              <ng-container matColumnDef="uom">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="xs"
+                >
+                  UOM
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.uom">
+                  {{ row.uom }}
+                </td>
+              </ng-container>
+
+              <!-- rate -->
+              <ng-container matColumnDef="rate">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="xs"
+                >
+                  Rate
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="row.rate.toFixed(2)"
+                >
+                  {{ row.rate.toFixed(2) }}
+                </td>
+              </ng-container>
+
+              <!-- totalBillingAmount -->
+              <ng-container matColumnDef="totalBillingAmount">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="lg"
+                >
+                  Total Billing Amount
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let row"
+                  [matTooltip]="(row.rate * row.quantity).toFixed(2)"
+                >
+                  {{ (row.rate * row.quantity).toFixed(2) }}
+                </td>
+              </ng-container>
+              <!-- comments -->
+              <ng-container matColumnDef="comments">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  Comments
+                </th>
+                <td mat-cell *matCellDef="let row" [matTooltip]="row.comments">
+                  {{ row.comments }}
+                </td>
+              </ng-container>
+
+              <!-- more -->
+              <ng-container matColumnDef="more">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  mat-sort-header
+                  class="sm"
+                >
+                  More
+                </th>
+                <td mat-cell *matCellDef="let row">
+                  <mat-checkbox
+                    color="primary"
+                    [checked]="row.more"
+                    disabled
+                  ></mat-checkbox>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+          <mat-paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 15, 20]"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
