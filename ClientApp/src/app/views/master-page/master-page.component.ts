@@ -51,7 +51,7 @@ export class MasterPageComponent implements OnInit, AfterViewInit {
       {
         displayName: 'Move Charges',
         iconName: 'compare_arrows',
-        route: '',
+        route: 'move-charges',
         children: [],
       },
       /*

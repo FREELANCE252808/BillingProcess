@@ -1,0 +1,204 @@
+<div class="container margin-top-20">
+  <div
+    class="container padding-16"
+    fxLayout
+    fxLayout.xs="column"
+    fxLayoutAlign="left"
+    fxlayoutGap="2em"
+    fxLayoutGap.xs="0"
+  >
+    <div class="container item item-1 padding-16" fxFlex="100%">
+      <button color="primary" mat-raised-button (click)="addRowMethod()">
+        Add Row
+      </button>
+      &nbsp;
+      <button color="primary" mat-raised-button (click)="openPopUpType('post')">
+        Post
+      </button>
+      &nbsp;
+      <button
+        color="primary"
+        mat-raised-button
+        (click)="openPopUpType('close')"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="container padding-16"
+    fxLayout
+    fxLayout.xs="column"
+    fxLayoutAlign="left"
+    fxlayoutGap="2em"
+    fxLayoutGap.xs="0"
+  >
+    <div class="container item item-1 padding-16" fxFlex="100%">
+      <div class="overflow-auto">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="case">
+            <th mat-header-cell *matHeaderCellDef class="xs">Case</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Case</mat-label> -->
+                  <mat-select
+                    [(ngModel)]="row.case"
+                    name="case"
+                    [compareWith]="compareOptionalFn"
+                    required
+                  >
+                    <mat-option value="null">Select</mat-option>
+                    <mat-option *ngFor="let case of listofCases" [value]="case">
+                      {{ case.value }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+          <!-- task -->
+          <ng-container matColumnDef="task">
+            <th mat-header-cell *matHeaderCellDef class="xs">Task</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Task</mat-label> -->
+                  <mat-select
+                    [(ngModel)]="row.task"
+                    name="task"
+                    [compareWith]="compareOptionalFn"
+                    required
+                  >
+                    <mat-option value="null">Select</mat-option>
+                    <mat-option *ngFor="let task of listOfTasks" [value]="task">
+                      {{ task.value }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- charge -->
+          <ng-container matColumnDef="charge">
+            <th mat-header-cell *matHeaderCellDef class="xs">Charge</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Charge</mat-label> -->
+                  <mat-select [(ngModel)]="row.charge" name="charge" required>
+                    <mat-option value="null">Select</mat-option>
+                    <mat-option
+                      *ngFor="let charge of listOfUOM"
+                      [value]="charge"
+                    >
+                      {{ charge }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- resource -->
+          <ng-container matColumnDef="resource">
+            <th mat-header-cell *matHeaderCellDef class="xs">Resource</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Resource</mat-label> -->
+                  <mat-select
+                    [(ngModel)]="row.resource"
+                    name="resource"
+                    [compareWith]="compareOptionalFn"
+                    required
+                  >
+                    <mat-option value="null">Select</mat-option>
+                    <mat-option
+                      *ngFor="let resource of listOfResources"
+                      [value]="resource"
+                    >
+                      {{ resource.value }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- resource -->
+          <ng-container matColumnDef="document">
+            <th mat-header-cell *matHeaderCellDef class="xs">Document</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Document</mat-label> -->
+                  <input matInput [(ngModel)]="row.document" disabled />
+                  <button
+                    mat-button
+                    (click)="getDocument(row)"
+                    color="primary"
+                    matSuffix
+                  >
+                    <mat-icon>search</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <!-- quantity -->
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef class="xs">Quantity</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Quantity</mat-label> -->
+                  <input matInput [(ngModel)]="row.quantity" type="number" />
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              Total: {{ getTotalQuantity() }}
+            </td>
+          </ng-container>
+
+          <!-- cost -->
+          <ng-container matColumnDef="cost">
+            <th mat-header-cell *matHeaderCellDef class="xs">Cost</th>
+            <td mat-cell *matCellDef="let row">
+              <div>
+                <mat-form-field>
+                  <!-- <mat-label>Cost</mat-label> -->
+                  <input matInput [(ngModel)]="row.cost" type="number" />
+                </mat-form-field>
+              </div>
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+              Total: {{ getTotalCost() }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr
+            mat-footer-row
+            *matFooterRowDef="displayedColumns; sticky: true"
+          ></tr>
+        </table>
+      </div>
+      <mat-paginator
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 15, 20]"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
+  </div>
+</div>

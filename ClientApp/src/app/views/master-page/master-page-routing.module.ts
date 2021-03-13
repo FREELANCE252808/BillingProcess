@@ -24,6 +24,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'move-charges',
+        loadChildren: () =>
+          import('../move-charges/move-charges.module').then(
+            (m) => m.MoveChargesModule
+          ),
+      },
+      {
         path: 'user',
         loadChildren: () =>
           import('../user-details/user-details.module').then(
