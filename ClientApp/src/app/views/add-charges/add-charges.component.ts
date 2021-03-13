@@ -1,5 +1,5 @@
 import { Component, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSort } from '@angular/material/sort';
@@ -13,6 +13,8 @@ import { AddCharges, KeyValue } from './models/AddCharges';
 })
 export class AddChargesComponent implements OnInit, OnChanges {
   @ViewChild('addChargesSideNav') sideNav: MatSidenav;
+  totalSum: number = 0;
+  myFormValueChanges$;
   /* userDetails: UserDetails[] = []; */
   addOrEditCharges: AddCharges;
   editBillingDetails: any;
@@ -101,6 +103,31 @@ export class AddChargesComponent implements OnInit, OnChanges {
   billingChargesForm: FormGroup;
   constructor(private formBuilder: FormBuilder) {}
 
+  TotAmt(col:string)
+  {
+    debugger;
+    if(col="quantity")
+      this.myFormValueChanges$ = this.billingChargesForm.controls['quantity'].valueChanges;
+
+      if(col="rate")
+      this.myFormValueChanges$ = this.billingChargesForm.controls['rate'].valueChanges;
+
+      // subscribe to the stream so listen to changes on units
+    this.myFormValueChanges$.subscribe(units =>
+           this.updateTotalUnitPrice(units)
+    );
+
+  }
+  private updateTotalUnitPrice(units: any) {
+    debugger;
+   // get our units group controll
+   const newRate =this.billingChargesForm.controls['rate'].value;
+   const NewQty =this.billingChargesForm.controls['quantity'].value;
+   let totalUnitPrice = (newRate*NewQty);
+   this.billingChargesForm.controls["totalBillingAmount"].setValue(totalUnitPrice, {onlySelf: true, emitEvent: false});
+
+ }
+
   ngOnInit(): void {
     this.billingChargesForm = this.formBuilder.group({
       rowId: [0],
@@ -110,15 +137,23 @@ export class AddChargesComponent implements OnInit, OnChanges {
       task: [null, Validators.required],
       resource: [null, Validators.required],
       description: [''],
-      quantity: [null, Validators.required],
+      quantity: [1, Validators.required],
       uom: ['', Validators.required],
-      rate: [null, Validators.required],
-      totalBillingAmount: [null],
+      rate: [1, Validators.required],
+      totalBillingAmount:  [{value: '', disabled: true}],
       comments: ['', Validators.required],
       more: [false, Validators.required],
     });
+
+debugger;
+  // initialize stream on units
+  //this.myFormValueChanges$ = this.billingChargesForm.controls['billingChargesForm'].valueChanges;
+
+
+
     this.setMatTable();
-    console.log('quantity', this.billingChargesForm.get('quantity').value);
+    /*
+        console.log('quantity', this.billingChargesForm.get('quantity').value);
     console.log('rate', this.billingChargesForm.get('rate').value);
     const a = this.billingChargesForm.get('quantity').value;
     const b = this.billingChargesForm.get('rate').value;
@@ -151,9 +186,12 @@ export class AddChargesComponent implements OnInit, OnChanges {
         this.billingChargesForm.get('totalBillingAmount').value
       );
     });
+
+    */
   }
 
   ngOnChanges() {
+
     console.log('quantity', this.billingChargesForm.get('quantity').value);
     console.log('rate', this.billingChargesForm.get('rate').value);
     const a = this.billingChargesForm.get('quantity').value;
@@ -175,6 +213,16 @@ export class AddChargesComponent implements OnInit, OnChanges {
   get f() {
     return this.billingChargesForm.controls;
   }
+
+
+/**
+   * Update prices as soon as something changed on units group
+   */
+
+
+
+
+
   setMatTable() {
     setTimeout(() => {
       this.dataSource.data = this.gridDetails;
