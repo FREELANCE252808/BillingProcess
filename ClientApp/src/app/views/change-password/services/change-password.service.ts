@@ -11,7 +11,7 @@ export class ChangePasswordService {
    }
 
   updatePassword(changePassword:any){
-    return this.http.post(`${this.baseUrl}api/User/changePassword`,changePassword)
+    return this.http.post(`${this.baseUrl}User/changePassword`,changePassword)
   }
 
 

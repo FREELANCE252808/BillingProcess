@@ -33,7 +33,7 @@ export class AccountService {
     const grantType = 'password';
     // pipe() let you combine multiple functions into a single function.
     // pipe() runs the composed functions in sequence.
-    return this.http.post<any>(`${this.baseapiURL}api/Token/Login`, login).pipe(
+    return this.http.post<any>(`${this.baseapiURL}Token/Login`, login).pipe(
       map((result) => {
         // login successful if there's a jwt token in the response
         if (result && result.authToken.token != null) {

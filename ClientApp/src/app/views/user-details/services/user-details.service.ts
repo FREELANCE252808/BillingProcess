@@ -13,15 +13,15 @@ export class UserDetailsService {
    }
 
   getAllCompanies(){
-    return this.http.get(`${this.baseUrl}api/User/GetCompanyList`)
+    return this.http.get(`${this.baseUrl}User/GetCompanyList`)
   }
 
   GetAllUsers(){
-    return this.http.get(`${this.baseUrl}api/User/GetAllUsers`)
+    return this.http.get(`${this.baseUrl}User/GetAllUsers`)
   }
 
   addUpdateUser(userData:any){
-    return this.http.post<any>(`${this.baseUrl}api/User/AddEditUser`, userData)
+    return this.http.post<any>(`${this.baseUrl}User/AddEditUser`, userData)
   }
 
 
