@@ -191,6 +191,7 @@ debugger;
   }
 
   ngOnChanges() {
+
     console.log('quantity', this.billingChargesForm.get('quantity').value);
     console.log('rate', this.billingChargesForm.get('rate').value);
     const a = this.billingChargesForm.get('quantity').value;
