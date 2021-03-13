@@ -44,7 +44,7 @@ export class MasterPageComponent implements OnInit, AfterViewInit {
       {
         displayName: 'Add Charges',
         iconName: 'add',
-        route: '',
+        route: 'add-charges',
         children: [],
       },
 

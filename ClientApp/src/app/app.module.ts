@@ -1,11 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatSidenavModule } from "@angular/material/sidenav";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
-import { MatListModule } from "@angular/material/list";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+  NO_ERRORS_SCHEMA,
+} from '@angular/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavService } from './services/nav.service';
@@ -22,13 +26,10 @@ import { CustomDialogModule } from './components/customdialog/custom-dialog.modu
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
-  schemas: [CUSTOM_ELEMENTS_SCHEMA ,NO_ERRORS_SCHEMA
-],
-  declarations: [
-    AppComponent,
-    AccessDeniedPageComponent
-  ],
-  imports: [NgxSpinnerModule,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  declarations: [AppComponent, AccessDeniedPageComponent],
+  imports: [
+    NgxSpinnerModule,
     HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -43,8 +44,18 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     CustomDialogModule,
     MatIconModule,
   ],
-  providers: [NavService,TokenStorage,AccountService,
-    UtilsService, AuthService,{provide: HTTP_INTERCEPTORS, useClass: JwtIntercepterService, multi: true}],
-  bootstrap: [AppComponent]
+  providers: [
+    NavService,
+    TokenStorage,
+    AccountService,
+    UtilsService,
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtIntercepterService,
+      multi: true,
+    },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -3,35 +3,46 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/authguard/auth.guard';
 import { MasterPageComponent } from './master-page.component';
 
-
-
 const routes: Routes = [
   {
-
-    path: '', component: MasterPageComponent,
+    path: '',
+    component: MasterPageComponent,
     canActivate: [AuthGuard],
-    children:[
+    children: [
       {
         path: '',
-        loadChildren: () => import('../dashboard/dashboard.module').then(m => m.DashboardModule)
-      }
-      ,{
+        loadChildren: () =>
+          import('../dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
+      },
+      {
+        path: 'add-charges',
+        loadChildren: () =>
+          import('../add-charges/add-charges.module').then(
+            (m) => m.AddChargesModule
+          ),
+      },
+      {
         path: 'user',
-        loadChildren: () => import('../user-details/user-details.module').then(m => m.UserDetailsModule)
-      },{
+        loadChildren: () =>
+          import('../user-details/user-details.module').then(
+            (m) => m.UserDetailsModule
+          ),
+      },
+      {
         path: 'change-password',
-        loadChildren: () => import('../change-password/change-password.module').then(m => m.ChangePasswordModule)
-      }
-
-    ]
+        loadChildren: () =>
+          import('../change-password/change-password.module').then(
+            (m) => m.ChangePasswordModule
+          ),
+      },
+    ],
   },
-
-
 ];
-
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class MasterPageRoutingModule { }
+export class MasterPageRoutingModule {}
